@@ -34,7 +34,7 @@
                         <p class="text-xl text-center italic py-8">You don't have any gears yet...Go create some fresh gears!</p>
                     @endif
                 </div>
-                <x-button-link link="{{ route('gears.create', $user) }}" text="Create Gear" />
+                <x-button-link link="{{ route('gears.create') }}" text="Create Gear" />
             </div>
     
             {{-- gearsets --}}
@@ -51,7 +51,7 @@
                         <p class="text-xl text-center italic py-8">You don't have any gearsets yet...Go create some fresh gearsets!</p>
                     @endif
                 </div>
-                <x-button-link link="{{ route('gearsets.create', $user) }}" text="Create Gearset" />
+                <x-button-link link="{{ route('gearsets.create') }}" text="Create Gearset" />
             </div>
         </div>
     </div>

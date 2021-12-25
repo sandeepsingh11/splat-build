@@ -20,7 +20,7 @@
     @endif
 
     {{-- form --}}
-    <form action="{{ route('gearsets.store', $user) }}" method="post" class="w-full md:w-3/4 lg:w-2/3 px-4 md:px-0 md:mx-auto">
+    <form action="{{ route('gearsets.store') }}" method="post" class="w-full md:w-3/4 lg:w-2/3 px-4 md:px-0 md:mx-auto">
         @csrf
 
         <div class="mb-8">

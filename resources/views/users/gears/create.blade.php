@@ -14,7 +14,7 @@
     @endforeach
 
     {{-- form --}}
-    <form action="{{ route('gears.store', $user) }}" method="post" class="w-full md:w-1/2 lg:w-4/5 px-4 md:px-0 md:mx-auto">
+    <form action="{{ route('gears.store') }}" method="post" class="w-full md:w-1/2 lg:w-4/5 px-4 md:px-0 md:mx-auto">
         @csrf
 
         <div class="mb-8">

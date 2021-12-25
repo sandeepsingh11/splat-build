@@ -32,6 +32,6 @@ class LoginController extends Controller
             return back()->with('status', 'Incorrect credentials');
         }
 
-        return redirect()->route('dashboard', $request->user());
+        return redirect()->route('dashboard');
     }
 }

@@ -9,7 +9,7 @@
 @endsection
 
 @section('content')
-    <form action="{{ route('gearsets.update', [$user, $gearset]) }}" method="post" class="w-full md:w-3/4 lg:w-2/3 px-4 md:px-0 md:mx-auto">
+    <form action="{{ route('gearsets.update', $gearset) }}" method="post" class="w-full md:w-3/4 lg:w-2/3 px-4 md:px-0 md:mx-auto">
         @method('PUT')
         @csrf
 

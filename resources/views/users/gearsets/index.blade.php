@@ -8,7 +8,7 @@
         <div class="grid grid-cols-1 w-full lg:w-10/12 xl:w-11/12 mx-auto mb-8 px-4 md:px-8">
             @foreach ($gearsets as $gearset)
 
-                <a href="{{ route('gearsets.show', [$user, $gearset]) }}" class="h-full mb-6">
+                <a href="{{ route('gearsets.show', $gearset) }}" class="h-full mb-6">
                     {{-- gearset component --}}
                     <x-gearset.base :gearset="$gearset" :user="$user" />
                 </a>

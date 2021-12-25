@@ -6,8 +6,8 @@
     {{-- desktop menu --}}
     <ul class="md:flex items-center hidden">
         @auth
-            <x-nav-link link="{{ route('gears.create', Request::user()) }}" text="+Gear" />
-            <x-nav-link link="{{ route('gearsets.create', Request::user()) }}" text="+Gearset" />
+            <x-nav-link link="{{ route('gears.create') }}" text="+Gear" />
+            <x-nav-link link="{{ route('gearsets.create') }}" text="+Gearset" />
 
             {{-- dropdown container --}}
             <div x-data="{ open: false }" class="relative">
@@ -27,10 +27,10 @@
                     class="absolute top-full right-0 bg-primary-500 mt-1 rounded text-left z-10"
                     style="display: none"
                 >
-                    <x-nav-link link="{{ route('dashboard', Request::user()) }}" text="Dashboard" class="py-2 px-4 rounded-t-md" />
-                    <x-nav-link link="{{ route('gears', Request::user()) }}" text="Gears" class="py-2 px-4" />
-                    <x-nav-link link="{{ route('gearsets', Request::user()) }}" text="Gearsets" class="py-2 px-4" />
-                    {{-- <x-nav-link link="{{ route('settings', Request::user()) }}" text="Settings" class="py-2 px-4" /> --}}
+                    <x-nav-link link="{{ route('dashboard') }}" text="Dashboard" class="py-2 px-4 rounded-t-md" />
+                    <x-nav-link link="{{ route('gears') }}" text="Gears" class="py-2 px-4" />
+                    <x-nav-link link="{{ route('gearsets') }}" text="Gearsets" class="py-2 px-4" />
+                    {{-- <x-nav-link link="{{ route('settings') }}" text="Settings" class="py-2 px-4" /> --}}
                     <li>
                         <form action="{{ route('logout') }}" method="post">
                             @csrf
@@ -77,12 +77,12 @@
                 style="display: none"
             >
                 @auth
-                    <x-nav-link link="{{ route('gears.create', Request::user()) }}" text="+Gear" />
-                    <x-nav-link link="{{ route('gearsets.create', Request::user()) }}" text="+Gearset" />
-                    <x-nav-link link="{{ route('dashboard', Request::user()) }}" text="Dashboard" />
-                    <x-nav-link link="{{ route('gears', Request::user()) }}" text="Gears" />
-                    <x-nav-link link="{{ route('gearsets', Request::user()) }}" text="Gearsets" />
-                    {{-- <x-nav-link link="{{ route('settings', Request::user()) }}" text="Settings" /> --}}
+                    <x-nav-link link="{{ route('gears.create') }}" text="+Gear" />
+                    <x-nav-link link="{{ route('gearsets.create') }}" text="+Gearset" />
+                    <x-nav-link link="{{ route('dashboard') }}" text="Dashboard" />
+                    <x-nav-link link="{{ route('gears') }}" text="Gears" />
+                    <x-nav-link link="{{ route('gearsets') }}" text="Gearsets" />
+                    {{-- <x-nav-link link="{{ route('settings') }}" text="Settings" /> --}}
                     <li>
                         <form action="{{ route('logout') }}" method="post">
                             @csrf

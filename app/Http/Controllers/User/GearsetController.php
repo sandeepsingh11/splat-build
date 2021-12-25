@@ -26,9 +26,10 @@ class GearsetController extends Controller
             ->except(['index', 'show']);
     }
 
-    public function index(User $user)
+    public function index(Request $request)
     {
         // get user's gearsets
+        $user = $request->user();
         $gearsets = $user->gearsets->load(['gears.baseGears', 'gears.skills', 'weapon']);
         
 
@@ -50,8 +51,10 @@ class GearsetController extends Controller
         ]);
     }
 
-    public function show(User $user, Gearset $gearset)
+    public function show(Request $request, Gearset $gearset)
     {
+        $user = $request->user();
+
         // get user's gearsets
         $gearset = $gearset->load(['gears.baseGears', 'gears.skills', 'weapon']);
 
@@ -68,9 +71,10 @@ class GearsetController extends Controller
         ]);
     }
 
-    public function create(User $user)
+    public function create(Request $request)
     {
         // get user's gears
+        $user = $request->user();
         $userGears = $user->gears->load(['baseGears', 'skills']);
 
         // get all weapons
@@ -84,7 +88,7 @@ class GearsetController extends Controller
         ]);
     }
 
-    public function store(Request $request, User $user)
+    public function store(Request $request)
     {
         // validate vals
         $this->validate($request, [
@@ -128,12 +132,13 @@ class GearsetController extends Controller
         
 
         
-        return Redirect::route('gearsets', [$user]);
+        return Redirect::route('gearsets');
     }
 
-    public function edit(User $user, Gearset $gearset)
+    public function edit(Request $request, Gearset $gearset)
     {
         // get user's gears
+        $user = $request->user();
         $userGears = $user->gears->load(['baseGears', 'skills']);
 
         // get all weapons
@@ -148,7 +153,7 @@ class GearsetController extends Controller
         ]);
     }
 
-    public function update(Request $request, User $user, Gearset $gearset)
+    public function update(Request $request, Gearset $gearset)
     {
         // validate vals
         $this->validate($request, [
@@ -193,10 +198,10 @@ class GearsetController extends Controller
         
 
         
-        return Redirect::route('gearsets', [$user]);
+        return Redirect::route('gearsets');
     }
 
-    public function destroy(User $user, Gearset $gearset)
+    public function destroy(Gearset $gearset)
     {
         // check if the current user can delete the specified gear
         $this->authorize('delete', $gearset);
