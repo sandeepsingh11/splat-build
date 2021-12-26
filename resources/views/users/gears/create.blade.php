@@ -50,7 +50,7 @@
                 <div class="mb-6">
                     <div id="weapons-container">
                         {{-- weapons search-select --}}
-                        <livewire:weapon-search-select />
+                        <livewire:weapon-search-select label="Test weapon:" />
                     </div>
                     <div id="stats-container">
                         <h4>Gear stats:</h4>

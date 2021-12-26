@@ -86,8 +86,8 @@
             <div>
                 <div class="mb-6">
                     <div id="weapons-container">
-                        {{-- weapons --}}
-                        <livewire:weapon :weapons="$weapons" />
+                        {{-- weapons search-select --}}
+                        <livewire:weapon-search-select />
                     </div>
                     <div id="stats-container">
                         <h4>Gearset stats:</h4>

@@ -15,9 +15,11 @@ class WeaponSearchSelect extends Component
     public string $weaponName = 'Shooter_Short_00';
     public string $specialName = 'SuperLanding';
     public string $subName = 'Bomb_Curling';
+    public string $label;
 
-    public function mount()
+    public function mount(string $label = "Weapon")
     {
+        $this->label = $label;
         $this->weapons = Weapon::all();
 
         // transform gear records into array, then translate

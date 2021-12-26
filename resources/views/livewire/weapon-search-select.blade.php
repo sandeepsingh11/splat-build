@@ -1,6 +1,6 @@
 <div>
     {{-- gear list --}}
-    <label for="weapon-id" class="block">Test weapon:</label>
+    <label for="weapon-id" class="block">{{ $label }}</label>
     <x-select-search :filteredList="$filteredList" :selectedItem="$weaponName" selectId="weapon-id" />
 
     {{-- display weapon, sub, special --}}
