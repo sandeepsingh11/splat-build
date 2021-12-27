@@ -1,4 +1,21 @@
-<div class="w-full">
+<div class="w-full pb-6">
+    {{-- this user gear type list --}}
+    <label for="gear-{{ Str::lower($gearType) }}-id" class="block">{{ $gearType }} gear</label>
+    <x-select-search :filteredList="$filteredList" :selectedItem="$gearName" selectId="gear-{{ Str::lower($gearType) }}-id" />
+
+    {{-- gear --}}
+    <x-gear.gear :gearName="$gearName" />
+
+    {{-- skills --}}
+    <div class="flex justify-evenly items-baseline">
+        <x-skill-bubble :skillName="$skillMain" :imgSize=64 id="{{ Str::lower($gearType) }}-skill-main" :dataSkillName="$skillMain" />
+        <x-skill-bubble :skillName="$skillSub1" id="{{ Str::lower($gearType) }}-skill-sub-1" :dataSkillName="$skillSub1" />
+        <x-skill-bubble :skillName="$skillSub2" id="{{ Str::lower($gearType) }}-skill-sub-2" :dataSkillName="$skillSub2" />
+        <x-skill-bubble :skillName="$skillSub3" id="{{ Str::lower($gearType) }}-skill-sub-3" :dataSkillName="$skillSub3" />
+    </div>
+</div>
+
+{{-- <div class="w-full">
     <label for="gear-{{ Str::lower($gearType) }}-id" class="block text-center">{{ $gearType }} gear</label>
     <select 
         wire:change="updateGear($event.target.value)" 
@@ -32,4 +49,4 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}

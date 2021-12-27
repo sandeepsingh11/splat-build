@@ -3076,8 +3076,9 @@ if (gearset) {
 
 
 var selectEle = document.getElementById('gearset-weapon');
+var weaponNameEle = document.getElementById('selected-weapon-name');
 selectEle.addEventListener('change', function (e) {
-  var weaponName = e.target.options[e.target.value - 1].dataset.name;
+  var weaponName = weaponNameEle.value;
   currentWeapon = allWeaponData[weaponName];
   currentSub = allSubData[currentWeapon[0].Sub];
   currentSpecial = allSpecialData[currentWeapon[0].Special];

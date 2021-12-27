@@ -1414,8 +1414,9 @@ if (gearset) {
 
 // update weapon, sub, special on select change
 var selectEle = document.getElementById('gearset-weapon');
+const weaponNameEle = document.getElementById('selected-weapon-name');
 selectEle.addEventListener('change', (e) => {
-    var weaponName = e.target.options[e.target.value - 1].dataset.name;
+    let weaponName = weaponNameEle.value;
 
     currentWeapon = allWeaponData[weaponName];
     currentSub = allSubData[currentWeapon[0].Sub];
