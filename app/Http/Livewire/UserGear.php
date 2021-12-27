@@ -25,10 +25,32 @@ class UserGear extends Component
     public function mount(Collection $userGears, string $gearType, Collection $oldGears = null)
     {
         $this->gearType = $gearType;
-        $this->gearName = $this->defaultGearNames[$gearType[0]];
 
-        // filter gears by type
+        // get user gears of current gear type
         $this->gears = $this->filterUserGearsByType($userGears);
+
+        // fill in default values
+        if (isset($this->gears[0])) {
+            $currentGear = $this->gears[0];
+            $this->fill([
+                'gearTitle' => $currentGear->gear_title ?? '',
+                'gearName' => $currentGear->baseGears->base_gear_name,
+                'skillMain' => $currentGear->getSkillName('Main'),
+                'skillSub1' => $currentGear->getSkillName('Sub1'),
+                'skillSub2' => $currentGear->getSkillName('Sub2'),
+                'skillSub3' => $currentGear->getSkillName('Sub3'),
+            ]);
+        }
+        else {
+            $this->fill([
+                'gearTitle' => '',
+                'gearName' => $this->defaultGearNames[$this->gearType[0]],
+                'skillMain' => 'unknown',
+                'skillSub1' => 'unknown',
+                'skillSub2' => 'unknown',
+                'skillSub3' => 'unknown',
+            ]);
+        }
         
 
 
@@ -52,8 +74,6 @@ class UserGear extends Component
         }
 
         $this->filteredList = $this->searchable;
-        // $this->mainSkill = $mainSkill;
-        // $this->mainSkillId = $mainSkillId;
     }
 
     public function render()
@@ -106,12 +126,14 @@ class UserGear extends Component
     public function selectUpdate(int $gearId)
     {
         $selectedGear = $this->gears->where('id', $gearId)->first();
-        $this->gearTitle = $selectedGear->gear_title ?? '';
-        $this->gearName = $selectedGear->baseGears->base_gear_name;
-        $this->skillMain = $selectedGear->skills[0]->skill_name;
-        $this->skillSub1 = $selectedGear->skills[1]->skill_name;
-        $this->skillSub2 = $selectedGear->skills[2]->skill_name;
-        $this->skillSub3 = $selectedGear->skills[3]->skill_name;
+        $this->fill([
+            'gearTitle' => $selectedGear->gear_title ?? '',
+            'gearName' => $selectedGear->baseGears->base_gear_name,
+            'skillMain' => $selectedGear->getSkillName('Main'),
+            'skillSub1' => $selectedGear->getSkillName('Sub1'),
+            'skillSub2' => $selectedGear->getSkillName('Sub2'),
+            'skillSub3' => $selectedGear->getSkillName('Sub3'),
+        ]);
     }
 
     public function search()

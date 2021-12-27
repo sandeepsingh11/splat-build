@@ -1,7 +1,7 @@
 <div class="w-full pb-6">
     {{-- this user gear type list --}}
     <label for="gear-{{ Str::lower($gearType) }}-id" class="block">{{ $gearType }} gear</label>
-    <x-select-search :filteredList="$filteredList" :selectedItem="$gearName" selectId="gear-{{ Str::lower($gearType) }}-id" />
+    <x-select-search :filteredList="$filteredList" :selectedItem="$gearTitle" selectId="gear-{{ Str::lower($gearType) }}-id" />
 
     {{-- gear --}}
     <x-gear.gear :gearName="$gearName" />
