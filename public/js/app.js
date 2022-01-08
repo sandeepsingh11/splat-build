@@ -1886,6 +1886,12 @@ window.$ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.
   \********************************/
 /***/ (() => {
 
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 // ==================== HANDLE DRAG AND DROP ==================== //
 // global vars
 var version = '550';
@@ -2073,8 +2079,7 @@ function clickToAddSkill(e) {
 
     var highMidLowFiles = ['BombDamage_Reduction', 'BombDistance_Up', 'HumanMove_Up', 'InkRecovery_Up', 'JumpTime_Save', 'MainInk_Save', 'MarkingTime_Reduction', 'OpInkEffect_Reduction', 'RespawnSpecialGauge_Save', 'RespawnTime_Save', 'SpecialIncrease_Up', 'SpecialTime_Up', 'SquidMove_Up', 'SubInk_Save'];
 
-    if (highMidLowFiles.indexOf(draggedSkillName) != -1) {
-      recalculateStats();
+    if (highMidLowFiles.indexOf(draggedSkillName) != -1) {// recalculateStats();
     }
   }
 }
@@ -2088,8 +2093,7 @@ function clickToRemoveSkill(e) {
     e.target.dataset.skillName = 'unknown'; // reset the slot's id to the hidden input field
 
     document.getElementById('hidden-' + e.target.parentNode.id).value = '27'; // re-calc
-
-    recalculateStats();
+    // recalculateStats();
   }
 } // on dragstart handler
 
@@ -2137,8 +2141,7 @@ function dropHandler(e) {
   document.getElementById('hidden-' + e.target.parentNode.id).value = draggedSkillId;
   var highMidLowFiles = ['BombDamage_Reduction', 'BombDistance_Up', 'HumanMove_Up', 'InkRecovery_Up', 'JumpTime_Save', 'MainInk_Save', 'MarkingTime_Reduction', 'OpInkEffect_Reduction', 'RespawnSpecialGauge_Save', 'RespawnTime_Save', 'SpecialIncrease_Up', 'SpecialTime_Up', 'SquidMove_Up', 'SubInk_Save'];
 
-  if (highMidLowFiles.indexOf(draggedSkillName) != -1) {
-    recalculateStats();
+  if (highMidLowFiles.indexOf(draggedSkillName) != -1) {// recalculateStats();
   }
 }
 
@@ -2603,7 +2606,7 @@ function calcMpu(skillObj) {
 }
 
 function calcSubPu(skillObj) {
-  var weapon = acurrentWeapon;
+  var weapon = currentWeapon;
   var subName = weapon[0].Sub;
   var bru = ["Bomb_Splash", "Bomb_Suction", "Bomb_Quick", "PointSensor", "PoisonFog", "Bomb_Robo", "Bomb_Tako", "Bomb_Piyo"];
   var effects = [];
@@ -3072,17 +3075,53 @@ if (gearset) {
   shoesSelectEle.addEventListener('change', function (e) {
     return gearsetChange();
   });
-} // update weapon, sub, special on select change
+} // recalc stats on gear select
+// Callback function to execute when mutations are observed
+// https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
 
 
-var selectEle = document.getElementById('gearset-weapon');
-var weaponNameEle = document.getElementById('selected-weapon-name');
-selectEle.addEventListener('change', function (e) {
-  var weaponName = weaponNameEle.value;
-  currentWeapon = allWeaponData[weaponName];
-  currentSub = allSubData[currentWeapon[0].Sub];
-  currentSpecial = allSpecialData[currentWeapon[0].Special];
-  recalculateStats();
+var mutationCallback = function mutationCallback(mutationsList) {
+  // Use traditional 'for loops' for IE 11
+  var _iterator = _createForOfIteratorHelper(mutationsList),
+      _step;
+
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var mutation = _step.value;
+
+      // fire when attr, specifically 'src', is changed
+      if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+        currentWeapon = allWeaponData[weaponImgEle.dataset.weaponName];
+        currentSub = allSubData[subImgEle.dataset.subName];
+        currentSpecial = allSpecialData[specialImgEle.dataset.specialName];
+        recalculateStats();
+      }
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+}; // Create an observer instance linked to the callback function
+
+
+var observer = new MutationObserver(mutationCallback); // Start observing the target node for configured mutations
+// for skill images
+
+var skillsEle = document.getElementsByClassName('slot-img');
+
+for (var _i4 = 0; _i4 < skillsEle.length; _i4++) {
+  observer.observe(skillsEle[_i4], {
+    attributes: true
+  });
+} // for weapon, sub, special images
+
+
+var weaponImgEle = document.getElementById('weapon-img');
+var subImgEle = document.getElementById('sub-img');
+var specialImgEle = document.getElementById('special-img');
+observer.observe(weaponImgEle, {
+  attributes: true
 }); // get all current skill names
 
 function getInputtedSkillNames() {

@@ -13,12 +13,12 @@ class WeaponSearchSelect extends Component
     public array $filteredList;
     public string $searchTerm = '';
     public string $weaponName = 'Shooter_Short_00';
-    public string $specialName = 'SuperLanding';
     public string $subName = 'Bomb_Curling';
+    public string $specialName = 'SuperLanding';
     public string $label;
     public string $selectId;
 
-    public function mount(string $label = "Weapon", string $selectId = "weapon-id")
+    public function mount(string $label = "Weapon", string $selectId = "gearset-weapon")
     {
         $this->label = $label;
         $this->selectId = $selectId;

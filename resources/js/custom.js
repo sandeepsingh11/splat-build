@@ -224,7 +224,7 @@ function clickToAddSkill(e) {
         ];
 
         if (highMidLowFiles.indexOf(draggedSkillName) != -1) {    
-            recalculateStats();
+            // recalculateStats();
         }
     }
 }
@@ -241,7 +241,7 @@ function clickToRemoveSkill(e) {
         document.getElementById('hidden-' + e.target.parentNode.id).value = '27';
 
         // re-calc
-        recalculateStats();
+        // recalculateStats();
     }
 }
 
@@ -327,7 +327,7 @@ function dropHandler(e) {
     ];
 
     if (highMidLowFiles.indexOf(draggedSkillName) != -1) {    
-        recalculateStats();
+        // recalculateStats();
     }
 }
 
@@ -850,7 +850,7 @@ function calcMpu(skillObj) {
 }
 
 function calcSubPu(skillObj) {
-    var weapon = acurrentWeapon;
+    var weapon = currentWeapon;
     var subName = weapon[0].Sub;
 
     var bru = ["Bomb_Splash", "Bomb_Suction", "Bomb_Quick", "PointSensor", "PoisonFog", "Bomb_Robo", "Bomb_Tako", "Bomb_Piyo"]
@@ -1412,18 +1412,38 @@ if (gearset) {
 
 
 
-// update weapon, sub, special on select change
-var selectEle = document.getElementById('gearset-weapon');
-const weaponNameEle = document.getElementById('selected-weapon-name');
-selectEle.addEventListener('change', (e) => {
-    let weaponName = weaponNameEle.value;
+// recalc stats on gear select
+// Callback function to execute when mutations are observed
+// https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
+const mutationCallback = function(mutationsList) {
+    // Use traditional 'for loops' for IE 11
+    for (const mutation of mutationsList) {
+        // fire when attr, specifically 'src', is changed
+        if ( (mutation.type === 'attributes') && (mutation.attributeName === 'src') ) {
+            currentWeapon = allWeaponData[weaponImgEle.dataset.weaponName];
+            currentSub = allSubData[subImgEle.dataset.subName];
+            currentSpecial = allSpecialData[specialImgEle.dataset.specialName];
 
-    currentWeapon = allWeaponData[weaponName];
-    currentSub = allSubData[currentWeapon[0].Sub];
-    currentSpecial = allSpecialData[currentWeapon[0].Special];
+            recalculateStats();
+        }
+    }
+};
 
-    recalculateStats();
-});
+// Create an observer instance linked to the callback function
+const observer = new MutationObserver(mutationCallback);
+
+// Start observing the target node for configured mutations
+// for skill images
+const skillsEle = document.getElementsByClassName('slot-img');
+for (let i = 0; i < skillsEle.length; i++) {
+    observer.observe(skillsEle[i], { attributes: true });
+}
+
+// for weapon, sub, special images
+const weaponImgEle = document.getElementById('weapon-img');
+const subImgEle = document.getElementById('sub-img');
+const specialImgEle = document.getElementById('special-img');
+observer.observe(weaponImgEle, { attributes: true });
 
 
 
