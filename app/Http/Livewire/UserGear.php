@@ -24,13 +24,37 @@ class UserGear extends Component
 
     public function mount(Collection $userGears, string $gearType, Collection $oldGears = null)
     {
+        // set gear type for this instance
         $this->gearType = $gearType;
 
         // get user gears of current gear type
         $this->gears = $this->filterUserGearsByType($userGears);
 
-        // fill in default values
-        if (isset($this->gears[0])) {
+        // fill in default gear values
+        // if old gear passed (editing page)
+        if (!$oldGears->isEmpty()) {
+            foreach ($oldGears as $oldGear) {
+                // get the old gear for the given gear type instance
+                if ($oldGear->baseGears->base_gear_type === $this->gearType[0]) {
+                    $currentGear = $oldGear;
+                    $this->fill([
+                        'gearTitle' => $currentGear->gear_title ?? '',
+                        'gearName' => $currentGear->baseGears->base_gear_name,
+                        'skillMain' => $currentGear->getSkillName('Main'),
+                        'skillSub1' => $currentGear->getSkillName('Sub1'),
+                        'skillSub2' => $currentGear->getSkillName('Sub2'),
+                        'skillSub3' => $currentGear->getSkillName('Sub3'),
+                    ]);
+
+                    $this->oldGearId = $oldGear->id;
+                    $this->selectUpdate($this->oldGearId);
+
+                    break;
+                }
+            }
+        }
+        // else if user has existing gear types to choose from
+        else if (isset($this->gears[0])) {
             $currentGear = $this->gears[0];
             $this->fill([
                 'gearTitle' => $currentGear->gear_title ?? '',
@@ -41,6 +65,7 @@ class UserGear extends Component
                 'skillSub3' => $currentGear->getSkillName('Sub3'),
             ]);
         }
+        // else fill with generic gear
         else {
             $this->fill([
                 'gearTitle' => '',
@@ -50,21 +75,6 @@ class UserGear extends Component
                 'skillSub2' => 'unknown',
                 'skillSub3' => 'unknown',
             ]);
-        }
-        
-
-
-        // get old gear if passed
-        if ($oldGears !== null) {
-            foreach ($oldGears as $oldGear) {
-                // get the old gear for the passed gear type
-                if ($oldGear->baseGears->base_gear_type === $this->gearType[0]) {
-                    $this->oldGearId = $oldGear->id;
-                    $this->updateGear($this->oldGearId);
-
-                    break;
-                }
-            }
         }
 
         // transform gear records into array, then translate
@@ -95,32 +105,6 @@ class UserGear extends Component
         });
 
         return $filteredGears;
-    }
-
-    public function updateGear($gearId)
-    {
-        // if no pre-existing gear is selected, use default
-        if ($gearId == -1) {
-            $this->fill([
-                'gearName' => $this->defaultGearNames[$this->gearType[0]],
-                'skillMain' => 'unknown',
-                'skillSub1' => 'unknown',
-                'skillSub2' => 'unknown',
-                'skillSub3' => 'unknown',
-            ]);
-
-            return;
-        }
-
-        // find the gear which matches what the user selected in the select html element
-        $selectedGear = $this->gears->where('id', $gearId)->first();
-        $this->fill([
-            'gearName' => $selectedGear->baseGears->base_gear_name,
-            'skillMain' => $selectedGear->getSkillName('Main'),
-            'skillSub1' => $selectedGear->getSkillName('Sub1'),
-            'skillSub2' => $selectedGear->getSkillName('Sub2'),
-            'skillSub3' => $selectedGear->getSkillName('Sub3'),
-        ]);
     }
 
     public function selectUpdate(int $gearId)

@@ -18,11 +18,22 @@ class WeaponSearchSelect extends Component
     public string $label;
     public string $selectId;
 
-    public function mount(string $label = "Weapon", string $selectId = "gearset-weapon")
+    public function mount(string $label = "Weapon", string $selectId = "gearset-weapon", int $oldWeaponId = -1)
     {
+        // set instance values
         $this->label = $label;
         $this->selectId = $selectId;
         $this->weapons = Weapon::all();
+
+        // if editing weapon, set selected weapon
+        if ($oldWeaponId !== -1) {
+            $oldWeapon = $this->weapons->where('id', $oldWeaponId)->first();
+            $this->fill([
+                'weaponName' => $oldWeapon->weapon_name,
+                'subName' => $oldWeapon->sub->sub_name,
+                'specialName' => $oldWeapon->special->special_name,
+            ]);
+        }
 
         // transform gear records into array, then translate
         $this->searchable = array_column($this->weapons->toArray(), "weapon_name", "id");
