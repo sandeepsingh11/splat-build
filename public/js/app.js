@@ -3053,28 +3053,6 @@ for (var _i3 = 0; _i3 < dragIntoEle.length; _i3++) {
   dragIntoEle[_i3].addEventListener('drop', function (e) {
     dropHandler(e);
   });
-} // if on gearset page, set listeners for gear changes
-
-
-if (gearset) {
-  var gearsetChange = function gearsetChange() {
-    setTimeout(function () {
-      recalculateStats();
-    }, 1200);
-  };
-
-  var headSelectEle = document.getElementById('gear-head-id');
-  headSelectEle.addEventListener('change', function (e) {
-    return gearsetChange();
-  });
-  var clothesSelectEle = document.getElementById('gear-clothes-id');
-  clothesSelectEle.addEventListener('change', function (e) {
-    return gearsetChange();
-  });
-  var shoesSelectEle = document.getElementById('gear-shoes-id');
-  shoesSelectEle.addEventListener('change', function (e) {
-    return gearsetChange();
-  });
 } // recalc stats on gear select
 // Callback function to execute when mutations are observed
 // https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
@@ -3122,7 +3100,16 @@ var subImgEle = document.getElementById('sub-img');
 var specialImgEle = document.getElementById('special-img');
 observer.observe(weaponImgEle, {
   attributes: true
-}); // get all current skill names
+}); // for gearset gear images
+
+var gearImgEle = document.getElementsByClassName('gear-img');
+
+for (var _i5 = 0; _i5 < gearImgEle.length; _i5++) {
+  observer.observe(gearImgEle[_i5], {
+    attributes: true
+  });
+} // get all current skill names
+
 
 function getInputtedSkillNames() {
   var allSkills = [];

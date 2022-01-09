@@ -1391,27 +1391,6 @@ for (let i = 0; i < dragIntoEle.length; i++) {
 
 
 
-// if on gearset page, set listeners for gear changes
-if (gearset) {
-    var headSelectEle = document.getElementById('gear-head-id');
-    headSelectEle.addEventListener('change', (e) => gearsetChange());
-
-    var clothesSelectEle = document.getElementById('gear-clothes-id');
-    clothesSelectEle.addEventListener('change', (e) => gearsetChange());
-
-    var shoesSelectEle = document.getElementById('gear-shoes-id');
-    shoesSelectEle.addEventListener('change', (e) => gearsetChange());
-
-    function gearsetChange() {
-        setTimeout(() => {
-            recalculateStats();
-        }, 1200);
-    }
-}
-
-
-
-
 // recalc stats on gear select
 // Callback function to execute when mutations are observed
 // https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
@@ -1445,6 +1424,11 @@ const subImgEle = document.getElementById('sub-img');
 const specialImgEle = document.getElementById('special-img');
 observer.observe(weaponImgEle, { attributes: true });
 
+// for gearset gear images
+const gearImgEle = document.getElementsByClassName('gear-img');
+for (let i = 0; i < gearImgEle.length; i++) {
+    observer.observe(gearImgEle[i], { attributes: true });
+}
 
 
 
