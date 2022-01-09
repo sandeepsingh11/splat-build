@@ -60,14 +60,15 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             <div>
                 {{-- gear (head) --}}
-                <livewire:gear :gears="$gears" gearType="Head" :oldGears="$gearset->gears->load(['baseGears'])" />
+                <livewire:user-gear :userGears="$gears" gearType="Head" :oldGears="$gearset->gears->load(['baseGears'])" />
         
                 {{-- gear (clothes) --}}
-                <livewire:gear :gears="$gears" gearType="Clothes" :oldGears="$gearset->gears->load(['baseGears'])" />
+                <livewire:user-gear :userGears="$gears" gearType="Clothes" :oldGears="$gearset->gears->load(['baseGears'])" />
                 
                 {{-- gear (shoes) --}}
-                <livewire:gear :gears="$gears" gearType="Shoes" :oldGears="$gearset->gears->load(['baseGears'])" />
+                <livewire:user-gear :userGears="$gears" gearType="Shoes" :oldGears="$gearset->gears->load(['baseGears'])" />
                 
+                {{-- submit --}}
                 <input type="submit" value="Update" class="p-2 bg-transparent text-primary-700 rounded-md border border-primary-700 mb-2 cursor-pointer transition-colors hover:bg-primary-500 hover:text-white hover:border-primary-500">
             </div>
             
@@ -75,8 +76,8 @@
             <div>
                 <div class="mb-6">
                     <div id="weapons-container">
-                        {{-- weapons --}}
-                        <livewire:weapon :weapons="$weapons" :oldWeaponId="$gearset->weapon_id" />
+                        {{-- weapons search-select --}}
+                        <livewire:weapon-search-select selectId="gearset-weapon-id" :oldWeaponId="$gearset->weapon_id" />
                     </div>
                     <div id="stats-container">
                         <h4>Gearset stats:</h4>

@@ -49,8 +49,8 @@
             <div>
                 <div class="mb-6">
                     <div id="weapons-container">
-                        {{-- weapons --}}
-                        <livewire:weapon :weapons="$weapons" selectLabel="Test weapon:" inline="true" />
+                        {{-- weapons search-select --}}
+                        <livewire:weapon-search-select label="Test weapon:" />
                     </div>
                     <div id="stats-container">
                         <h4>Gear stats:</h4>
