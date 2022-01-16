@@ -24,7 +24,7 @@
                     x-show.transition="open"
                     @click.away="open = false"
                     @mouseleave="open = false"
-                    class="absolute top-full right-0 bg-primary-500 mt-1 rounded text-left z-10"
+                    class="absolute top-full right-0 bg-primary-500 mt-1 rounded text-left z-20"
                     style="display: none"
                 >
                     <x-nav-link link="{{ route('dashboard') }}" text="Dashboard" class="py-2 px-4 rounded-t-md" />
