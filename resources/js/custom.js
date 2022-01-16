@@ -224,7 +224,7 @@ function clickToAddSkill(e) {
         ];
 
         if (highMidLowFiles.indexOf(draggedSkillName) != -1) {    
-            recalculateStats();
+            // recalculateStats();
         }
     }
 }
@@ -232,16 +232,16 @@ function clickToAddSkill(e) {
 function clickToRemoveSkill(e) {
     if (e.target.dataset.skillId != '27') {
         // reset slot's values
-        e.target.src = '/storage/skills/unknown.png';
+        e.target.src = '/storage/skills/Unknown.png';
         e.target.alt = 'unknown';
         e.target.dataset.skillId = '27';
-        e.target.dataset.skillName = 'unknown';
+        e.target.dataset.skillName = 'Unknown';
 
         // reset the slot's id to the hidden input field
         document.getElementById('hidden-' + e.target.parentNode.id).value = '27';
 
         // re-calc
-        recalculateStats();
+        // recalculateStats();
     }
 }
 
@@ -327,7 +327,7 @@ function dropHandler(e) {
     ];
 
     if (highMidLowFiles.indexOf(draggedSkillName) != -1) {    
-        recalculateStats();
+        // recalculateStats();
     }
 }
 
@@ -850,7 +850,7 @@ function calcMpu(skillObj) {
 }
 
 function calcSubPu(skillObj) {
-    var weapon = acurrentWeapon;
+    var weapon = currentWeapon;
     var subName = weapon[0].Sub;
 
     var bru = ["Bomb_Splash", "Bomb_Suction", "Bomb_Quick", "PointSensor", "PoisonFog", "Bomb_Robo", "Bomb_Tako", "Bomb_Piyo"]
@@ -1391,39 +1391,44 @@ for (let i = 0; i < dragIntoEle.length; i++) {
 
 
 
-// if on gearset page, set listeners for gear changes
-if (gearset) {
-    var headSelectEle = document.getElementById('gear-head-id');
-    headSelectEle.addEventListener('change', (e) => gearsetChange());
+// recalc stats on gear select
+// Callback function to execute when mutations are observed
+// https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
+const mutationCallback = function(mutationsList) {
+    // Use traditional 'for loops' for IE 11
+    for (const mutation of mutationsList) {
+        // fire when attr, specifically 'src', is changed
+        if ( (mutation.type === 'attributes') && (mutation.attributeName === 'src') ) {
+            currentWeapon = allWeaponData[weaponImgEle.dataset.weaponName];
+            currentSub = allSubData[subImgEle.dataset.subName];
+            currentSpecial = allSpecialData[specialImgEle.dataset.specialName];
 
-    var clothesSelectEle = document.getElementById('gear-clothes-id');
-    clothesSelectEle.addEventListener('change', (e) => gearsetChange());
-
-    var shoesSelectEle = document.getElementById('gear-shoes-id');
-    shoesSelectEle.addEventListener('change', (e) => gearsetChange());
-
-    function gearsetChange() {
-        setTimeout(() => {
             recalculateStats();
-        }, 1200);
+        }
     }
+};
+
+// Create an observer instance linked to the callback function
+const observer = new MutationObserver(mutationCallback);
+
+// Start observing the target node for configured mutations
+// for skill images
+const skillsEle = document.getElementsByClassName('slot-img');
+for (let i = 0; i < skillsEle.length; i++) {
+    observer.observe(skillsEle[i], { attributes: true });
 }
 
+// for weapon, sub, special images
+const weaponImgEle = document.getElementById('weapon-img');
+const subImgEle = document.getElementById('sub-img');
+const specialImgEle = document.getElementById('special-img');
+observer.observe(weaponImgEle, { attributes: true });
 
-
-
-// update weapon, sub, special on select change
-var selectEle = document.getElementById('gearset-weapon');
-selectEle.addEventListener('change', (e) => {
-    var weaponName = e.target.options[e.target.value - 1].dataset.name;
-
-    currentWeapon = allWeaponData[weaponName];
-    currentSub = allSubData[currentWeapon[0].Sub];
-    currentSpecial = allSpecialData[currentWeapon[0].Special];
-
-    recalculateStats();
-});
-
+// for gearset gear images
+const gearImgEle = document.getElementsByClassName('gear-img');
+for (let i = 0; i < gearImgEle.length; i++) {
+    observer.observe(gearImgEle[i], { attributes: true });
+}
 
 
 
@@ -1506,7 +1511,7 @@ function getMainAndSubs(skillNames) {
 
     for (var i = 0; i < skillNames.length; i++) {
         
-        if (skillNames[i] != 'unknown') {
+        if (skillNames[i] != 'Unknown') {
             var skillNameExists = false;
             
             // check if the current skill name exists

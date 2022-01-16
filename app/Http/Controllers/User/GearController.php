@@ -23,12 +23,12 @@ class GearController extends GearAbstractController
             ->except(['index', 'show']);
     }
 
-    public function index(User $user)
+    public function index(Request $request)
     {
         // get user's gear
+        $user = $request->user();
         // $gears = $user->gears()->with(['user'])->paginate(20);
         $gears = $user->gears->load(['baseGears', 'skills']);
-        // dd($gears[0]->skills[0]->skill_name);
 
 
         return view('users.gears.index', [
@@ -37,8 +37,9 @@ class GearController extends GearAbstractController
         ]);
     }
 
-    public function show(User $user, Gear $gear)
+    public function show(Request $request, Gear $gear)
     {
+        $user = $request->user();
         // eager load gear's relationships
         $gear->load(['baseGears', 'skills']);
         
@@ -48,24 +49,26 @@ class GearController extends GearAbstractController
         ]);
     }
 
-    public function create(User $user)
+    public function create(Request $request)
     {
+        $user = $request->user();
+
         // get according splatdata
-        $skills = new Skill();
-        $baseGears = new BaseGear();
-        $weapons = new Weapon();
+        $skills = Skill::all();
+        $baseGears = BaseGear::all();
+        $weapons = Weapon::all();
 
 
 
         return view('users.gears.create', [
             'user' => $user,
-            'gears' => $baseGears->all(),
-            'skills' => $skills->all(),
-            'weapons' => $weapons->all()
+            'gears' => $baseGears,
+            'skills' => $skills,
+            'weapons' => $weapons
         ]);
     }
 
-    public function store(Request $request, User $user)
+    public function store(Request $request)
     {
         // validate input
         $this->validate($request, [
@@ -100,17 +103,20 @@ class GearController extends GearAbstractController
         $newGear->skills()->attach($subSkill3Id, ['skill_type' => 'Sub3']);
 
 
-        return Redirect::route('gears', [$user]);
+        return Redirect::route('gears');
     }
 
-    public function edit(User $user, Gear $gear)
+    public function edit(Request $request, Gear $gear)
     {
+        $user = $request->user();
+
         // eager load gear's relationships
         $gear->load(['baseGears', 'skills']);
 
         // get according splatdata
-        $baseGears = new BaseGear();
-        $skills = new Skill();
+        $baseGears = BaseGear::all();
+        $skills = Skill::all();
+        $weapons = Weapon::all();
 
         // prep data
         $gearSkillIds = [
@@ -132,13 +138,13 @@ class GearController extends GearAbstractController
             'gear' => $gear,
             'gearSkillIds' => $gearSkillIds,
             'gearSkillNames' => $gearSkillNames,
-            'baseGears' => $baseGears->all(),
-            'skills' => $skills->all(),
-            'weapons' => Weapon::all()
+            'baseGears' => $baseGears,
+            'skills' => $skills,
+            'weapons' => $weapons
         ]);
     }
 
-    public function update(Request $request, User $user, Gear $gear)
+    public function update(Request $request, Gear $gear)
     {
         // validate vals
         $this->validate($request, [
@@ -178,10 +184,10 @@ class GearController extends GearAbstractController
 
 
         
-        return redirect(route('gears', [$user]));
+        return redirect(route('gears'));
     }
 
-    public function destroy(User $user, Gear $gear)
+    public function destroy(Gear $gear)
     {
         // check if the current user can delete the specified gear piece
         $this->authorize('delete', $gear);

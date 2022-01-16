@@ -14,7 +14,7 @@
     @endforeach
 
     {{-- form --}}
-    <form action="{{ route('gears.update', [$user, $gear]) }}" method="post" class="w-full md:w-1/2 lg:w-4/5 px-4 md:px-0 md:mx-auto">
+    <form action="{{ route('gears.update', $gear) }}" method="post" class="w-full md:w-1/2 lg:w-4/5 px-4 md:px-0 md:mx-auto">
         @method('PUT')
         @csrf
 
@@ -57,8 +57,8 @@
             <div>
                 <div class="mb-6">
                     <div id="weapons-container">
-                        {{-- weapons --}}
-                        <livewire:weapon :weapons="$weapons" selectLabel="Test weapon:" inline="true" />
+                        {{-- weapons search-select --}}
+                        <livewire:weapon-search-select label="Test weapon:" />
                     </div>
                     <div id="stats-container">
                         <h4>Gear stats:</h4>
