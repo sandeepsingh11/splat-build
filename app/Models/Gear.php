@@ -99,7 +99,7 @@ class Gear extends Model
         }
 
         // if no skill found, return 'unknown'
-        return 'unknown';
+        return 'Unknown';
     }
 
     /**

@@ -2087,10 +2087,10 @@ function clickToAddSkill(e) {
 function clickToRemoveSkill(e) {
   if (e.target.dataset.skillId != '27') {
     // reset slot's values
-    e.target.src = '/storage/skills/unknown.png';
+    e.target.src = '/storage/skills/Unknown.png';
     e.target.alt = 'unknown';
     e.target.dataset.skillId = '27';
-    e.target.dataset.skillName = 'unknown'; // reset the slot's id to the hidden input field
+    e.target.dataset.skillName = 'Unknown'; // reset the slot's id to the hidden input field
 
     document.getElementById('hidden-' + e.target.parentNode.id).value = '27'; // re-calc
     // recalculateStats();
@@ -3175,7 +3175,7 @@ function getMainAndSubs(skillNames) {
   var mainAndSubs = [];
 
   for (var i = 0; i < skillNames.length; i++) {
-    if (skillNames[i] != 'unknown') {
+    if (skillNames[i] != 'Unknown') {
       var skillNameExists = false; // check if the current skill name exists
 
       for (var j = 0; j < mainAndSubs.length; j++) {

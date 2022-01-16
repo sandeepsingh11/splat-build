@@ -13,10 +13,10 @@ class UserGear extends Component
     public string $gearType;
     public string $gearTitle = '';
     public string $gearName = 'Hed_FST000';
-    public string $skillMain = 'unknown';
-    public string $skillSub1 = 'unknown';
-    public string $skillSub2 = 'unknown';
-    public string $skillSub3 = 'unknown';
+    public string $skillMain = 'Unknown';
+    public string $skillSub1 = 'Unknown';
+    public string $skillSub2 = 'Unknown';
+    public string $skillSub3 = 'Unknown';
     public int $oldGearId = -1;
     public array $searchable;
     public array $filteredList;
@@ -70,10 +70,10 @@ class UserGear extends Component
             $this->fill([
                 'gearTitle' => '',
                 'gearName' => $this->defaultGearNames[$this->gearType[0]],
-                'skillMain' => 'unknown',
-                'skillSub1' => 'unknown',
-                'skillSub2' => 'unknown',
-                'skillSub3' => 'unknown',
+                'skillMain' => 'Unknown',
+                'skillSub1' => 'Unknown',
+                'skillSub2' => 'Unknown',
+                'skillSub3' => 'Unknown',
             ]);
         }
 

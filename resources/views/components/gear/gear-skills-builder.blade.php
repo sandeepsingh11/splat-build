@@ -3,7 +3,7 @@
     'skills',
     'gearName' => 'Hed_FST000',
     'gearSkillIds' => [27, 27, 27, 27],
-    'gearSkillNames' => ['unknown', 'unknown', 'unknown', 'unknown'],
+    'gearSkillNames' => ['Unknown', 'Unknown', 'Unknown', 'Unknown'],
 ])
 
 

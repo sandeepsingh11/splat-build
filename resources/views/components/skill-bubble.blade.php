@@ -1,5 +1,5 @@
 @props([
-    'skillName' => 'unknown', 
+    'skillName' => 'Unknown', 
     'imgSize' => 50,
     'id' => '',
     'dataSkillName' => ''
