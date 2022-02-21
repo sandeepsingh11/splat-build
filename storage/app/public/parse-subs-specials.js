@@ -36,7 +36,7 @@ fs.readFile(__dirname + '/550/WeaponInfo_Sub.json', function(err, data) {
                 subInternalName = "JumpBeacon";
             }
 
-            subSpecialResult.subs[subInternalName] = sub;
+            subSpecialResult.subs[subName] = sub;
 
             fs.readFile(__dirname + '/550/WeaponBullet/' + subInternalName + '.json', function(err, bulletData) {
                 if (err) {
@@ -44,7 +44,7 @@ fs.readFile(__dirname + '/550/WeaponInfo_Sub.json', function(err, data) {
                 }
                 
                 bulletData = JSON.parse(bulletData);
-                subSpecialResult.subs[subInternalName]['param'] = bulletData['param'];
+                subSpecialResult.subs[subName]['param'] = bulletData['param'];
             });
         }
 
@@ -74,7 +74,7 @@ fs.readFile(__dirname + '/550/WeaponInfo_Special.json', function(err, data) {
                 specialInternalName = "Bomb" + special.Name.replace("Launcher", "") + "Launcher";
             }
 
-            subSpecialResult.specials[specialInternalName] = special;
+            subSpecialResult.specials[special.Name] = special;
 
             fs.readFile(__dirname + '/550/WeaponBullet/' + specialInternalName + '.json', function(err, bulletData) {
                 if (err) {
@@ -82,7 +82,7 @@ fs.readFile(__dirname + '/550/WeaponInfo_Special.json', function(err, data) {
                 }
                 
                 bulletData = JSON.parse(bulletData);
-                subSpecialResult.specials[specialInternalName]['param'] = bulletData['param'];
+                subSpecialResult.specials[special.Name]['param'] = bulletData['param'];
             });
         }
 
@@ -98,7 +98,7 @@ setInterval(() => {
     if (subDone && specialDone) {
         const preppedData = JSON.stringify(subSpecialResult);
         
-        fs.writeFileSync(__dirname + '/550/parsed-subs-specials-results.json', preppedData, function(err) {
+        fs.writeFileSync(__dirname + '/550/parsed-subs-specials.json', preppedData, function(err) {
             if (err) {
                 return console.error(err);
             }

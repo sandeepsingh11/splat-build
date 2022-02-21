@@ -99,7 +99,7 @@ setInterval(() => {
     if (done) {
         const preppedData = JSON.stringify(weaponResult);
         
-        fs.writeFileSync(__dirname + '/550/parsed-weapons-results.json', preppedData, function(err) {
+        fs.writeFileSync(__dirname + '/550/parsed-weapons.json', preppedData, function(err) {
             if (err) {
                 return console.error(err);
             }
