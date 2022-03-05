@@ -10,7 +10,8 @@
         "production": "mix --production",
         "trans": "node storage/app/translations/parse-script.js",
         "parse-weapons": "node storage/app/public/parse-weapons.js",
-        "parse-subs-specials": "node storage/app/public/parse-subs-specials.js"
+        "parse-subs-specials": "node storage/app/public/parse-subs-specials.js",
+        "parse-skills": "node storage/app/public/parse-skills.js"
     },
     "devDependencies": {
         "autoprefixer": "^10.2.5",
