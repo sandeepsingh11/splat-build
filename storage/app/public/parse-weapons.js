@@ -50,7 +50,7 @@ fs.readFile(__dirname + '/550/WeaponInfo_Main.json', function(err, data) {
                         }
 
                         wbData2 = JSON.parse(wbData2);
-                        weaponResult[weaponName][weaponName + '_2.json'] = wbData2['param'];
+                        weaponResult[weaponName][weaponName + '_2'] = wbData2['param'];
                     });
                 }
                 else if (weaponName.includes("Blaster")) {
