@@ -2110,7 +2110,14 @@ function dropHandler(e) {
 function recalculateStats() {
   // clear stats display
   var containerEle = $('#stats');
-  containerEle.empty(); // get all inputted skill names
+  containerEle.empty(); // set current weapon, sub, and special
+
+  var currentWeapon = document.getElementById('selected-weapon-name');
+  setCurrentWeapon(currentWeapon.value);
+  var currentSub = document.getElementById('sub-img');
+  setCurrentSub(currentSub.dataset.subName);
+  var currentSpecial = document.getElementById('special-img');
+  setCurrentSpecial(currentSpecial.dataset.specialName); // get all inputted skill names
 
   var inputtedSkillNames = getInputtedSkillNames(); // map number of main and subs to each inputted skill
 

@@ -303,14 +303,22 @@ function dropHandler(e) {
 
 function recalculateStats() {
     // clear stats display
-    var containerEle = $('#stats');
+    const containerEle = $('#stats');
     containerEle.empty();
 
+    // set current weapon, sub, and special
+    const currentWeapon = document.getElementById('selected-weapon-name');
+    setCurrentWeapon(currentWeapon.value);
+    const currentSub = document.getElementById('sub-img');
+    setCurrentSub(currentSub.dataset.subName);
+    const currentSpecial = document.getElementById('special-img');
+    setCurrentSpecial(currentSpecial.dataset.specialName);
+
     // get all inputted skill names
-    var inputtedSkillNames = getInputtedSkillNames();
+    const inputtedSkillNames = getInputtedSkillNames();
 
     // map number of main and subs to each inputted skill
-    var mainAndSubs = getMainAndSubs(inputtedSkillNames);
+    const mainAndSubs = getMainAndSubs(inputtedSkillNames);
 
     // calculate ability effect for each inputted skill
     mainAndSubs.forEach(skillObj => {
