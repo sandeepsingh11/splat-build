@@ -1901,11 +1901,12 @@ var draggedSkillName = '';
 var draggedSkillId = -1;
 var draggedSkillType = '';
 var allWeaponData = [];
-var allSpecialData = [];
 var allSubData = [];
+var allSpecialData = [];
 var currentWeapon;
 var currentSub;
 var currentSpecial;
+var allSkillData = [];
 var gear = false;
 var gearset = false; // set mode
 
@@ -1917,113 +1918,74 @@ window.addEventListener('load', function () {
 });
 
 function loadData() {
-  loadWeaponData();
-  loadSpecialData();
-  loadSubData(); // if editing, calc existing skills
+  loadWeapons();
+  loadSubsAndSpecials();
+  loadSkills(); // if editing, calc existing skills
 
   setTimeout(function () {
     recalculateStats();
   }, 2500);
 }
 
-function loadWeaponData() {
-  $.getJSON(storageUrl + 'WeaponInfo_Main.json', function (weaponJson) {
-    $.each(weaponJson, function (idx, weapon) {
-      // get weapon name
-      var weaponNameSplit = weapon["Name"].split("_");
-      var weaponName = weaponNameSplit[0] + weaponNameSplit[1];
+function loadWeapons() {
+  $.getJSON(storageUrl + 'parsed-weapons.json', function (weaponsData) {
+    allWeaponData = weaponsData; // set default weapon
 
-      if (weaponName.includes("Blaster")) {
-        weaponName = weaponName.substring(7);
-      } // get weapon stats
-
-
-      $.getJSON(storageUrl + 'WeaponBullet/' + weaponName + '.json', function (bulletJson) {
-        if (weaponName.includes("Spinner") || weaponName.includes("Twins")) {
-          $.getJSON(storageUrl + 'WeaponBullet/' + weaponName + '_2.json', function (data) {
-            allWeaponData[weapon["Name"]] = [weapon, Object.assign({}, bulletJson['param'], data['param'])];
-          });
-        } else if (weaponName.includes("Blaster")) {
-          $.getJSON(storageUrl + 'WeaponBullet/' + weaponName + '_Burst.json', function (data) {
-            allWeaponData[weapon["Name"]] = [weapon, Object.assign({}, bulletJson['param'], data['param'])];
-          });
-        } else if (weaponName.includes("Roller")) {
-          $.getJSON(storageUrl + 'WeaponBullet/' + weaponName + '_Stand.json', function (data) {
-            $.getJSON(storageUrl + 'WeaponBullet/' + weaponName + '_Jump.json', function (data2) {
-              var dataObj = {};
-              $.each(bulletJson['param'], function (key, val) {
-                dataObj[key] = val;
-              });
-              $.each(data['param'], function (key, val) {
-                dataObj['Stand_' + key] = val;
-              });
-              $.each(data2['param'], function (key, val) {
-                dataObj['Jump_' + key] = val;
-              });
-              allWeaponData[weapon["Name"]] = [weapon, dataObj];
-              currentWeapon = allWeaponData['Shooter_Short_00'];
-            });
-          });
-        } else {
-          allWeaponData[weapon["Name"]] = [weapon, bulletJson['param']];
-          currentWeapon = allWeaponData['Shooter_Short_00'];
-        }
-      });
-    });
+    setCurrentWeapon('Shooter_BlasterLight_00');
   });
 }
 
-function loadSpecialData() {
-  $.getJSON(storageUrl + 'WeaponInfo_Special.json', function (specialJson) {
-    $.each(specialJson, function (idx, specialweapon) {
-      if (specialweapon["Id"] != 15 && specialweapon["Id"] != 16 && specialweapon["Id"] != 13 && specialweapon["Id"] <= 18) {
-        var special_internal_name = specialweapon["Name"];
+function setCurrentWeapon(weaponName) {
+  var weaponGroupName = getWeaponGroupName(weaponName);
+  var weaponData = allWeaponData[weaponGroupName][weaponName];
+  var params = allWeaponData[weaponGroupName]['param'];
+  var weapon = [weaponData, params];
 
-        if (specialweapon["Name"].includes("Launcher")) {
-          special_internal_name = "Bomb" + specialweapon["Name"].replace("Launcher", "") + "Launcher";
-        } // get special stats
+  if (weaponGroupName.includes("Spinner") || weaponGroupName.includes("Twins")) {
+    weapon.push(allWeaponData[weaponGroupName][weaponGroupName + '_2']);
+  } else if (weaponGroupName.includes('Blaster')) {
+    weapon.push(allWeaponData[weaponGroupName][weaponGroupName + '_burst']);
+  } else if (weaponGroupName.includes('Roller')) {
+    weapon.push(allWeaponData[weaponGroupName][weaponGroupName + '_stand']);
+    weapon.push(allWeaponData[weaponGroupName][weaponGroupName + '_jump']);
+  }
 
+  currentWeapon = weapon;
+}
 
-        $.getJSON(storageUrl + "WeaponBullet/" + special_internal_name + ".json", function (bulletJson) {
-          specialweapon["Name"] = special_internal_name;
-          allSpecialData[special_internal_name] = [specialweapon, bulletJson["param"]];
-          currentSpecial = allSpecialData['SuperLanding'];
-        });
-      }
-    });
+function getWeaponGroupName(weaponName) {
+  var weaponNameSplitted = weaponName.split('_');
+  var weaponGroupName = weaponNameSplitted[0] + weaponNameSplitted[1];
+
+  if (weaponGroupName.includes("Blaster")) {
+    weaponGroupName = weaponGroupName.substring(7);
+  }
+
+  return weaponGroupName;
+}
+
+function loadSubsAndSpecials() {
+  $.getJSON(storageUrl + 'parsed-subs-specials.json', function (subsSpecialsData) {
+    allSubData = subsSpecialsData['subs'];
+    allSpecialData = subsSpecialsData['specials']; // set default sub
+
+    setCurrentSub('Bomb_Curling'); // set default special
+
+    setCurrentSpecial('SuperLanding');
   });
 }
 
-function loadSubData() {
-  $.getJSON(storageUrl + 'WeaponInfo_Sub.json', function (subJson) {
-    $.each(subJson, function (index, subweapon) {
-      if (subweapon["Id"] < 100) {
-        var subname = subweapon["Name"];
-        var subInternalName = subname;
+function setCurrentSub(subName) {
+  currentSub = allSubData[subName];
+}
 
-        if (subname.includes("Bomb_")) {
-          subInternalName = subname.replace("Bomb_", "Bomb");
-        }
+function setCurrentSpecial(specialName) {
+  currentSpecial = allSpecialData[specialName];
+}
 
-        if (subname == "TimerTrap") {
-          subInternalName = "Trap";
-        }
-
-        if (subname.includes("Poison") || subname.includes("Point")) {
-          subInternalName = "Bomb" + subname;
-        }
-
-        if (subname == "Flag") {
-          subInternalName = "JumpBeacon";
-        } // get sub stats
-
-
-        $.getJSON(storageUrl + 'WeaponBullet/' + subInternalName + '.json', function (bulletJson) {
-          allSubData[subweapon["Name"]] = [subweapon, bulletJson["param"]];
-          currentSub = allSubData['Bomb_Curling'];
-        });
-      }
-    });
+function loadSkills() {
+  $.getJSON(storageUrl + 'parsed-skills.json', function (skillsData) {
+    allSkillData = skillsData;
   });
 } // click-slot-to-toggle skill
 
@@ -2216,228 +2178,220 @@ function recalculateStats() {
 }
 
 function calcIsm(skillObj) {
-  $.getJSON(storageUrl + "Player/Player_Spec_" + skillObj.skillName + ".json", function (res) {
-    var weapon = currentWeapon;
-    var weaponName = weapon[0]["Name"]; // get ink consume val
+  var ismStats = allSkillData[skillObj.skillName];
+  var weapon = currentWeapon;
+  var weaponName = weapon[0]["Name"]; // get ink consume val
 
-    var inkConsume = 0;
+  var inkConsume = 0;
 
-    if (weaponName.includes('Roller')) {
-      inkConsume = weapon[1].Stand_mInkConsumeSplash;
+  if (weaponName.includes('Roller')) {
+    inkConsume = weapon[2].mInkConsumeSplash;
+  } else {
+    if (weaponName.includes('Charger')) {
+      inkConsume = weapon[1].mFullChargeInkConsume || weapon[1].mInkConsume;
     } else {
-      if (weaponName.includes('Charger')) {
-        inkConsume = weapon[1].mFullChargeInkConsume || weapon[1].mInkConsume;
-      } else {
-        inkConsume = weapon[1].mInkConsume;
-      }
-    } // prep values to calc
+      inkConsume = weapon[1].mInkConsume;
+    }
+  } // prep values to calc
 
 
-    var key = '';
-    if (weapon[0].InkSaverLv == 'Low') key = 'ConsumeRt_Main_Low';else if (weapon[0].InkSaverLv == 'High') key = 'ConsumeRt_Main_High';else key = 'ConsumeRt_Main'; // calc
+  var key = '';
+  if (weapon[0].InkSaverLv == 'Low') key = 'ConsumeRt_Main_Low';else if (weapon[0].InkSaverLv == 'High') key = 'ConsumeRt_Main_High';else key = 'ConsumeRt_Main'; // calc
 
-    var consumeRateHML = getHML(res[skillObj.skillName], key);
-    var consumeRateVal = calculateAbilityEffect(skillObj.main, skillObj.subs, consumeRateHML[0], consumeRateHML[1], consumeRateHML[2]);
-    var inkTankSize = weapon[1].mInkMagazineRatio || 1.0;
-    var mainInkSaveObj = {
-      name: 'MainInk_Save',
-      displayName: 'Ink Saver - Main',
-      effects: [{
-        name: 'Ink Consumption / Shot',
-        value: (consumeRateVal[0] * inkConsume).toFixed(5),
-        percent: (consumeRateVal[1] * 100).toFixed(2)
-      }, {
-        name: 'Max Number of Shots',
-        value: Math.floor(inkTankSize / (consumeRateVal[0] * inkConsume)),
-        percent: (consumeRateVal[1] * 100).toFixed(2)
-      }]
-    };
-    displayStat(mainInkSaveObj);
-  });
+  var consumeRateHML = getHML(ismStats, key);
+  var consumeRateVal = calculateAbilityEffect(skillObj.main, skillObj.subs, consumeRateHML[0], consumeRateHML[1], consumeRateHML[2]);
+  var inkTankSize = weapon[1].mInkMagazineRatio || 1.0;
+  var mainInkSaveObj = {
+    name: 'MainInk_Save',
+    displayName: 'Ink Saver - Main',
+    effects: [{
+      name: 'Ink Consumption / Shot',
+      value: (consumeRateVal[0] * inkConsume).toFixed(5),
+      percent: (consumeRateVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Max Number of Shots',
+      value: Math.floor(inkTankSize / (consumeRateVal[0] * inkConsume)),
+      percent: (consumeRateVal[1] * 100).toFixed(2)
+    }]
+  };
+  displayStat(mainInkSaveObj);
 }
 
 function calcIss(skillObj) {
-  $.getJSON(storageUrl + "Player/Player_Spec_" + skillObj.skillName + ".json", function (res) {
-    var weapon = currentWeapon; // prep sub info
+  var issStats = allSkillData[skillObj.skillName]; // prep sub info
 
-    var subData = currentSub;
-    var inkConsume = subData[1].mInkConsume;
-    var key;
+  var subData = currentSub;
+  var inkConsume = subData['param'].mInkConsume;
+  var key;
 
-    if ('ConsumeRt_Sub_A_Low' in res[skillObj.skillName]) {
-      key = "ConsumeRt_Sub_" + subData[0].InkSaverType;
+  if ('ConsumeRt_Sub_A_Low' in issStats) {
+    key = "ConsumeRt_Sub_" + subData.InkSaverType;
+  } else {
+    if (subData.InkSaverLv == "Middle") {
+      key = "ConsumeRt_Sub";
     } else {
-      if (subData[0].InkSaverLv == "Middle") {
-        key = "ConsumeRt_Sub";
-      } else {
-        key = "ConsumeRt_Sub_" + subData[0].InkSaverLv;
-      }
+      key = "ConsumeRt_Sub_" + subData.InkSaverLv;
     }
+  }
 
-    var consumeRateHML = getHML(res[skillObj.skillName], key);
-    var consumeRateVal = calculateAbilityEffect(skillObj.main, skillObj.subs, consumeRateHML[0], consumeRateHML[1], consumeRateHML[2]);
-    var subInkSaveObj = {
-      name: 'SubInk_Save',
-      displayName: 'Ink Saver - Sub',
-      effects: [{
-        name: 'Ink Consumption',
-        value: (consumeRateVal[0] * inkConsume).toFixed(5),
-        percent: (consumeRateVal[1] * 100).toFixed(2)
-      }]
-    };
-    displayStat(subInkSaveObj);
-  });
+  var consumeRateHML = getHML(issStats, key);
+  var consumeRateVal = calculateAbilityEffect(skillObj.main, skillObj.subs, consumeRateHML[0], consumeRateHML[1], consumeRateHML[2]);
+  var subInkSaveObj = {
+    name: 'SubInk_Save',
+    displayName: 'Ink Saver - Sub',
+    effects: [{
+      name: 'Ink Consumption',
+      value: (consumeRateVal[0] * inkConsume).toFixed(5),
+      percent: (consumeRateVal[1] * 100).toFixed(2)
+    }]
+  };
+  displayStat(subInkSaveObj);
 }
 
 function calcIru(skillObj) {
-  $.getJSON(storageUrl + "Player/Player_Spec_" + skillObj.skillName + ".json", function (res) {
-    var squidFormHML = getHML(res[skillObj.skillName], 'RecoverFullFrm_Ink');
-    var humanFormHML = getHML(res[skillObj.skillName], 'RecoverNrmlFrm_Ink');
-    var squidFormVal = calculateAbilityEffect(skillObj.main, skillObj.subs, squidFormHML[0], squidFormHML[1], squidFormHML[2]);
-    var humanFormVal = calculateAbilityEffect(skillObj.main, skillObj.subs, humanFormHML[0], humanFormHML[1], humanFormHML[2]);
-    var inkRecoveryObj = {
-      name: 'InkRecovery_Up',
-      displayName: 'Ink Recovery Up',
-      effects: [{
-        name: 'Recovery Time in Ink - Frames',
-        value: Math.ceil(squidFormVal[0]),
-        percent: (squidFormVal[1] * 100).toFixed(2)
-      }, {
-        name: 'Recovery Time in Ink - Seconds',
-        value: (Math.ceil(squidFormVal[0]) / 60).toFixed(2),
-        percent: (squidFormVal[1] * 100).toFixed(2)
-      }, {
-        name: 'Recovery Time Standing - Frames',
-        value: Math.ceil(humanFormVal[0]),
-        percent: (humanFormVal[1] * 100).toFixed(2)
-      }, {
-        name: 'Recovery Time Standing - Seconds',
-        value: (Math.ceil(humanFormVal[0]) / 60).toFixed(2),
-        percent: (humanFormVal[1] * 100).toFixed(2)
-      }]
-    };
-    displayStat(inkRecoveryObj);
-  });
+  var iruStats = allSkillData[skillObj.skillName];
+  var squidFormHML = getHML(iruStats, 'RecoverFullFrm_Ink');
+  var humanFormHML = getHML(iruStats, 'RecoverNrmlFrm_Ink');
+  var squidFormVal = calculateAbilityEffect(skillObj.main, skillObj.subs, squidFormHML[0], squidFormHML[1], squidFormHML[2]);
+  var humanFormVal = calculateAbilityEffect(skillObj.main, skillObj.subs, humanFormHML[0], humanFormHML[1], humanFormHML[2]);
+  var inkRecoveryObj = {
+    name: 'InkRecovery_Up',
+    displayName: 'Ink Recovery Up',
+    effects: [{
+      name: 'Recovery Time in Ink - Frames',
+      value: Math.ceil(squidFormVal[0]),
+      percent: (squidFormVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Recovery Time in Ink - Seconds',
+      value: (Math.ceil(squidFormVal[0]) / 60).toFixed(2),
+      percent: (squidFormVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Recovery Time Standing - Frames',
+      value: Math.ceil(humanFormVal[0]),
+      percent: (humanFormVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Recovery Time Standing - Seconds',
+      value: (Math.ceil(humanFormVal[0]) / 60).toFixed(2),
+      percent: (humanFormVal[1] * 100).toFixed(2)
+    }]
+  };
+  displayStat(inkRecoveryObj);
 }
 
 function calcRsu(skillObj) {
-  $.getJSON(storageUrl + "Player/Player_Spec_" + skillObj.skillName + ".json", function (res) {
-    var weapon = currentWeapon;
-    var baseSpeed = [1, weapon[1]["mMoveSpeed"]];
-    var calculatedData;
-    var effects = [];
+  var rsuStats = allSkillData[skillObj.skillName];
+  var weapon = currentWeapon;
+  var baseSpeed = [1, weapon[1]["mMoveSpeed"]];
+  var calculatedData;
+  var effects = [];
 
-    if (weapon[0]["MoveVelLv"] == "Low") {
-      calculatedData = getHML(res[skillObj.skillName], "MoveVel_Human_BigWeapon");
-    } else if (weapon[0]["MoveVelLv"] == "High") {
-      calculatedData = getHML(res[skillObj.skillName], "MoveVel_Human_ShortWeapon");
-    } else {
-      calculatedData = getHML(res[skillObj.skillName], "MoveVel_Human");
-    }
+  if (weapon[0]["MoveVelLv"] == "Low") {
+    calculatedData = getHML(rsuStats, "MoveVel_Human_BigWeapon");
+  } else if (weapon[0]["MoveVelLv"] == "High") {
+    calculatedData = getHML(rsuStats, "MoveVel_Human_ShortWeapon");
+  } else {
+    calculatedData = getHML(rsuStats, "MoveVel_Human");
+  }
 
-    var calculatedDataWeapon = getHML(res[skillObj.skillName], "MoveVelRt_Human_Shot" + (weapon[0]["ShotMoveVelType"] || "")); // run speed
+  var calculatedDataWeapon = getHML(rsuStats, "MoveVelRt_Human_Shot" + (weapon[0]["ShotMoveVelType"] || "")); // run speed
 
-    var runSpeedVal = calculateAbilityEffect(skillObj.main, skillObj.subs, calculatedData[0], calculatedData[1], calculatedData[2]);
-    var runSpeedEffect = {
-      name: 'Run Speed (DU/Frame)',
-      value: (runSpeedVal[0] * baseSpeed[0]).toFixed(5),
-      percent: (runSpeedVal[1] * 100).toFixed(2)
-    };
-    effects.push(runSpeedEffect); // run speed shooting
+  var runSpeedVal = calculateAbilityEffect(skillObj.main, skillObj.subs, calculatedData[0], calculatedData[1], calculatedData[2]);
+  var runSpeedEffect = {
+    name: 'Run Speed (DU/Frame)',
+    value: (runSpeedVal[0] * baseSpeed[0]).toFixed(5),
+    percent: (runSpeedVal[1] * 100).toFixed(2)
+  };
+  effects.push(runSpeedEffect); // run speed shooting
 
-    var runSpeedShootingVal = calculateAbilityEffect(skillObj.main, skillObj.subs, calculatedDataWeapon[0], calculatedDataWeapon[1], calculatedDataWeapon[2]);
-    runSpeedEffect = {
-      name: 'Run Speed (Shooting) (DU/Frame)',
-      value: (runSpeedShootingVal[0] * baseSpeed[1]).toFixed(5),
-      percent: (runSpeedShootingVal[1] * 100).toFixed(2)
-    };
-    effects.push(runSpeedEffect);
-    var runSpeedObj = {
-      name: 'HumanMove_Up',
-      displayName: 'Run Speed Up',
-      effects: effects
-    };
-    displayStat(runSpeedObj);
-  });
+  var runSpeedShootingVal = calculateAbilityEffect(skillObj.main, skillObj.subs, calculatedDataWeapon[0], calculatedDataWeapon[1], calculatedDataWeapon[2]);
+  var runSpeedEffectShooting = {
+    name: 'Run Speed (Shooting) (DU/Frame)',
+    value: (runSpeedShootingVal[0] * baseSpeed[1]).toFixed(5),
+    percent: (runSpeedShootingVal[1] * 100).toFixed(2)
+  };
+  effects.push(runSpeedEffectShooting);
+  var runSpeedObj = {
+    name: 'HumanMove_Up',
+    displayName: 'Run Speed Up',
+    effects: effects
+  };
+  displayStat(runSpeedObj);
 }
 
 function calcSsu(skillObj) {
-  $.getJSON(storageUrl + "Player/Player_Spec_" + skillObj.skillName + ".json", function (res) {
-    var weapon = currentWeapon;
-    var calculatedData;
-    var effects = [];
+  var ssuStats = allSkillData[skillObj.skillName];
+  var weapon = currentWeapon;
+  var calculatedData;
+  var effects = [];
 
-    if (weapon[0]["MoveVelLv"] == "Low") {
-      calculatedData = getHML(res[skillObj.skillName], "MoveVel_Stealth_BigWeapon");
-    } else if (weapon[0]["MoveVelLv"] == "High") {
-      calculatedData = getHML(res[skillObj.skillName], "MoveVel_Stealth_ShortWeapon");
-    } else {
-      calculatedData = getHML(res[skillObj.skillName], "MoveVel_Stealth");
-    } // swim speed
+  if (weapon[0]["MoveVelLv"] == "Low") {
+    calculatedData = getHML(ssuStats, "MoveVel_Stealth_BigWeapon");
+  } else if (weapon[0]["MoveVelLv"] == "High") {
+    calculatedData = getHML(ssuStats, "MoveVel_Stealth_ShortWeapon");
+  } else {
+    calculatedData = getHML(ssuStats, "MoveVel_Stealth");
+  } // swim speed
 
 
-    var swimSpeedVal = calculateAbilityEffect(skillObj.main, skillObj.subs, calculatedData[0], calculatedData[1], calculatedData[2]);
-    var swimSpeedEffect = {
-      name: 'Swim Speed (DU/Frame)',
-      value: swimSpeedVal[0].toFixed(5),
-      percent: (swimSpeedVal[1] * 100).toFixed(2)
-    };
-    effects.push(swimSpeedEffect); // swim speed - ninja
+  var swimSpeedVal = calculateAbilityEffect(skillObj.main, skillObj.subs, calculatedData[0], calculatedData[1], calculatedData[2]);
+  var swimSpeedEffect = {
+    name: 'Swim Speed (DU/Frame)',
+    value: swimSpeedVal[0].toFixed(5),
+    percent: (swimSpeedVal[1] * 100).toFixed(2)
+  };
+  effects.push(swimSpeedEffect); // swim speed - ninja
 
-    var swimSpeedNinjaVal = calculateAbilityEffect(skillObj.main, skillObj.subs, calculatedData[0], calculatedData[1], calculatedData[2], true);
-    swimSpeedEffect = {
-      name: 'Swim Speed (Ninja) (DU/Frame)',
-      value: swimSpeedNinjaVal[0].toFixed(5),
-      percent: (swimSpeedNinjaVal[1] * 100).toFixed(2)
-    };
-    effects.push(swimSpeedEffect);
-    var swimSpeedObj = {
-      name: 'SquidMove_Up',
-      displayName: 'Swim Speed Up',
-      effects: effects
-    };
-    displayStat(swimSpeedObj);
-  });
+  var swimSpeedNinjaVal = calculateAbilityEffect(skillObj.main, skillObj.subs, calculatedData[0], calculatedData[1], calculatedData[2], true);
+  var swimSpeedEffectNinja = {
+    name: 'Swim Speed (Ninja) (DU/Frame)',
+    value: swimSpeedNinjaVal[0].toFixed(5),
+    percent: (swimSpeedNinjaVal[1] * 100).toFixed(2)
+  };
+  effects.push(swimSpeedEffectNinja);
+  var swimSpeedObj = {
+    name: 'SquidMove_Up',
+    displayName: 'Swim Speed Up',
+    effects: effects
+  };
+  displayStat(swimSpeedObj);
 }
 
 function calcScu(skillObj) {
-  $.getJSON(storageUrl + "Player/Player_Spec_" + skillObj.skillName + ".json", function (res) {
-    var weapon = currentWeapon;
-    var chargeUpHML = getHML(res[skillObj.skillName], 'SpecialRt_Charge');
-    var chargeUpVal = calculateAbilityEffect(skillObj.main, skillObj.subs, chargeUpHML[0], chargeUpHML[1], chargeUpHML[2]);
-    var chargeUpObj = {
-      name: 'SpecialIncrease_Up',
-      displayName: 'Special Charge Up',
-      effects: [{
-        name: 'Special Cost',
-        value: Math.ceil(weapon[0]["SpecialCost"] / chargeUpVal[0]),
-        percent: (chargeUpVal[1] * 100).toFixed(2)
-      }]
-    };
-    displayStat(chargeUpObj);
-  });
+  var scuStats = allSkillData[skillObj.skillName];
+  var weapon = currentWeapon;
+  var chargeUpHML = getHML(scuStats, 'SpecialRt_Charge');
+  var chargeUpVal = calculateAbilityEffect(skillObj.main, skillObj.subs, chargeUpHML[0], chargeUpHML[1], chargeUpHML[2]);
+  var chargeUpObj = {
+    name: 'SpecialIncrease_Up',
+    displayName: 'Special Charge Up',
+    effects: [{
+      name: 'Special Cost',
+      value: Math.ceil(weapon[0]["SpecialCost"] / chargeUpVal[0]),
+      percent: (chargeUpVal[1] * 100).toFixed(2)
+    }]
+  };
+  displayStat(chargeUpObj);
 }
 
 function calcSs(skillObj) {
-  $.getJSON(storageUrl + "Player/Player_Spec_" + skillObj.skillName + ".json", function (res) {
-    var weapon = currentWeapon;
-    var specialSaveHML = getHML(res[skillObj.skillName], "SpecialRt_Restart");
-    var specialSaveVal = calculateAbilityEffect(skillObj.main, skillObj.subs, specialSaveHML[0], specialSaveHML[1], specialSaveHML[2]);
-    var specialSaveObj = {
-      name: 'RespawnSpecialGauge_Save',
-      displayName: 'Special Saver',
-      effects: [{
-        name: 'Special Remaining',
-        value: Math.ceil(weapon[0]["SpecialCost"] * specialSaveVal[0]),
-        percent: (specialSaveVal[1] * 100).toFixed(2)
-      }, {
-        name: 'Percentage Remaining',
-        value: (100 * specialSaveVal[0]).toFixed(4),
-        percent: (specialSaveVal[1] * 100).toFixed(2)
-      }]
-    };
-    displayStat(specialSaveObj);
-  });
+  var ssStats = allSkillData[skillObj.skillName];
+  var weapon = currentWeapon;
+  var specialSaveHML = getHML(ssStats, "SpecialRt_Restart");
+  var specialSaveVal = calculateAbilityEffect(skillObj.main, skillObj.subs, specialSaveHML[0], specialSaveHML[1], specialSaveHML[2]);
+  var specialSaveObj = {
+    name: 'RespawnSpecialGauge_Save',
+    displayName: 'Special Saver',
+    effects: [{
+      name: 'Special Remaining',
+      value: Math.ceil(weapon[0]["SpecialCost"] * specialSaveVal[0]),
+      percent: (specialSaveVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Percentage Remaining',
+      value: (100 * specialSaveVal[0]).toFixed(4),
+      percent: (specialSaveVal[1] * 100).toFixed(2)
+    }]
+  };
+  displayStat(specialSaveObj);
 }
 
 function calcMpu(skillObj) {
@@ -2497,8 +2451,16 @@ function calcMpu(skillObj) {
   var dmgKeys = ["mDamageRate", "mMinMaxChargeDamageRate", "mFullChargeDamageRate", "mDamageMaxMaxChargeRate", "mCoreDamageRate", "mSideStepOneMuzzleDamageRate"];
   var rates = ["mCollisionRadiusFarRate", "mCollisionRadiusMiddleRate", "mCollisionRadiusNearRate", "mKnockBackRadiusRate", "mSphereSplashDropPaintRadiusRate"];
   $.each(keys, function (name, translation) {
-    if (name + "_MWPUG_High" in weapon[1] || "Stand_" + name + "_MWPUG_High" in weapon[1] || "Jump_" + name + "_MWPUG_High" in weapon[1]) {
-      var mainPUHML = getHML_MWPUG(weapon[1], name);
+    if (name + "_MWPUG_High" in weapon[1] || weapon[2] !== undefined && name + "_MWPUG_High" in weapon[2] || weapon[3] !== undefined && name + "_MWPUG_High" in weapon[3]) {
+      var mainPUHML = null;
+
+      if (name + "_MWPUG_High" in weapon[1]) {
+        mainPUHML = getHML_MWPUG(weapon[1], name);
+      } else if (weapon[2] !== undefined && name + "_MWPUG_High" in weapon[2]) {
+        mainPUHML = getHML_MWPUG(weapon[2], name);
+      } else if (weapon[3] !== undefined && name + "_MWPUG_High" in weapon[3]) {
+        mainPUHML = getHML_MWPUG(weapon[3], name);
+      }
 
       if (mainPUHML[0] != mainPUHML[1]) {
         var mainPUVal = calculateAbilityEffect(skillObj.main, skillObj.subs, mainPUHML[0], mainPUHML[1], mainPUHML[2]);
@@ -2509,8 +2471,8 @@ function calcMpu(skillObj) {
         } else if (name == "mCanopyNakedFrame") {
           eff = Math.ceil(mainPUVal[0] * 1);
         } else if (name == "mFirstSecondMaxChargeShootingFrameTimes") {
-          var f1 = weapon[1]["mFirstPeriodMaxChargeShootingFrame"];
-          var f2 = weapon[1]["mSecondPeriodMaxChargeShootingFrame"];
+          var f1 = weapon[2]["mFirstPeriodMaxChargeShootingFrame"];
+          var f2 = weapon[2]["mSecondPeriodMaxChargeShootingFrame"];
           eff = Math.ceil(mainPUVal[0] * (f1 + f2));
         } else if (dmgKeys.includes(name)) {
           var dmg = 0;
@@ -2522,8 +2484,8 @@ function calcMpu(skillObj) {
           }
 
           if (name == "mDamageMaxMaxChargeRate") {
-            dmg = weapon[1]["mDamageMaxMaxCharge"];
-            dmg_max = weapon[1]["mDamageMaxMaxCharge_MWPUG_Max"];
+            dmg = weapon[2]["mDamageMaxMaxCharge"];
+            dmg_max = weapon[2]["mDamageMaxMaxCharge_MWPUG_Max"];
           }
 
           if (name == "mMinMaxChargeDamageRate") {
@@ -2542,8 +2504,8 @@ function calcMpu(skillObj) {
           }
 
           if (name == "mSideStepOneMuzzleDamageRate") {
-            dmg = weapon[1]["mSideStepOneMuzzleDamageMax"];
-            dmg_max = weapon[1]["mSideStepOneMuzzleDamage_MWPUG_Max"];
+            dmg = weapon[2]["mSideStepOneMuzzleDamageMax"];
+            dmg_max = weapon[2]["mSideStepOneMuzzleDamage_MWPUG_Max"];
           }
 
           eff = Math.floor(mainPUVal[0] * dmg);
@@ -2555,27 +2517,27 @@ function calcMpu(skillObj) {
           eff = eff / 10;
         } else if (rates.includes(name)) {
           if (name == "mCollisionRadiusFarRate") {
-            radius = weapon[1]["mCollisionRadiusFar"];
-            radius_max = weapon[1]["mCollisionRadiusFar_MWPUG_Max"];
+            radius = weapon[2]["mCollisionRadiusFar"];
+            radius_max = weapon[2]["mCollisionRadiusFar_MWPUG_Max"];
           }
 
           if (name == "mCollisionRadiusMiddleRate") {
-            radius = weapon[1]["mCollisionRadiusMiddle"];
-            radius_max = weapon[1]["mCollisionRadiusMiddle_MWPUG_Max"];
+            radius = weapon[2]["mCollisionRadiusMiddle"];
+            radius_max = weapon[2]["mCollisionRadiusMiddle_MWPUG_Max"];
           }
 
           if (name == "mCollisionRadiusNearRate") {
-            radius = weapon[1]["mCollisionRadiusNear"];
-            radius_max = weapon[1]["mCollisionRadiusNear_MWPUG_Max"];
+            radius = weapon[2]["mCollisionRadiusNear"];
+            radius_max = weapon[2]["mCollisionRadiusNear_MWPUG_Max"];
           }
 
           if (name == "mKnockBackRadiusRate") {
-            radius = weapon[1]["mKnockBackRadius"];
-            radius_max = weapon[1]["mKnockBackRadius_MWPUG_Max"];
+            radius = weapon[2]["mKnockBackRadius"];
+            radius_max = weapon[2]["mKnockBackRadius_MWPUG_Max"];
           }
 
           if (name == "mSphereSplashDropPaintRadius") {
-            radius = weapon[1]["mSphereSplashDropPaintRadius"];
+            radius = weapon[2]["mSphereSplashDropPaintRadius"];
             radius_max = 999;
           }
 
@@ -2609,187 +2571,182 @@ function calcSubPu(skillObj) {
   var weapon = currentWeapon;
   var subName = weapon[0].Sub;
   var bru = ["Bomb_Splash", "Bomb_Suction", "Bomb_Quick", "PointSensor", "PoisonFog", "Bomb_Robo", "Bomb_Tako", "Bomb_Piyo"];
+  var subStats = allSubData[subName];
   var effects = [];
 
   if (bru.includes(subName)) {
     // case 1: bomblike object + tako + piyo + point sensors
-    // Player_Spec_BombDistance_Up
-    $.getJSON(storageUrl + 'Player/Player_Spec_BombDistance_Up.json', function (data) {
-      var calculatedData = [];
+    var calculatedData = [];
 
-      if (subName == "Bomb_Piyo") {
-        calculatedData = getHML(data['BombDistance_Up'], "BombThrow_VelZ_BombPiyo");
-      } else if (subName == "Bomb_Tako") {
-        calculatedData = getHML(data['BombDistance_Up'], "BombThrow_VelZ_BombTako");
-      } else if (subName == "PointSensor") {
-        calculatedData = getHML(data['BombDistance_Up'], "BombThrow_VelZ_PointSensor");
-      } else {
-        calculatedData = getHML(data['BombDistance_Up'], "BombThrow_VelZ");
-      }
+    if (subName == "Bomb_Piyo") {
+      calculatedData = getHML(allSkillData['BombDistance_Up'], "BombThrow_VelZ_BombPiyo");
+    } else if (subName == "Bomb_Tako") {
+      calculatedData = getHML(allSkillData['BombDistance_Up'], "BombThrow_VelZ_BombTako");
+    } else if (subName == "PointSensor") {
+      calculatedData = getHML(allSkillData['BombDistance_Up'], "BombThrow_VelZ_PointSensor");
+    } else {
+      calculatedData = getHML(allSkillData['BombDistance_Up'], "BombThrow_VelZ");
+    }
 
-      var result = calculateAbilityEffect(skillObj.main, skillObj.subs, calculatedData[0], calculatedData[1], calculatedData[2]);
-      var subPUEffect = {
-        name: 'Throw Velocity',
-        value: (result[0] * 1).toFixed(5),
-        percent: (result[1] * 100).toFixed(2)
+    var result = calculateAbilityEffect(skillObj.main, skillObj.subs, calculatedData[0], calculatedData[1], calculatedData[2]);
+    var subPUEffect = {
+      name: 'Throw Velocity',
+      value: (result[0] * 1).toFixed(5),
+      percent: (result[1] * 100).toFixed(2)
+    };
+    effects.push(subPUEffect); // special case: PointSensor
+
+    if ("PointSensor" == subName) {
+      var _calculatedData = getHML(subStats["param"], "mMarkingFrame");
+
+      var _result = calculateAbilityEffect(skillObj.main, skillObj.subs, _calculatedData[0], _calculatedData[1], _calculatedData[2]);
+
+      var _subPUEffect = {
+        name: 'Marking Time',
+        value: Math.ceil(_result[0]),
+        percent: (_result[1] * 100).toFixed(2)
       };
-      effects.push(subPUEffect); // special case: PointSensor, MarkingFrame
+      effects.push(_subPUEffect);
+    }
 
-      if ("PointSensor" == subName) {
-        $.getJSON(storageUrl + 'WeaponBullet/BombPointSensor.json', function (data2) {
-          var calculatedData = getHML(data2["param"], "mMarkingFrame");
-          var result = calculateAbilityEffect(skillObj.main, skillObj.subs, calculatedData[0], calculatedData[1], calculatedData[2]);
-          var subPUEffect = {
-            name: 'Marking Time',
-            value: Math.ceil(result[0]),
-            percent: (result[1] * 100).toFixed(2)
-          };
-          effects.push(subPUEffect);
-        });
-      }
-
-      var subPUObj = {
-        name: 'BombDistance_Up',
-        displayName: 'Sub Power Up',
-        effects: effects
-      };
-      displayStat(subPUObj);
-    });
+    var subPUObj = {
+      name: 'BombDistance_Up',
+      displayName: 'Sub Power Up',
+      effects: effects
+    };
+    displayStat(subPUObj);
   }
 
   if ("Bomb_Curling" == subName) {
-    // case 2: Bomb_Curling, param file "InitVelAndBaseSpeed"
-    $.getJSON(storageUrl + 'WeaponBullet/BombCurling.json', function (data) {
-      var calculatedData = getHML(data["param"], "mInitVelAndBaseSpeed");
-      var result = calculateAbilityEffect(skillObj.main, skillObj.subs, calculatedData[0], calculatedData[1], calculatedData[2]);
-      var subPUEffect = {
-        name: 'Base Speed',
-        value: (result[0] * 1).toFixed(5),
-        percent: (result[1] * 100).toFixed(2)
-      };
-      effects.push(subPUEffect);
-      var subPUObj = {
-        name: 'BombDistance_Up',
-        displayName: 'Sub Power Up',
-        effects: effects
-      };
-      displayStat(subPUObj);
-    });
+    // case 2: Bomb_Curling
+    var _calculatedData2 = getHML(subStats["param"], "mInitVelAndBaseSpeed");
+
+    var _result2 = calculateAbilityEffect(skillObj.main, skillObj.subs, _calculatedData2[0], _calculatedData2[1], _calculatedData2[2]);
+
+    var _subPUEffect2 = {
+      name: 'Base Speed',
+      value: (_result2[0] * 1).toFixed(5),
+      percent: (_result2[1] * 100).toFixed(2)
+    };
+    effects.push(_subPUEffect2);
+    var _subPUObj = {
+      name: 'BombDistance_Up',
+      displayName: 'Sub Power Up',
+      effects: effects
+    };
+    displayStat(_subPUObj);
   }
 
   if ("TimerTrap" == subName) {
-    // case 3: TimerTrap, BombCoreRadiusRate, MarkingFrame, PlayerColRadius
-    $.getJSON(storageUrl + 'WeaponBullet/Trap.json', function (data) {
-      var calculatedData = [getHML(data["param"], "mBombCoreRadiusRate"), getHML(data["param"], "mPlayerColRadius"), getHML(data["param"], "mMarkingFrame")];
+    // case 3: TimerTrap
+    var _calculatedData3 = [getHML(subStats["param"], "mBombCoreRadiusRate"), getHML(subStats["param"], "mPlayerColRadius"), getHML(subStats["param"], "mMarkingFrame")];
 
-      for (var c = 0; c < 3; c++) {
-        var result = calculateAbilityEffect(skillObj.main, skillObj.subs, calculatedData[c][0], calculatedData[c][1], calculatedData[c][2], skillObj.skillName);
-        var eff = 0;
+    for (var c = 0; c < 3; c++) {
+      var _result3 = calculateAbilityEffect(skillObj.main, skillObj.subs, _calculatedData3[c][0], _calculatedData3[c][1], _calculatedData3[c][2], skillObj.skillName);
 
-        if (c < 2) {
-          eff = (result[0] * 1).toFixed(5);
-        } else {
-          eff = Math.ceil(result[0] * 1);
-        }
+      var eff = 0;
 
-        var effectName;
-        if (c == 0) effectName = 'Explosion Radius Rate';else if (c == 1) effectName = 'Marking Radius';else effectName = 'Marking Duration';
-        var subPUEffect = {
-          name: effectName,
-          value: eff,
-          percent: (result[1] * 100).toFixed(2)
-        };
-        effects.push(subPUEffect);
+      if (c < 2) {
+        eff = (_result3[0] * 1).toFixed(5);
+      } else {
+        eff = Math.ceil(_result3[0] * 1);
       }
 
-      var subPUObj = {
-        name: 'BombDistance_Up',
-        displayName: 'Sub Power Up',
-        effects: effects
+      var effectName = void 0;
+      if (c == 0) effectName = 'Explosion Radius Rate';else if (c == 1) effectName = 'Marking Radius';else effectName = 'Marking Duration';
+      var _subPUEffect3 = {
+        name: effectName,
+        value: eff,
+        percent: (_result3[1] * 100).toFixed(2)
       };
-      displayStat(subPUObj);
-    });
+      effects.push(_subPUEffect3);
+    }
+
+    var _subPUObj2 = {
+      name: 'BombDistance_Up',
+      displayName: 'Sub Power Up',
+      effects: effects
+    };
+    displayStat(_subPUObj2);
   }
 
   if ("Sprinkler" == subName) {
-    // case 4: Sprinkler, Period_First, Second
-    $.getJSON(storageUrl + 'WeaponBullet/Sprinkler.json', function (data) {
-      var calculatedData = [getHML(data["param"], "mPeriod_First"), getHML(data["param"], "mPeriod_Second")];
+    // case 4: Sprinkler
+    var _calculatedData4 = [getHML(subStats["param"], "mPeriod_First"), getHML(subStats["param"], "mPeriod_Second")];
 
-      for (var c = 0; c < 2; c++) {
-        var result = calculateAbilityEffect(skillObj.main, skillObj.subs, calculatedData[c][0], calculatedData[c][1], calculatedData[c][2], skillObj.skillName);
-        var effectName;
-        if (c == 0) effectName = 'First Phase Duration';else effectName = 'Second Phase Duration';
-        var subPUEffect = {
-          name: effectName,
-          value: Math.ceil(result[0] * 1),
-          percent: (result[1] * 100).toFixed(2)
-        };
-        effects.push(subPUEffect);
-      }
+    for (var _c = 0; _c < 2; _c++) {
+      var _result4 = calculateAbilityEffect(skillObj.main, skillObj.subs, _calculatedData4[_c][0], _calculatedData4[_c][1], _calculatedData4[_c][2], skillObj.skillName);
 
-      var subPUObj = {
-        name: 'BombDistance_Up',
-        displayName: 'Sub Power Up',
-        effects: effects
+      var _effectName = void 0;
+
+      if (_c == 0) _effectName = 'First Phase Duration';else _effectName = 'Second Phase Duration';
+      var _subPUEffect4 = {
+        name: _effectName,
+        value: Math.ceil(_result4[0] * 1),
+        percent: (_result4[1] * 100).toFixed(2)
       };
-      displayStat(subPUObj);
-    });
+      effects.push(_subPUEffect4);
+    }
+
+    var _subPUObj3 = {
+      name: 'BombDistance_Up',
+      displayName: 'Sub Power Up',
+      effects: effects
+    };
+    displayStat(_subPUObj3);
   }
 
   if ("Shield" == subName) {
-    // case 5: Shield, MaxHp
-    $.getJSON(storageUrl + 'WeaponBullet/Shield.json', function (data) {
-      var calculatedData = getHML(data["param"], "mMaxHp");
-      var result = calculateAbilityEffect(skillObj.main, skillObj.subs, calculatedData[0], calculatedData[1], calculatedData[2]);
-      var subPUEffect = {
-        name: 'Max HP',
-        value: Math.floor(result[0] * 1) / 10.0,
-        percent: (result[1] * 100).toFixed(2)
-      };
-      effects.push(subPUEffect);
-      var subPUObj = {
-        name: 'BombDistance_Up',
-        displayName: 'Sub Power Up',
-        effects: effects
-      };
-      displayStat(subPUObj);
-    });
+    // case 5: Shield
+    var _calculatedData5 = getHML(subStats["param"], "mMaxHp");
+
+    var _result5 = calculateAbilityEffect(skillObj.main, skillObj.subs, _calculatedData5[0], _calculatedData5[1], _calculatedData5[2]);
+
+    var _subPUEffect5 = {
+      name: 'Max HP',
+      value: Math.floor(_result5[0] * 1) / 10.0,
+      percent: (_result5[1] * 100).toFixed(2)
+    };
+    effects.push(_subPUEffect5);
+    var _subPUObj4 = {
+      name: 'BombDistance_Up',
+      displayName: 'Sub Power Up',
+      effects: effects
+    };
+    displayStat(_subPUObj4);
   }
 
   if ("Flag" == subName) {
-    // case 6: Flag, SubRt_Effect_JumpTime_Save
-    $.getJSON(storageUrl + 'Player/Player_Spec_JumpTime_Save.json', function (data) {
-      $.getJSON(storageUrl + 'WeaponBullet/JumpBeacon.json', function (data2) {
-        var multiplier = getHML(data2["param"], "mSubRt_Effect_ActualCnt");
-        var varData = data["JumpTime_Save"];
-        var calculatedData = [getHML(varData, "DokanWarp_TameFrm"), getHML(varData, "DokanWarp_MoveFrm")];
-        var totalAPs = getAPs(skillObj.main, skillObj.subs);
-        var slope = ((multiplier[1] - multiplier[2]) / multiplier[0] - 17.8 / multiplier[0]) / (17.8 / multiplier[0] * (17.8 / multiplier[0] + -1.0));
-        var percentage = totalAPs / multiplier[0] * (totalAPs / multiplier[0] * slope + (1.0 - slope));
-        var newAP = Math.floor(multiplier[2] + (multiplier[0] - multiplier[2]) * percentage);
-        var newMainSubAPs = getMainSubPoints(newAP);
+    // case 6: Flag
+    var flagStats = allSkillData['JumpTime_Save'];
+    var multiplier = getHML(subStats["param"], "mSubRt_Effect_ActualCnt");
+    var _calculatedData6 = [getHML(flagStats, "DokanWarp_TameFrm"), getHML(flagStats, "DokanWarp_MoveFrm")];
+    var totalAPs = getAPs(skillObj.main, skillObj.subs);
+    var slope = ((multiplier[1] - multiplier[2]) / multiplier[0] - 17.8 / multiplier[0]) / (17.8 / multiplier[0] * (17.8 / multiplier[0] + -1.0));
+    var percentage = totalAPs / multiplier[0] * (totalAPs / multiplier[0] * slope + (1.0 - slope));
+    var newAP = Math.floor(multiplier[2] + (multiplier[0] - multiplier[2]) * percentage);
+    var newMainSubAPs = getMainSubPoints(newAP);
 
-        for (var c = 0; c < 2; c++) {
-          var result = calculateAbilityEffect(newMainSubAPs[0], newMainSubAPs[1], calculatedData[c][0], calculatedData[c][1], calculatedData[c][2], skillObj.skillName);
-          var effectName;
-          if (c == 0) effectName = 'Prepare Frames';else effectName = 'Jump Frames';
-          var subPUEffect = {
-            name: effectName,
-            value: Math.ceil(result[0]),
-            percent: (result[1] * 100).toFixed(2)
-          };
-          effects.push(subPUEffect);
-        }
+    for (var _c2 = 0; _c2 < 2; _c2++) {
+      var _result6 = calculateAbilityEffect(newMainSubAPs[0], newMainSubAPs[1], _calculatedData6[_c2][0], _calculatedData6[_c2][1], _calculatedData6[_c2][2], skillObj.skillName);
 
-        var subPUObj = {
-          name: 'BombDistance_Up',
-          displayName: 'Sub Power Up',
-          effects: effects
-        };
-        displayStat(subPUObj);
-      });
-    });
+      var _effectName2 = void 0;
+
+      if (_c2 == 0) _effectName2 = 'Prepare Frames';else _effectName2 = 'Jump Frames';
+      var _subPUEffect6 = {
+        name: _effectName2,
+        value: Math.ceil(_result6[0]),
+        percent: (_result6[1] * 100).toFixed(2)
+      };
+      effects.push(_subPUEffect6);
+    }
+
+    var _subPUObj5 = {
+      name: 'BombDistance_Up',
+      displayName: 'Sub Power Up',
+      effects: effects
+    };
+    displayStat(_subPUObj5);
   }
 }
 
@@ -2798,20 +2755,15 @@ function calcSpu(skillObj) {
   var effects = []; // get special data
 
   var specialName = weapon[0].Special;
-
-  if (weapon[0].Special.includes("Launcher")) {
-    specialName = "Bomb" + weapon[0].Special.replace("Launcher", "") + "Launcher";
-  }
-
   var specialData = allSpecialData[specialName]; // prep special values
 
-  if (specialData[0]["Name"] == "SuperLanding") {
-    specialData[1]["mBurst_Landing_AddHeight"] = 0.0;
-    specialData[1]["mBurst_Landing_AddHeight_SJ"] = 0.0;
+  if (specialData["Name"] === "SuperLanding") {
+    specialData['param']["mBurst_Landing_AddHeight"] = 0.0;
+    specialData['param']["mBurst_Landing_AddHeight_SJ"] = 0.0;
   }
 
-  if (specialData[0]["Name"] == "SuperBubble" || specialData[0]["Name"] == "Jetpack") {
-    specialData[1]["mBombCoreRadiusRate"] = 1.0;
+  if (specialData["Name"] == "SuperBubble" || specialData["Name"] == "Jetpack") {
+    specialData['param']["mBombCoreRadiusRate"] = 1.0;
   }
 
   var keys = {
@@ -2836,9 +2788,9 @@ function calcSpu(skillObj) {
   var frameKeys = ["mRainAreaFrame", "mEnergyAbsorbFrm", "mPaintGauge_SpecialFrm"]; // calc if current property from 'key' var exists in specialData
 
   $.each(keys, function (name, translation) {
-    if (name in specialData[1] || name + "_Low" in specialData[1]) {
-      if (name + "H" in specialData[1] || name + "High" in specialData[1] || name + "_High" in specialData[1]) {
-        var specialPUHML = getHML(specialData[1], name);
+    if (name in specialData['param'] || name + "_Low" in specialData['param']) {
+      if (name + "H" in specialData['param'] || name + "High" in specialData['param'] || name + "_High" in specialData['param']) {
+        var specialPUHML = getHML(specialData['param'], name);
         var specialPUVal = calculateAbilityEffect(skillObj.main, skillObj.subs, specialPUHML[0], specialPUHML[1], specialPUHML[2]);
         var eff = 0;
 
@@ -2868,169 +2820,164 @@ function calcSpu(skillObj) {
 }
 
 function calcQrs(skillObj) {
-  $.getJSON(storageUrl + "Player/Player_Spec_" + skillObj.skillName + ".json", function (res) {
-    var aroudHML = getHML(res[skillObj.skillName], 'Dying_AroudFrm');
-    var chaseHML = getHML(res[skillObj.skillName], 'Dying_ChaseFrm');
-    var aroudVal = calculateAbilityEffect(skillObj.main, skillObj.subs, aroudHML[0], aroudHML[1], aroudHML[2]);
-    var chaseVal = calculateAbilityEffect(skillObj.main, skillObj.subs, chaseHML[0], chaseHML[1], chaseHML[2]);
-    var respawnObj = {
-      name: 'RespawnTime_Save',
-      displayName: 'Quick Respawn',
-      effects: [{
-        name: 'Dying Frames',
-        value: Math.ceil(chaseVal[0]),
-        percent: (chaseVal[1] * 100).toFixed(2)
-      }, {
-        name: 'Dying Seconds',
-        value: (Math.ceil(chaseVal[0]) / 60).toFixed(2),
-        percent: (chaseVal[1] * 100).toFixed(2)
-      }, {
-        name: 'Deathcam Frames',
-        value: Math.ceil(aroudVal[0]),
-        percent: (aroudVal[1] * 100).toFixed(2)
-      }, {
-        name: 'Deathcam Seconds',
-        value: (Math.ceil(aroudVal[0]) / 60).toFixed(2),
-        percent: (aroudVal[1] * 100).toFixed(2)
-      }]
-    };
-    displayStat(respawnObj);
-  });
+  var qrsStats = allSkillData[skillObj.skillName];
+  var aroudHML = getHML(qrsStats, 'Dying_AroudFrm');
+  var chaseHML = getHML(qrsStats, 'Dying_ChaseFrm');
+  var aroudVal = calculateAbilityEffect(skillObj.main, skillObj.subs, aroudHML[0], aroudHML[1], aroudHML[2]);
+  var chaseVal = calculateAbilityEffect(skillObj.main, skillObj.subs, chaseHML[0], chaseHML[1], chaseHML[2]);
+  var respawnObj = {
+    name: 'RespawnTime_Save',
+    displayName: 'Quick Respawn',
+    effects: [{
+      name: 'Dying Frames',
+      value: Math.ceil(chaseVal[0]),
+      percent: (chaseVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Dying Seconds',
+      value: (Math.ceil(chaseVal[0]) / 60).toFixed(2),
+      percent: (chaseVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Deathcam Frames',
+      value: Math.ceil(aroudVal[0]),
+      percent: (aroudVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Deathcam Seconds',
+      value: (Math.ceil(aroudVal[0]) / 60).toFixed(2),
+      percent: (aroudVal[1] * 100).toFixed(2)
+    }]
+  };
+  displayStat(respawnObj);
 }
 
 function calcQsj(skillObj) {
-  $.getJSON(storageUrl + "Player/Player_Spec_" + skillObj.skillName + ".json", function (res) {
-    var prepareHML = getHML(res[skillObj.skillName], 'DokanWarp_TameFrm');
-    var superJumpHML = getHML(res[skillObj.skillName], 'DokanWarp_MoveFrm');
-    var prepareVal = calculateAbilityEffect(skillObj.main, skillObj.subs, prepareHML[0], prepareHML[1], prepareHML[2]);
-    var superJumpVal = calculateAbilityEffect(skillObj.main, skillObj.subs, superJumpHML[0], superJumpHML[1], superJumpHML[2]);
-    var superJumpObj = {
-      name: 'JumpTime_Save',
-      displayName: 'Quick Super Jump',
-      effects: [{
-        name: 'Prepare Frames',
-        value: Math.ceil(prepareVal[0]),
-        percent: (prepareVal[1] * 100).toFixed(2)
-      }, {
-        name: 'Prepare Seconds',
-        value: (Math.ceil(prepareVal[0]) / 60).toFixed(2),
-        percent: (prepareVal[1] * 100).toFixed(2)
-      }, {
-        name: 'Super Jump Frames',
-        value: Math.ceil(superJumpVal[0]),
-        percent: (superJumpVal[1] * 100).toFixed(2)
-      }, {
-        name: 'Super Jump Seconds',
-        value: (Math.ceil(superJumpVal[0]) / 60).toFixed(2),
-        percent: (superJumpVal[1] * 100).toFixed(2)
-      }]
-    };
-    displayStat(superJumpObj);
-  });
+  var qsjStats = allSkillData[skillObj.skillName];
+  var prepareHML = getHML(qsjStats, 'DokanWarp_TameFrm');
+  var superJumpHML = getHML(qsjStats, 'DokanWarp_MoveFrm');
+  var prepareVal = calculateAbilityEffect(skillObj.main, skillObj.subs, prepareHML[0], prepareHML[1], prepareHML[2]);
+  var superJumpVal = calculateAbilityEffect(skillObj.main, skillObj.subs, superJumpHML[0], superJumpHML[1], superJumpHML[2]);
+  var superJumpObj = {
+    name: 'JumpTime_Save',
+    displayName: 'Quick Super Jump',
+    effects: [{
+      name: 'Prepare Frames',
+      value: Math.ceil(prepareVal[0]),
+      percent: (prepareVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Prepare Seconds',
+      value: (Math.ceil(prepareVal[0]) / 60).toFixed(2),
+      percent: (prepareVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Super Jump Frames',
+      value: Math.ceil(superJumpVal[0]),
+      percent: (superJumpVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Super Jump Seconds',
+      value: (Math.ceil(superJumpVal[0]) / 60).toFixed(2),
+      percent: (superJumpVal[1] * 100).toFixed(2)
+    }]
+  };
+  displayStat(superJumpObj);
 }
 
 function calcInkRu(skillObj) {
-  $.getJSON(storageUrl + "Player/Player_Spec_" + skillObj.skillName + ".json", function (res) {
-    var jumpHML = getHML(res[skillObj.skillName], 'OpInk_JumpGnd');
-    var velShotHML = getHML(res[skillObj.skillName], 'OpInk_VelGnd_Shot');
-    var velHML = getHML(res[skillObj.skillName], 'OpInk_VelGnd');
-    var damageLimitHML = getHML(res[skillObj.skillName], 'OpInk_Damage_Lmt');
-    var damageHML = getHML(res[skillObj.skillName], 'OpInk_Damage');
-    var armorHML = getHML(res[skillObj.skillName], 'OpInk_Armor_HP');
-    var jumpVal = calculateAbilityEffect(skillObj.main, skillObj.subs, jumpHML[0], jumpHML[1], jumpHML[2]);
-    var velShotVal = calculateAbilityEffect(skillObj.main, skillObj.subs, velShotHML[0], velShotHML[1], velShotHML[2]);
-    var velVal = calculateAbilityEffect(skillObj.main, skillObj.subs, velHML[0], velHML[1], velHML[2]);
-    var damageLimitVal = calculateAbilityEffect(skillObj.main, skillObj.subs, damageLimitHML[0], damageLimitHML[1], damageLimitHML[2]);
-    var damageVal = calculateAbilityEffect(skillObj.main, skillObj.subs, damageHML[0], damageHML[1], damageHML[2]);
-    var armorVal = calculateAbilityEffect(skillObj.main, skillObj.subs, armorHML[0], armorHML[1], armorHML[2]);
-    var inkResObj = {
-      name: 'OpInkEffect_Reduction',
-      displayName: 'Ink Resistance Up',
-      effects: [{
-        name: 'Jump in Ink',
-        value: jumpVal[0].toFixed(4),
-        percent: (jumpVal[1] * 100).toFixed(2)
-      }, {
-        name: 'Shoot in Ink',
-        value: velShotVal[0].toFixed(4),
-        percent: (velShotVal[1] * 100).toFixed(2)
-      }, {
-        name: 'Run Speed in Ink',
-        value: velVal[0].toFixed(4),
-        percent: (velVal[1] * 100).toFixed(2)
-      }, {
-        name: 'Damage Limit in Ink',
-        value: damageLimitVal[0].toFixed(4),
-        percent: (damageLimitVal[1] * 100).toFixed(2)
-      }, {
-        name: 'Damage per Frame in Ink',
-        value: damageVal[0].toFixed(4),
-        percent: (damageVal[1] * 100).toFixed(2)
-      }, {
-        name: 'Armor in Ink',
-        value: Math.ceil(armorVal[0]),
-        percent: (armorVal[1] * 100).toFixed(2)
-      }]
-    };
-    displayStat(inkResObj);
-  });
+  var inkResStats = allSkillData[skillObj.skillName];
+  var jumpHML = getHML(inkResStats, 'OpInk_JumpGnd');
+  var velShotHML = getHML(inkResStats, 'OpInk_VelGnd_Shot');
+  var velHML = getHML(inkResStats, 'OpInk_VelGnd');
+  var damageLimitHML = getHML(inkResStats, 'OpInk_Damage_Lmt');
+  var damageHML = getHML(inkResStats, 'OpInk_Damage');
+  var armorHML = getHML(inkResStats, 'OpInk_Armor_HP');
+  var jumpVal = calculateAbilityEffect(skillObj.main, skillObj.subs, jumpHML[0], jumpHML[1], jumpHML[2]);
+  var velShotVal = calculateAbilityEffect(skillObj.main, skillObj.subs, velShotHML[0], velShotHML[1], velShotHML[2]);
+  var velVal = calculateAbilityEffect(skillObj.main, skillObj.subs, velHML[0], velHML[1], velHML[2]);
+  var damageLimitVal = calculateAbilityEffect(skillObj.main, skillObj.subs, damageLimitHML[0], damageLimitHML[1], damageLimitHML[2]);
+  var damageVal = calculateAbilityEffect(skillObj.main, skillObj.subs, damageHML[0], damageHML[1], damageHML[2]);
+  var armorVal = calculateAbilityEffect(skillObj.main, skillObj.subs, armorHML[0], armorHML[1], armorHML[2]);
+  var inkResObj = {
+    name: 'OpInkEffect_Reduction',
+    displayName: 'Ink Resistance Up',
+    effects: [{
+      name: 'Jump in Ink',
+      value: jumpVal[0].toFixed(4),
+      percent: (jumpVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Shoot in Ink',
+      value: velShotVal[0].toFixed(4),
+      percent: (velShotVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Run Speed in Ink',
+      value: velVal[0].toFixed(4),
+      percent: (velVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Damage Limit in Ink',
+      value: damageLimitVal[0].toFixed(4),
+      percent: (damageLimitVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Damage per Frame in Ink',
+      value: damageVal[0].toFixed(4),
+      percent: (damageVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Armor in Ink',
+      value: Math.ceil(armorVal[0]),
+      percent: (armorVal[1] * 100).toFixed(2)
+    }]
+  };
+  displayStat(inkResObj);
 }
 
 function calcBdu(skillObj) {
-  $.getJSON(storageUrl + "Player/Player_Spec_" + skillObj.skillName + ".json", function (res) {
-    // calc bomb defense up values
-    var specialDamageHML = getHML(res[skillObj.skillName], 'BurstDamageRt_Special');
-    var subNearHML = getHML(res[skillObj.skillName], 'BurstDamageRt_SubH');
-    var subFarHML = getHML(res[skillObj.skillName], 'BurstDamageRt_SubL');
-    var specialDamageVal = calculateAbilityEffect(skillObj.main, skillObj.subs, specialDamageHML[0], specialDamageHML[1], specialDamageHML[2]);
-    var subNearVal = calculateAbilityEffect(skillObj.main, skillObj.subs, subNearHML[0], subNearHML[1], subNearHML[2]);
-    var subFarVal = calculateAbilityEffect(skillObj.main, skillObj.subs, subFarHML[0], subFarHML[1], subFarHML[2]); // calc cold-blooded values
+  // calc bomb defense up values
+  var bduStats = allSkillData[skillObj.skillName];
+  var specialDamageHML = getHML(bduStats, 'BurstDamageRt_Special');
+  var subNearHML = getHML(bduStats, 'BurstDamageRt_SubH');
+  var subFarHML = getHML(bduStats, 'BurstDamageRt_SubL');
+  var specialDamageVal = calculateAbilityEffect(skillObj.main, skillObj.subs, specialDamageHML[0], specialDamageHML[1], specialDamageHML[2]);
+  var subNearVal = calculateAbilityEffect(skillObj.main, skillObj.subs, subNearHML[0], subNearHML[1], subNearHML[2]);
+  var subFarVal = calculateAbilityEffect(skillObj.main, skillObj.subs, subFarHML[0], subFarHML[1], subFarHML[2]); // calc cold-blooded values
 
-    $.getJSON(storageUrl + 'Player/Player_Spec_MarkingTime_Reduction.json', function (data) {
-      var pointSensorHML = getHML(data['MarkingTime_Reduction'], 'MarkingTime_ShortRt');
-      var inkMineHML = getHML(data['MarkingTime_Reduction'], 'MarkingTime_ShortRt_Trap');
-      var silFarHML = getHML(data['MarkingTime_Reduction'], 'Silhouette_DistFar');
-      var silNearHML = getHML(data['MarkingTime_Reduction'], 'Silhouette_DistNear');
-      var pointSensorVal = calculateAbilityEffect(skillObj.main, skillObj.subs, pointSensorHML[0], pointSensorHML[1], pointSensorHML[2]);
-      var inkMineVal = calculateAbilityEffect(skillObj.main, skillObj.subs, inkMineHML[0], inkMineHML[1], inkMineHML[2]);
-      var silFarVal = calculateAbilityEffect(skillObj.main, skillObj.subs, silFarHML[0], silFarHML[1], silFarHML[2]);
-      var silNearVal = calculateAbilityEffect(skillObj.main, skillObj.subs, silNearHML[0], silNearHML[1], silNearHML[2]);
-      var bombDefenseObj = {
-        name: 'BombDamage_Reduction',
-        displayName: 'Bomb Defense Up DX',
-        effects: [{
-          name: 'Special Damage Multiplier',
-          value: specialDamageVal[0].toFixed(4),
-          percent: (specialDamageVal[1] * 100).toFixed(2)
-        }, {
-          name: 'Close Hit Sub Damage Multiplier',
-          value: subNearVal[0].toFixed(4),
-          percent: (subNearVal[1] * 100).toFixed(2)
-        }, {
-          name: 'Far Hit Sub Damage Multiplier',
-          value: subFarVal[0].toFixed(4),
-          percent: (subFarVal[1] * 100).toFixed(2)
-        }, {
-          name: 'Marking Time - Point Sensors',
-          value: pointSensorVal[0].toFixed(4),
-          percent: (pointSensorVal[1] * 100).toFixed(2)
-        }, {
-          name: 'Marking Time - Ink Mines',
-          value: inkMineVal[0].toFixed(4),
-          percent: (inkMineVal[1] * 100).toFixed(2)
-        }, {
-          name: 'Thermal-Ink Sillhoute - Far Range Distance',
-          value: silFarVal[0].toFixed(4),
-          percent: (silFarVal[1] * 100).toFixed(2)
-        }, {
-          name: 'Thermal-Ink Sillhoute - Close Range Distance',
-          value: silNearVal[0].toFixed(4),
-          percent: (silNearVal[1] * 100).toFixed(2)
-        }]
-      };
-      displayStat(bombDefenseObj);
-    });
-  });
+  var cbStats = allSkillData['MarkingTime_Reduction'];
+  var pointSensorHML = getHML(cbStats, 'MarkingTime_ShortRt');
+  var inkMineHML = getHML(cbStats, 'MarkingTime_ShortRt_Trap');
+  var silFarHML = getHML(cbStats, 'Silhouette_DistFar');
+  var silNearHML = getHML(cbStats, 'Silhouette_DistNear');
+  var pointSensorVal = calculateAbilityEffect(skillObj.main, skillObj.subs, pointSensorHML[0], pointSensorHML[1], pointSensorHML[2]);
+  var inkMineVal = calculateAbilityEffect(skillObj.main, skillObj.subs, inkMineHML[0], inkMineHML[1], inkMineHML[2]);
+  var silFarVal = calculateAbilityEffect(skillObj.main, skillObj.subs, silFarHML[0], silFarHML[1], silFarHML[2]);
+  var silNearVal = calculateAbilityEffect(skillObj.main, skillObj.subs, silNearHML[0], silNearHML[1], silNearHML[2]);
+  var bombDefenseObj = {
+    name: 'BombDamage_Reduction',
+    displayName: 'Bomb Defense Up DX',
+    effects: [{
+      name: 'Special Damage Multiplier',
+      value: specialDamageVal[0].toFixed(4),
+      percent: (specialDamageVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Close Hit Sub Damage Multiplier',
+      value: subNearVal[0].toFixed(4),
+      percent: (subNearVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Far Hit Sub Damage Multiplier',
+      value: subFarVal[0].toFixed(4),
+      percent: (subFarVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Marking Time - Point Sensors',
+      value: pointSensorVal[0].toFixed(4),
+      percent: (pointSensorVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Marking Time - Ink Mines',
+      value: inkMineVal[0].toFixed(4),
+      percent: (inkMineVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Thermal-Ink Sillhoute - Far Range Distance',
+      value: silFarVal[0].toFixed(4),
+      percent: (silFarVal[1] * 100).toFixed(2)
+    }, {
+      name: 'Thermal-Ink Sillhoute - Close Range Distance',
+      value: silNearVal[0].toFixed(4),
+      percent: (silNearVal[1] * 100).toFixed(2)
+    }]
+  };
+  displayStat(bombDefenseObj);
 } // assign dragstart listener on draggable elements
 
 
@@ -3069,9 +3016,9 @@ var mutationCallback = function mutationCallback(mutationsList) {
 
       // fire when attr, specifically 'src', is changed
       if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
-        currentWeapon = allWeaponData[weaponImgEle.dataset.weaponName];
-        currentSub = allSubData[subImgEle.dataset.subName];
-        currentSpecial = allSpecialData[specialImgEle.dataset.specialName];
+        setCurrentWeapon(weaponImgEle.dataset.weaponName);
+        setCurrentSub(subImgEle.dataset.subName);
+        setCurrentSpecial(specialImgEle.dataset.specialName);
         recalculateStats();
       }
     }
