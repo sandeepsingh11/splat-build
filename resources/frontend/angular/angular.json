@@ -69,7 +69,7 @@
             },
             "dev": {
               "outputPath": "dist/assets/angular",
-              "baseHref": "/assets/angular/"
+              "baseHref": "/"
             }
           },
           "defaultConfiguration": "production"
@@ -84,7 +84,8 @@
               "browserTarget": "angular:build:development"
             },
             "dev": {
-              "browserTarget": "angular:build:dev"
+              "browserTarget": "angular:build:dev",
+              "proxyConfig": "src/proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

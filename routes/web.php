@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::any('/{any}', [AngularController::class, 'index'])->where('any', '^(?!api).*$');
+Route::get('api/test', [IndexController::class, 'test']);
 // // home
 // Route::get('/', [IndexController::class, 'index'])->name('home');
 

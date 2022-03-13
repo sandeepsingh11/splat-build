@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Storage;
 
 class IndexController extends Controller
 {
+    public function test()
+    {
+        return ['a' => 1, 'b' => 2, 'c' => 3];
+    }
     public function index()
     {    
         $gear = new Gear();
