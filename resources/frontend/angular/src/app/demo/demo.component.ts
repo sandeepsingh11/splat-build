@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
-import { LeanDataService } from "../services/lean-data.service";
+import { LeanCalcService } from "../services/lean-calc.service";
 
 @Component({
   selector: 'app-demo',
@@ -10,7 +10,7 @@ import { LeanDataService } from "../services/lean-data.service";
 })
 export class DemoComponent implements OnInit {
 
-  constructor(private leanDataService: LeanDataService) { }
+  constructor(private leanCalcService: LeanCalcService) { }
 
   ngOnInit(): void {
   }
@@ -20,6 +20,7 @@ export class DemoComponent implements OnInit {
     // console.log(this.leanDataService.weapons);
     // console.log(this.leanDataService.subs);
     // console.log(this.leanDataService.specials);
-    console.log(this.leanDataService.currentWeapon);
+    // console.log(this.leanDataService.currentWeapon);
+    this.leanCalcService.calcIsm();
   }
 }

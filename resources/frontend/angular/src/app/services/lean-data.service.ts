@@ -13,11 +13,11 @@ export class LeanDataService {
   subsSpecialsUrl: string = this.storageUrl + 'parsed-subs-specials.json';
   skillsUrl: string = this.storageUrl + 'parsed-skills.json';
 
-  weapons?: json;
+  weapons?: any;
   subs?: json;
   specials?: json;
   skills?: json;
-  currentWeapon?: json[];
+  currentWeapon?: any;
   currentSub?: json;
   currentSpecial?: json;
 
@@ -54,16 +54,17 @@ export class LeanDataService {
   getSkills() {
     this.http.get(this.skillsUrl).subscribe((data: any) => {
       this.skills = data;
+      console.log('skills set');
     });
   }
 
   setCurrentWeapon(weaponName: string) {
     const weaponGroupName: string = this.getWeaponGroupName(weaponName);
 
-    const weaponData: json = this.weapons![weaponGroupName][weaponName];
+    const weaponGroupData: json = this.weapons![weaponGroupName][weaponName];
     const params: json = this.weapons![weaponGroupName]['param'];
 
-    let weapon: json[] = [weaponData, params];
+    let weapon: json[] = [weaponGroupData, params];
 
     if (weaponGroupName.includes("Spinner") || weaponGroupName.includes("Twins")) {
       weapon.push(this.weapons![weaponGroupName][weaponGroupName + '_2']);
