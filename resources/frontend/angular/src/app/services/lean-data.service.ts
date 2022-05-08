@@ -14,12 +14,12 @@ export class LeanDataService {
   skillsUrl: string = this.storageUrl + 'parsed-skills.json';
 
   weapons?: any;
-  subs?: json;
-  specials?: json;
-  skills?: json;
+  subs?: any;
+  specials?: any;
+  skills?: any;
   currentWeapon?: any;
-  currentSub?: json;
-  currentSpecial?: json;
+  currentSub?: any;
+  currentSpecial?: any;
 
   constructor(private http: HttpClient) { this.loadData() }
 
