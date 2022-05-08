@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { LeanDataService } from './lean-data.service';
-
-export type skillObj = {
-  skillName: string;
-  main: number;
-  subs: number;
-};
+import { Effect, Skill, Stats } from '../types/index';
 
 @Injectable({
   providedIn: 'root',
@@ -14,9 +9,7 @@ export type skillObj = {
 export class LeanCalcService {
   constructor(private leanDataService: LeanDataService) {}
 
-  calcIsm(skillObj: skillObj) {
-    console.log('start calcIsm()');
-
+  calcIsm(skillObj: Skill) {
     const ismStats = this.leanDataService.skills![skillObj.skillName];
     const weapon = this.leanDataService.currentWeapon;
     const weaponName: string = weapon![0]['Name'];
@@ -51,7 +44,7 @@ export class LeanCalcService {
 
     const inkTankSize = weapon[1].mInkMagazineRatio || 1.0;
 
-    const mainInkSaveObj = {
+    const mainInkSaveObj: Stats = {
       name: 'MainInk_Save',
       displayName: 'Ink Saver - Main',
       effects: [
@@ -72,7 +65,7 @@ export class LeanCalcService {
     console.log(mainInkSaveObj);
   }
 
-  calcIss(skillObj: skillObj) {
+  calcIss(skillObj: Skill) {
     const issStats = this.leanDataService.skills![skillObj.skillName];
 
     // prep sub info
@@ -99,7 +92,7 @@ export class LeanCalcService {
       consumeRateHML[2]
     );
 
-    const subInkSaveObj = {
+    const subInkSaveObj: Stats = {
       name: 'SubInk_Save',
       displayName: 'Ink Saver - Sub',
       effects: [
@@ -114,7 +107,7 @@ export class LeanCalcService {
     this.displayStat(subInkSaveObj);
   }
 
-  calcIru(skillObj: skillObj) {
+  calcIru(skillObj: Skill) {
     const iruStats = this.leanDataService.skills![skillObj.skillName];
 
     const squidFormHML = this.getHML(iruStats, 'RecoverFullFrm_Ink');
@@ -135,7 +128,7 @@ export class LeanCalcService {
       humanFormHML[2]
     );
 
-    const inkRecoveryObj = {
+    const inkRecoveryObj: Stats = {
       name: 'InkRecovery_Up',
       displayName: 'Ink Recovery Up',
       effects: [
@@ -165,12 +158,12 @@ export class LeanCalcService {
     this.displayStat(inkRecoveryObj);
   }
 
-  calcRsu(skillObj: skillObj) {
+  calcRsu(skillObj: Skill) {
     const rsuStats = this.leanDataService.skills![skillObj.skillName];
     const weapon = this.leanDataService.currentWeapon!;
     const baseSpeed = [1, weapon[1]['mMoveSpeed']];
     let calculatedData;
-    let effects = [];
+    let effects: Effect[] = [];
 
     if (weapon[0]['MoveVelLv'] == 'Low') {
       calculatedData = this.getHML(rsuStats, 'MoveVel_Human_BigWeapon');
@@ -193,10 +186,10 @@ export class LeanCalcService {
       calculatedData[1],
       calculatedData[2]
     );
-    const runSpeedEffect = {
+    const runSpeedEffect: Effect = {
       name: 'Run Speed (DU/Frame)',
-      value: (runSpeedVal[0] * baseSpeed[0]).toFixed(5),
-      percent: (runSpeedVal[1] * 100).toFixed(2),
+      value: parseFloat((runSpeedVal[0] * baseSpeed[0]).toFixed(5)),
+      percent: parseFloat((runSpeedVal[1] * 100).toFixed(2))
     };
     effects.push(runSpeedEffect);
 
@@ -208,14 +201,14 @@ export class LeanCalcService {
       calculatedDataWeapon[1],
       calculatedDataWeapon[2]
     );
-    const runSpeedEffectShooting = {
+    const runSpeedEffectShooting: Effect = {
       name: 'Run Speed (Shooting) (DU/Frame)',
-      value: (runSpeedShootingVal[0] * baseSpeed[1]).toFixed(5),
-      percent: (runSpeedShootingVal[1] * 100).toFixed(2),
+      value: parseFloat((runSpeedShootingVal[0] * baseSpeed[1]).toFixed(5)),
+      percent: parseFloat((runSpeedShootingVal[1] * 100).toFixed(2))
     };
     effects.push(runSpeedEffectShooting);
 
-    const runSpeedObj = {
+    const runSpeedObj: Stats = {
       name: 'HumanMove_Up',
       displayName: 'Run Speed Up',
       effects: effects,
@@ -224,11 +217,11 @@ export class LeanCalcService {
     this.displayStat(runSpeedObj);
   }
 
-  calcSsu(skillObj: skillObj) {
+  calcSsu(skillObj: Skill) {
     const ssuStats = this.leanDataService.skills![skillObj.skillName];
     const weapon = this.leanDataService.currentWeapon!;
     let calculatedData;
-    let effects = [];
+    let effects: Effect[] = [];
 
     if (weapon[0]['MoveVelLv'] == 'Low') {
       calculatedData = this.getHML(ssuStats, 'MoveVel_Stealth_BigWeapon');
@@ -246,10 +239,10 @@ export class LeanCalcService {
       calculatedData[1],
       calculatedData[2]
     );
-    const swimSpeedEffect = {
+    const swimSpeedEffect: Effect = {
       name: 'Swim Speed (DU/Frame)',
-      value: swimSpeedVal[0].toFixed(5),
-      percent: (swimSpeedVal[1] * 100).toFixed(2),
+      value: parseFloat(swimSpeedVal[0].toFixed(5)),
+      percent: parseFloat((swimSpeedVal[1] * 100).toFixed(2)),
     };
     effects.push(swimSpeedEffect);
 
@@ -262,14 +255,14 @@ export class LeanCalcService {
       calculatedData[2],
       true
     );
-    const swimSpeedEffectNinja = {
+    const swimSpeedEffectNinja: Effect = {
       name: 'Swim Speed (Ninja) (DU/Frame)',
-      value: swimSpeedNinjaVal[0].toFixed(5),
-      percent: (swimSpeedNinjaVal[1] * 100).toFixed(2),
+      value: parseFloat(swimSpeedNinjaVal[0].toFixed(5)),
+      percent: parseFloat((swimSpeedNinjaVal[1] * 100).toFixed(2)),
     };
     effects.push(swimSpeedEffectNinja);
 
-    const swimSpeedObj = {
+    const swimSpeedObj: Stats = {
       name: 'SquidMove_Up',
       displayName: 'Swim Speed Up',
       effects: effects,
@@ -278,7 +271,7 @@ export class LeanCalcService {
     this.displayStat(swimSpeedObj);
   }
 
-  calcScu(skillObj: skillObj) {
+  calcScu(skillObj: Skill) {
     const scuStats = this.leanDataService.skills![skillObj.skillName];
     const weapon = this.leanDataService.currentWeapon!;
 
@@ -291,14 +284,14 @@ export class LeanCalcService {
       chargeUpHML[2]
     );
 
-    const chargeUpObj = {
+    const chargeUpObj: Stats = {
       name: 'SpecialIncrease_Up',
       displayName: 'Special Charge Up',
       effects: [
         {
           name: 'Special Cost',
           value: Math.ceil(weapon[0]['SpecialCost'] / chargeUpVal[0]),
-          percent: (chargeUpVal[1] * 100).toFixed(2),
+          percent: parseFloat((chargeUpVal[1] * 100).toFixed(2)),
         },
       ],
     };
@@ -306,7 +299,7 @@ export class LeanCalcService {
     this.displayStat(chargeUpObj);
   }
 
-  calcSs(skillObj: skillObj) {
+  calcSs(skillObj: Skill) {
     const ssStats = this.leanDataService.skills![skillObj.skillName];
     const weapon = this.leanDataService.currentWeapon!;
 
@@ -319,19 +312,19 @@ export class LeanCalcService {
       specialSaveHML[2]
     );
 
-    const specialSaveObj = {
+    const specialSaveObj: Stats = {
       name: 'RespawnSpecialGauge_Save',
       displayName: 'Special Saver',
       effects: [
         {
           name: 'Special Remaining',
           value: Math.ceil(weapon[0]['SpecialCost'] * specialSaveVal[0]),
-          percent: (specialSaveVal[1] * 100).toFixed(2),
+          percent: parseFloat((specialSaveVal[1] * 100).toFixed(2)),
         },
         {
           name: 'Percentage Remaining',
-          value: (100 * specialSaveVal[0]).toFixed(4),
-          percent: (specialSaveVal[1] * 100).toFixed(2),
+          value: parseFloat((100 * specialSaveVal[0]).toFixed(4)),
+          percent: parseFloat((specialSaveVal[1] * 100).toFixed(2)),
         },
       ],
     };
@@ -339,9 +332,9 @@ export class LeanCalcService {
     this.displayStat(specialSaveObj);
   }
 
-  calcMpu(skillObj: skillObj) {
+  calcMpu(skillObj: Skill) {
     const weapon = this.leanDataService.currentWeapon!;
-    let effects: any[] = [];
+    let effects: Effect[] = [];
 
     const keys: object = {
       mBulletDamageMaxDist: 'Bullet Damage Max Distance',
@@ -522,17 +515,17 @@ export class LeanCalcService {
             eff = parseFloat((mainPUVal[0] * 1).toFixed(5));
           }
 
-          const mainPUEffect = {
+          const mainPUEffect: Effect = {
             name: translation,
             value: eff,
-            percent: (mainPUVal[1] * 100).toFixed(2),
+            percent: parseFloat((mainPUVal[1] * 100).toFixed(2)),
           };
           effects.push(mainPUEffect);
         }
       }
     });
 
-    const mainPUObj = {
+    const mainPUObj: Stats = {
       name: 'MarkingTime_Reduction',
       displayName: 'Main Power Up',
       effects: effects,
@@ -541,7 +534,7 @@ export class LeanCalcService {
     this.displayStat(mainPUObj);
   }
 
-  calcSubPu(skillObj: skillObj) {
+  calcSubPu(skillObj: Skill) {
     const weapon = this.leanDataService.currentWeapon!;
     const subName = weapon[0].Sub;
 
@@ -557,7 +550,8 @@ export class LeanCalcService {
     ];
 
     const subStats = this.leanDataService.subs![subName];
-    let effects = [];
+    let effects: Effect[] = [];
+
     if (bru.includes(subName)) {
       // case 1: bomblike object + tako + piyo + point sensors
       let calculatedData = [];
@@ -591,7 +585,7 @@ export class LeanCalcService {
         calculatedData[1],
         calculatedData[2]
       );
-      const subPUEffect = {
+      const subPUEffect: Effect = {
         name: 'Throw Velocity',
         value: parseFloat((result[0] * 1).toFixed(5)),
         percent: parseFloat((result[1] * 100).toFixed(2)),
@@ -609,15 +603,15 @@ export class LeanCalcService {
           calculatedData[1],
           calculatedData[2]
         );
-        const subPUEffect = {
+        const subPUEffect: Effect = {
           name: 'Marking Time',
           value: Math.ceil(result[0]),
-          percent: (result[1] * 100).toFixed(2),
+          percent: parseFloat((result[1] * 100).toFixed(2)),
         };
         effects.push(subPUEffect);
       }
 
-      const subPUObj = {
+      const subPUObj: Stats = {
         name: 'BombDistance_Up',
         displayName: 'Sub Power Up',
         effects: effects,
@@ -640,14 +634,14 @@ export class LeanCalcService {
         calculatedData[2]
       );
 
-      const subPUEffect = {
+      const subPUEffect: Effect = {
         name: 'Base Speed',
-        value: (result[0] * 1).toFixed(5),
-        percent: (result[1] * 100).toFixed(2),
+        value: parseFloat((result[0] * 1).toFixed(5)),
+        percent: parseFloat((result[1] * 100).toFixed(2)),
       };
       effects.push(subPUEffect);
 
-      const subPUObj = {
+      const subPUObj: Stats = {
         name: 'BombDistance_Up',
         displayName: 'Sub Power Up',
         effects: effects,
@@ -684,15 +678,15 @@ export class LeanCalcService {
         else if (c == 1) effectName = 'Marking Radius';
         else effectName = 'Marking Duration';
 
-        const subPUEffect = {
+        const subPUEffect:Effect = {
           name: effectName,
           value: eff,
-          percent: (result[1] * 100).toFixed(2),
+          percent: parseFloat((result[1] * 100).toFixed(2)),
         };
         effects.push(subPUEffect);
       }
 
-      const subPUObj = {
+      const subPUObj: Stats = {
         name: 'BombDistance_Up',
         displayName: 'Sub Power Up',
         effects: effects,
@@ -720,15 +714,15 @@ export class LeanCalcService {
         if (c == 0) effectName = 'First Phase Duration';
         else effectName = 'Second Phase Duration';
 
-        const subPUEffect = {
+        const subPUEffect: Effect = {
           name: effectName,
           value: Math.ceil(result[0] * 1),
-          percent: (result[1] * 100).toFixed(2),
+          percent: parseFloat((result[1] * 100).toFixed(2)),
         };
         effects.push(subPUEffect);
       }
 
-      const subPUObj = {
+      const subPUObj: Stats = {
         name: 'BombDistance_Up',
         displayName: 'Sub Power Up',
         effects: effects,
@@ -748,14 +742,14 @@ export class LeanCalcService {
         calculatedData[2]
       );
 
-      const subPUEffect = {
+      const subPUEffect: Effect = {
         name: 'Max HP',
         value: Math.floor(result[0] * 1) / 10.0,
-        percent: (result[1] * 100).toFixed(2),
+        percent: parseFloat((result[1] * 100).toFixed(2)),
       };
       effects.push(subPUEffect);
 
-      const subPUObj = {
+      const subPUObj: Stats = {
         name: 'BombDistance_Up',
         displayName: 'Sub Power Up',
         effects: effects,
@@ -803,15 +797,15 @@ export class LeanCalcService {
         if (c == 0) effectName = 'Prepare Frames';
         else effectName = 'Jump Frames';
 
-        const subPUEffect = {
+        const subPUEffect: Effect = {
           name: effectName,
           value: Math.ceil(result[0]),
-          percent: (result[1] * 100).toFixed(2),
+          percent: parseFloat((result[1] * 100).toFixed(2)),
         };
         effects.push(subPUEffect);
       }
 
-      const subPUObj = {
+      const subPUObj: Stats = {
         name: 'BombDistance_Up',
         displayName: 'Sub Power Up',
         effects: effects,
@@ -821,9 +815,9 @@ export class LeanCalcService {
     }
   }
 
-  calcSpu(skillObj: skillObj) {
+  calcSpu(skillObj: Skill) {
     const weapon = this.leanDataService.currentWeapon!;
-    let effects: any[] = [];
+    let effects: Effect[] = [];
 
     // get special data
     const specialName = weapon[0].Special;
@@ -900,14 +894,14 @@ export class LeanCalcService {
           const specialEffect = {
             name: translation,
             value: eff,
-            percent: (specialPUVal[1] * 100).toFixed(2),
+            percent: parseFloat((specialPUVal[1] * 100).toFixed(2)),
           };
           effects.push(specialEffect);
         }
       }
     });
 
-    const specialPUObj = {
+    const specialPUObj: Stats = {
       name: 'SpecialTime_Up',
       displayName: 'Special Power Up',
       effects: effects,
@@ -916,7 +910,7 @@ export class LeanCalcService {
     this.displayStat(specialPUObj);
   }
 
-  calcQrs(skillObj: skillObj) {
+  calcQrs(skillObj: Skill) {
     const qrsStats = this.leanDataService.skills![skillObj.skillName];
 
     const aroudHML = this.getHML(qrsStats, 'Dying_AroudFrm');
@@ -937,29 +931,29 @@ export class LeanCalcService {
       chaseHML[2]
     );
 
-    const respawnObj = {
+    const respawnObj: Stats = {
       name: 'RespawnTime_Save',
       displayName: 'Quick Respawn',
       effects: [
         {
           name: 'Dying Frames',
           value: Math.ceil(chaseVal[0]),
-          percent: (chaseVal[1] * 100).toFixed(2),
+          percent: parseFloat((chaseVal[1] * 100).toFixed(2)),
         },
         {
           name: 'Dying Seconds',
-          value: (Math.ceil(chaseVal[0]) / 60).toFixed(2),
-          percent: (chaseVal[1] * 100).toFixed(2),
+          value: parseFloat((Math.ceil(chaseVal[0]) / 60).toFixed(2)),
+          percent: parseFloat((chaseVal[1] * 100).toFixed(2)),
         },
         {
           name: 'Deathcam Frames',
           value: Math.ceil(aroudVal[0]),
-          percent: (aroudVal[1] * 100).toFixed(2),
+          percent: parseFloat((aroudVal[1] * 100).toFixed(2)),
         },
         {
           name: 'Deathcam Seconds',
-          value: (Math.ceil(aroudVal[0]) / 60).toFixed(2),
-          percent: (aroudVal[1] * 100).toFixed(2),
+          value: parseFloat((Math.ceil(aroudVal[0]) / 60).toFixed(2)),
+          percent: parseFloat((aroudVal[1] * 100).toFixed(2)),
         },
       ],
     };
@@ -967,7 +961,7 @@ export class LeanCalcService {
     this.displayStat(respawnObj);
   }
 
-  calcQsj(skillObj: skillObj) {
+  calcQsj(skillObj: Skill) {
     const qsjStats = this.leanDataService.skills![skillObj.skillName];
 
     const prepareHML = this.getHML(qsjStats, 'DokanWarp_TameFrm');
@@ -988,29 +982,29 @@ export class LeanCalcService {
       superJumpHML[2]
     );
 
-    const superJumpObj = {
+    const superJumpObj: Stats = {
       name: 'JumpTime_Save',
       displayName: 'Quick Super Jump',
       effects: [
         {
           name: 'Prepare Frames',
           value: Math.ceil(prepareVal[0]),
-          percent: (prepareVal[1] * 100).toFixed(2),
+          percent: parseFloat((prepareVal[1] * 100).toFixed(2)),
         },
         {
           name: 'Prepare Seconds',
-          value: (Math.ceil(prepareVal[0]) / 60).toFixed(2),
-          percent: (prepareVal[1] * 100).toFixed(2),
+          value: parseFloat((Math.ceil(prepareVal[0]) / 60).toFixed(2)),
+          percent: parseFloat((prepareVal[1] * 100).toFixed(2)),
         },
         {
           name: 'Super Jump Frames',
           value: Math.ceil(superJumpVal[0]),
-          percent: (superJumpVal[1] * 100).toFixed(2),
+          percent: parseFloat((superJumpVal[1] * 100).toFixed(2)),
         },
         {
           name: 'Super Jump Seconds',
-          value: (Math.ceil(superJumpVal[0]) / 60).toFixed(2),
-          percent: (superJumpVal[1] * 100).toFixed(2),
+          value: parseFloat((Math.ceil(superJumpVal[0]) / 60).toFixed(2)),
+          percent: parseFloat((superJumpVal[1] * 100).toFixed(2)),
         },
       ],
     };
@@ -1018,7 +1012,7 @@ export class LeanCalcService {
     this.displayStat(superJumpObj);
   }
 
-  calcInkRu(skillObj: skillObj) {
+  calcInkRu(skillObj: Skill) {
     const inkResStats = this.leanDataService.skills![skillObj.skillName];
 
     const jumpHML = this.getHML(inkResStats, 'OpInk_JumpGnd');
@@ -1071,39 +1065,39 @@ export class LeanCalcService {
       armorHML[2]
     );
 
-    const inkResObj = {
+    const inkResObj: Stats = {
       name: 'OpInkEffect_Reduction',
       displayName: 'Ink Resistance Up',
       effects: [
         {
           name: 'Jump in Ink',
-          value: jumpVal[0].toFixed(4),
-          percent: (jumpVal[1] * 100).toFixed(2),
+          value: parseFloat(jumpVal[0].toFixed(4)),
+          percent: parseFloat((jumpVal[1] * 100).toFixed(2)),
         },
         {
           name: 'Shoot in Ink',
-          value: velShotVal[0].toFixed(4),
-          percent: (velShotVal[1] * 100).toFixed(2),
+          value: parseFloat(velShotVal[0].toFixed(4)),
+          percent: parseFloat((velShotVal[1] * 100).toFixed(2)),
         },
         {
           name: 'Run Speed in Ink',
-          value: velVal[0].toFixed(4),
-          percent: (velVal[1] * 100).toFixed(2),
+          value: parseFloat(velVal[0].toFixed(4)),
+          percent: parseFloat((velVal[1] * 100).toFixed(2)),
         },
         {
           name: 'Damage Limit in Ink',
-          value: damageLimitVal[0].toFixed(4),
-          percent: (damageLimitVal[1] * 100).toFixed(2),
+          value: parseFloat(damageLimitVal[0].toFixed(4)),
+          percent: parseFloat((damageLimitVal[1] * 100).toFixed(2)),
         },
         {
           name: 'Damage per Frame in Ink',
-          value: damageVal[0].toFixed(4),
-          percent: (damageVal[1] * 100).toFixed(2),
+          value: parseFloat(damageVal[0].toFixed(4)),
+          percent: parseFloat((damageVal[1] * 100).toFixed(2)),
         },
         {
           name: 'Armor in Ink',
           value: Math.ceil(armorVal[0]),
-          percent: (armorVal[1] * 100).toFixed(2),
+          percent: parseFloat((armorVal[1] * 100).toFixed(2)),
         },
       ],
     };
@@ -1111,7 +1105,7 @@ export class LeanCalcService {
     this.displayStat(inkResObj);
   }
 
-  calcBdu(skillObj: skillObj) {
+  calcBdu(skillObj: Skill) {
     // calc bomb defense up values
     const bduStats = this.leanDataService.skills![skillObj.skillName];
 
@@ -1178,44 +1172,44 @@ export class LeanCalcService {
       silNearHML[2]
     );
 
-    const bombDefenseObj = {
+    const bombDefenseObj: Stats = {
       name: 'BombDamage_Reduction',
       displayName: 'Bomb Defense Up DX',
       effects: [
         {
           name: 'Special Damage Multiplier',
-          value: specialDamageVal[0].toFixed(4),
-          percent: (specialDamageVal[1] * 100).toFixed(2),
+          value: parseFloat(specialDamageVal[0].toFixed(4)),
+          percent: parseFloat((specialDamageVal[1] * 100).toFixed(2)),
         },
         {
           name: 'Close Hit Sub Damage Multiplier',
-          value: subNearVal[0].toFixed(4),
-          percent: (subNearVal[1] * 100).toFixed(2),
+          value: parseFloat(subNearVal[0].toFixed(4)),
+          percent: parseFloat((subNearVal[1] * 100).toFixed(2)),
         },
         {
           name: 'Far Hit Sub Damage Multiplier',
-          value: subFarVal[0].toFixed(4),
-          percent: (subFarVal[1] * 100).toFixed(2),
+          value: parseFloat(subFarVal[0].toFixed(4)),
+          percent: parseFloat((subFarVal[1] * 100).toFixed(2)),
         },
         {
           name: 'Marking Time - Point Sensors',
-          value: pointSensorVal[0].toFixed(4),
-          percent: (pointSensorVal[1] * 100).toFixed(2),
+          value: parseFloat(pointSensorVal[0].toFixed(4)),
+          percent: parseFloat((pointSensorVal[1] * 100).toFixed(2)),
         },
         {
           name: 'Marking Time - Ink Mines',
-          value: inkMineVal[0].toFixed(4),
-          percent: (inkMineVal[1] * 100).toFixed(2),
+          value: parseFloat(inkMineVal[0].toFixed(4)),
+          percent: parseFloat((inkMineVal[1] * 100).toFixed(2)),
         },
         {
           name: 'Thermal-Ink Sillhoute - Far Range Distance',
-          value: silFarVal[0].toFixed(4),
-          percent: (silFarVal[1] * 100).toFixed(2),
+          value: parseFloat(silFarVal[0].toFixed(4)),
+          percent: parseFloat((silFarVal[1] * 100).toFixed(2)),
         },
         {
           name: 'Thermal-Ink Sillhoute - Close Range Distance',
-          value: silNearVal[0].toFixed(4),
-          percent: (silNearVal[1] * 100).toFixed(2),
+          value: parseFloat(silNearVal[0].toFixed(4)),
+          percent: parseFloat((silNearVal[1] * 100).toFixed(2)),
         },
       ],
     };
