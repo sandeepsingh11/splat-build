@@ -1,0 +1,54 @@
+<form [formGroup]="gearForm">
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-center">{{ title }}</h1>
+    </div>
+
+    <div class="mb-4 lg:w-2/5 mx-auto">
+        <label for="gear-title" class="block">Gear name:</label>
+        <input formControlName="gear_title" type="text" name="gear-title" id="gear-name" class="w-full rounded focus:ring-primary-400 focus:border-primary-400">
+    </div>
+
+    <div class="mb-4 lg:w-2/5 mx-auto">
+        <label for="gear-desc" class="block">Gear description:</label>
+        <textarea formControlName="gear_desc" name="gear-desc" id="gear-desc" cols="30" rows="3" class="w-full rounded focus:ring-primary-400 focus:border-primary-400" style="height: 110px;"></textarea>
+    </div>
+
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <!-- gear and skills -->
+        <div class="mb-6">
+            <!-- non main skills -->
+            <div class="grid grid-cols-7 mb-6">
+                <div *ngFor="let skill of otherSkills">
+                    <div *ngIf="skill.skill_name !== 'Unknown'">
+                        <img
+                            src="/storage/skills/{{ skill.skill_name }}.png" 
+                            alt="{{ skill.skill_name }}"
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <hr class="w-4/5 mx-auto border-primary-400 border-t-2">
+
+            <!-- main skills -->
+            <div class="grid grid-cols-6 mt-6">
+                <div *ngFor="let skill of mainSkills">
+                    <img
+                        src="/storage/skills/{{ skill.skill_name }}.png" 
+                        alt="{{ skill.skill_name }}"
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+
+    <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <div>
+            <div class="mb-6"></div>
+        </div>
+        <div></div>
+    </div> -->
+</form>

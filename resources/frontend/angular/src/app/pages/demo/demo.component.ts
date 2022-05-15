@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
-import { LeanCalcService } from "../services/lean-calc.service";
+import { LeanCalcService } from "../../services/lean-calc.service";
 
 export type skillObj = {
   skillName: string,

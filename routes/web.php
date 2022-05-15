@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\SkillController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\GearController;
 use App\Http\Controllers\User\GearsetController;
@@ -25,6 +26,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::any('/{any}', [AngularController::class, 'index'])->where('any', '^(?!api).*$');
 Route::get('api/test', [IndexController::class, 'test']);
+
+Route::get('api/get-skill-names', [SkillController::class, 'getSkillNames']);
+
 // // home
 // Route::get('/', [IndexController::class, 'index'])->name('home');
 

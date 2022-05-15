@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 import { json } from "../types/json";
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,50 +13,61 @@ export class LeanDataService {
   weaponsUrl: string = this.storageUrl + 'parsed-weapons.json';
   subsSpecialsUrl: string = this.storageUrl + 'parsed-subs-specials.json';
   skillsUrl: string = this.storageUrl + 'parsed-skills.json';
+  getSkillNameUrl: string = 'api/get-skill-names';
 
-  weapons?: any;
-  subs?: any;
-  specials?: any;
-  skills?: any;
-  currentWeapon?: any;
-  currentSub?: any;
-  currentSpecial?: any;
+  weapons: any;
+  subs: any;
+  specials: any;
+  skills: any;
+  currentWeapon: any;
+  currentSub: any;
+  currentSpecial: any;
 
   constructor(private http: HttpClient) { this.loadData() }
 
   loadData() {
-    this.getWeapons();
-    this.getSubsAndSpecial();
-    this.getSkills();
+    // this.getWeapons();
+    // this.getSubsAndSpecial();
+    // this.getSkills();
   }
 
-  getWeapons(): void {
-    this.http.get(this.weaponsUrl).subscribe((data: any) => {
-      this.weapons = data;
+  getWeapons(): Observable<any> {
+    return this.http.get(this.weaponsUrl).pipe(
+      tap((data) => {
+        this.weapons = data;
       
-      // set default weapon
-      this.setCurrentWeapon('Shooter_BlasterLight_00');
-    });
+        // set default weapon
+        this.setCurrentWeapon('Shooter_BlasterLight_00');  
+      })
+    );;
   }
 
-  getSubsAndSpecial() {
-    this.http.get(this.subsSpecialsUrl).subscribe((data: any) => {
-      this.subs = data.subs;
-      this.specials = data.specials;
-      
-      // set default sub
-      this.setCurrentSub('Bomb_Curling');
+  getSubsAndSpecial(): Observable<any> {
+    return this.http.get(this.subsSpecialsUrl).pipe(
+      tap((data: any) => {
+        this.subs = data.subs;
+        this.specials = data.specials;
+        
+        // set default sub
+        this.setCurrentSub('Bomb_Curling');
 
-      // set default special
-      this.setCurrentSpecial('SuperLanding');
-    });
+        // set default special
+        this.setCurrentSpecial('SuperLanding');
+      })
+    );
   }
 
-  getSkills() {
-    this.http.get(this.skillsUrl).subscribe((data: any) => {
-      this.skills = data;
-      console.log('skills set');
-    });
+  getSkills(): Observable<any> {
+    console.log('skills getting');
+    return this.http.get(this.skillsUrl).pipe(
+      tap((data) => {
+        this.skills = data;
+      })
+    );
+  }
+
+  getSkillNames(): Observable<{skill_name: string, is_main: boolean}[]> {
+    return this.http.get<{skill_name: string, is_main: boolean}[]>(this.getSkillNameUrl);
   }
 
   setCurrentWeapon(weaponName: string) {
