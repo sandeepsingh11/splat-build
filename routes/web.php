@@ -29,6 +29,8 @@ Route::get('api/test', [IndexController::class, 'test']);
 
 Route::get('api/get-skill-names', [SkillController::class, 'getSkillNames']);
 
+Route::get('api/get-base-gears', [GearController::class, 'getBaseGears']);
+
 // // home
 // Route::get('/', [IndexController::class, 'index'])->name('home');
 

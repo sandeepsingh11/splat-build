@@ -1,22 +1,124 @@
-<form [formGroup]="gearForm">
+<form class="w-full md:w-1/2 lg:w-4/5 px-4 md:px-0 md:mx-auto">
     <div class="mb-8">
         <h1 class="text-2xl font-bold text-center">{{ title }}</h1>
     </div>
 
     <div class="mb-4 lg:w-2/5 mx-auto">
         <label for="gear-title" class="block">Gear name:</label>
-        <input formControlName="gear_title" type="text" name="gear-title" id="gear-name" class="w-full rounded focus:ring-primary-400 focus:border-primary-400">
+        <input type="text" name="gear-title" id="gear-name" class="w-full rounded focus:ring-primary-400 focus:border-primary-400">
     </div>
 
     <div class="mb-4 lg:w-2/5 mx-auto">
         <label for="gear-desc" class="block">Gear description:</label>
-        <textarea formControlName="gear_desc" name="gear-desc" id="gear-desc" cols="30" rows="3" class="w-full rounded focus:ring-primary-400 focus:border-primary-400" style="height: 110px;"></textarea>
+        <textarea name="gear-desc" id="gear-desc" cols="30" rows="3" class="w-full rounded focus:ring-primary-400 focus:border-primary-400" style="height: 110px;"></textarea>
     </div>
 
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <!-- gear and skills -->
         <div class="mb-6">
+            <!-- gear selection -->
+            <div>
+                <!-- search / select -->
+                <div class="flex">
+                    <input 
+                        type="text"
+                        class="search-input w-1/2 sm:w-full rounded-tl rounded-bl pl-7 focus:ring-primary-400 focus:border-primary-400"
+                    >
+                    <select
+                        class="w-1/2 sm:w-full rounded-tr rounded-br focus:ring-primary-400 focus:border-primary-400"
+                        name="selected-gear"
+                        id="selected-gear"
+                        [(ngModel)]="selectedGear"
+                    >
+                        <option 
+                            *ngFor="let gear of baseGears; let i = index" 
+                            [value]="gear.base_gear_name"
+                        >
+                            {{ gear.display_name }}
+                        </option>
+                    </select>
+                </div>
+
+                <!-- selected gear img -->
+                <div>
+                    <img 
+                        src="/storage/gear/{{ selectedGear }}.png" 
+                        alt="{{ selectedGear }}"
+                        class="mx-auto"
+                    >
+                </div>
+            </div>
+
+            <!-- active skills -->
+            <div class="grid grid-cols-4">
+                <!-- main skill -->
+                <div 
+                    id="skill-main" 
+                    class="drag-into border-2 border-r-0 border-b-0 border-solid border-gray-400 rounded-full bg-gray-900" 
+                    style="width: 64px; height: 64px; box-shadow: 0 0 0 1px #000" 
+                    data-source="slot"
+                >
+                    <img 
+                        src="/storage/skills/{{ skillMain }}.png" 
+                        alt="{{ skillMain }}" 
+                        class="slot-img draggable slot" 
+                        data-skill-id="27" 
+                        data-skill-type="Main" 
+                        draggable="true"
+                    >
+                </div>
+
+                <!-- skill 1 -->
+                <div 
+                    id="skill-sub-1" 
+                    class="drag-into border-2 border-r-0 border-b-0 border-solid border-gray-400 rounded-full bg-gray-900" 
+                    style="width: 50px; height: 50px; box-shadow: 0 0 0 1px #000" 
+                    data-source="slot"
+                >
+                    <img 
+                        src="/storage/skills/{{ skill1 }}.png" 
+                        alt="{{ skill1 }}" 
+                        class="slot-img draggable slot" 
+                        data-skill-id="27" 
+                        data-skill-type="All" 
+                        draggable="true">
+                </div>
+
+                <!-- skill 2 -->
+                <div 
+                    id="skill-sub-2" 
+                    class="drag-into border-2 border-r-0 border-b-0 border-solid border-gray-400 rounded-full bg-gray-900" 
+                    style="width: 50px; height: 50px; box-shadow: 0 0 0 1px #000" 
+                    data-source="slot"
+                >
+                    <img 
+                        src="/storage/skills/{{ skill2 }}.png" 
+                        alt="{{ skill2 }}" 
+                        class="slot-img draggable slot" 
+                        data-skill-id="27" 
+                        data-skill-type="All" 
+                        draggable="true">
+                </div>
+
+                <!-- skill 3 -->
+                <div 
+                    id="skill-sub-3" 
+                    class="drag-into border-2 border-r-0 border-b-0 border-solid border-gray-400 rounded-full bg-gray-900" 
+                    style="width: 50px; height: 50px; box-shadow: 0 0 0 1px #000" 
+                    data-source="slot"
+                >
+                    <img 
+                        src="/storage/skills/{{ skill3 }}.png" 
+                        alt="{{ skill3 }}" 
+                        class="slot-img draggable slot" 
+                        data-skill-id="27" 
+                        data-skill-type="All" 
+                        draggable="true">
+                </div>
+            
+            </div>
+
             <!-- non main skills -->
             <div class="grid grid-cols-7 mb-6">
                 <div *ngFor="let skill of otherSkills">

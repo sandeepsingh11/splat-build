@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 import { json } from "../types/json";
 import { Observable, tap } from 'rxjs';
+import { BaseGearResponse, SkillResponse } from '../types';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ export class LeanDataService {
   weaponsUrl: string = this.storageUrl + 'parsed-weapons.json';
   subsSpecialsUrl: string = this.storageUrl + 'parsed-subs-specials.json';
   skillsUrl: string = this.storageUrl + 'parsed-skills.json';
-  getSkillNameUrl: string = 'api/get-skill-names';
+  getSkillsNameUrl: string = 'api/get-skill-names';
+  getBaseGearsUrl: string = 'api/get-base-gears';
 
   weapons: any;
   subs: any;
@@ -66,8 +68,8 @@ export class LeanDataService {
     );
   }
 
-  getSkillNames(): Observable<{skill_name: string, is_main: boolean}[]> {
-    return this.http.get<{skill_name: string, is_main: boolean}[]>(this.getSkillNameUrl);
+  getSkillNames(): Observable<SkillResponse[]> {
+    return this.http.get<SkillResponse[]>(this.getSkillsNameUrl);
   }
 
   setCurrentWeapon(weaponName: string) {
@@ -109,5 +111,9 @@ export class LeanDataService {
 
   setCurrentSpecial(specialName: string) {
     this.currentSpecial = this.specials![specialName];
+  }
+
+  getBaseGears(): Observable<BaseGearResponse[]> {
+    return this.http.get<BaseGearResponse[]>(this.getBaseGearsUrl);
   }
 }

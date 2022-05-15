@@ -20,7 +20,7 @@ class GearController extends GearAbstractController
     {
         // user must be a guest to view, otherwise redirect
         $this->middleware(['auth'])
-            ->except(['index', 'show']);
+            ->except(['index', 'show', 'getBaseGears']);
     }
 
     public function index(Request $request)
@@ -47,6 +47,18 @@ class GearController extends GearAbstractController
             'user' => $user,
             'gear' => $gear,
         ]);
+    }
+
+    public function getBaseGears()
+    {
+        $baseGears = BaseGear::all(['base_gear_name', 'base_gear_type', 'main_skill_id']);
+        
+        // add translated name property
+        foreach ($baseGears as $key => $value) {
+            $value['display_name'] = __($value['base_gear_name']);
+        }
+
+        return $baseGears;
     }
 
     public function create(Request $request)
