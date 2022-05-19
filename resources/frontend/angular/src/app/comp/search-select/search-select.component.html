@@ -1,0 +1,23 @@
+<!-- search / select -->
+<div class="flex">
+    <input 
+        type="text"
+        class="search-input w-1/2 sm:w-full rounded-tl rounded-bl pl-7 focus:ring-primary-400 focus:border-primary-400"
+        (keyup)="search($event)"
+        value="{{ searchTerm }}"
+    >
+    <select
+        class="w-1/2 sm:w-full rounded-tr rounded-br focus:ring-primary-400 focus:border-primary-400"
+        name="selected-gear"
+        id="selected-gear"
+        (change)="onSelectChange($event)"
+    >
+        <option 
+            *ngFor="let item of filteredList"
+            [value]="item.base_gear_name"
+            [selected]="item.base_gear_name === selectedItem"
+        >
+            {{ item.display_name }}
+        </option>
+    </select>
+</div>

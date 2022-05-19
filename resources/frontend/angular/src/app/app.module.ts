@@ -7,12 +7,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DemoComponent } from './pages/demo/demo.component';
 import { GearFormComponent } from './pages/gear/gear-form/gear-form.component';
+import { SearchSelectComponent } from './comp/search-select/search-select.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DemoComponent,
-    GearFormComponent
+    GearFormComponent,
+    SearchSelectComponent
   ],
   imports: [
     BrowserModule,

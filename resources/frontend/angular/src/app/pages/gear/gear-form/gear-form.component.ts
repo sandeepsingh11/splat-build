@@ -43,24 +43,7 @@ export class GearFormComponent implements OnInit {
   skill3: string = 'Unknown';
   searchTerm: string = '';
 
-  // filter gear list by search term
-  search(e: Event): void {
-    this.searchTerm = (e.target as HTMLInputElement).value;
-
-    // if search term is empty, set default
-    if (this.searchTerm === '') {
-      this.baseGearFilteredList = this.baseGears;
-      this.selectedGear = this.baseGears[0].base_gear_name;
-      return;
-    }
-
-    // filter
-    this.baseGearFilteredList = this.baseGears.filter((gear: BaseGearResponse) => {
-      return (gear.display_name.toLocaleLowerCase().indexOf(this.searchTerm.toLocaleLowerCase()) > -1);
-    });
-
-    // set selected gear
-    if (this.baseGearFilteredList.length > 0) this.selectedGear = this.baseGearFilteredList[0].base_gear_name;
-    else this.selectedGear = this.baseGears[0].base_gear_name;
+  updateSelectedValue(selectedValue: string) {
+    this.selectedGear = selectedValue;
   }
 }

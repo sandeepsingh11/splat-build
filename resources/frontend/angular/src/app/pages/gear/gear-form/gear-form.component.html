@@ -20,28 +20,12 @@
             <!-- gear selection -->
             <div>
                 <!-- search / select -->
-                <div class="flex">
-                    <input 
-                        type="text"
-                        class="search-input w-1/2 sm:w-full rounded-tl rounded-bl pl-7 focus:ring-primary-400 focus:border-primary-400"
-                        (keyup)="search($event)"
-                        value="{{ searchTerm }}"
-                    >
-                    <select
-                        class="w-1/2 sm:w-full rounded-tr rounded-br focus:ring-primary-400 focus:border-primary-400"
-                        name="selected-gear"
-                        id="selected-gear"
-                        [(ngModel)]="selectedGear"
-                    >
-                        <option 
-                            *ngFor="let gear of baseGearFilteredList; let i = index" 
-                            [value]="gear.base_gear_name"
-                            [selected]="gear.base_gear_name === selectedGear"
-                        >
-                            {{ gear.display_name }}
-                        </option>
-                    </select>
-                </div>
+                <app-search-select 
+                    [list]="baseGearFilteredList" 
+                    [type]="'gear'" 
+                    (newOptionValue)="updateSelectedValue($event)"
+                >
+                </app-search-select>
 
                 <!-- selected gear img -->
                 <div>
