@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { LeanCalcService } from "../../../services/lean-calc.service";
 import { LeanDataService } from "../../../services/lean-data.service";
-import { BaseGearResponse, SkillResponse } from "../../../types";
+import { BaseGearResponse, SearchSelectOutput, SkillResponse, WeaponResponse } from "../../../types";
 
 @Component({
   selector: 'app-gear-form',
@@ -24,7 +24,11 @@ export class GearFormComponent implements OnInit {
     // get gears
     this.leanDataService.getBaseGears().subscribe((data) => {
       this.baseGears = data;
-      this.baseGearFilteredList = data;
+    });
+
+    // get weapons
+    this.leanDataService.getWeapons().subscribe((data) => {
+      this.weapons = data;
     });
   }
 
@@ -34,16 +38,29 @@ export class GearFormComponent implements OnInit {
   mainSkills: SkillResponse[] = [];
   otherSkills: SkillResponse[] = [];
   baseGears!: BaseGearResponse[];
-  baseGearFilteredList: BaseGearResponse[] = [];
+  weapons!: WeaponResponse[];
   title: string = 'Create Gear';
   selectedGear: string = 'Hed_FST000';
+  gearDisplayName: string = 'White Headband'
+  selectedWeapon: string = 'Shooter_Short_00';
+  weaponDisplayName: string = 'Sploosh-o-matic'
+  subName: string = 'Bomb_Curling';
+  specialName: string = 'SuperLanding';
   skillMain: string = 'Unknown';
   skill1: string = 'Unknown';
   skill2: string = 'Unknown';
   skill3: string = 'Unknown';
-  searchTerm: string = '';
 
-  updateSelectedValue(selectedValue: string) {
-    this.selectedGear = selectedValue;
+  updateSelectedValue(selectedValue: SearchSelectOutput) {
+    if (selectedValue.type === 'gear') {
+      this.selectedGear = selectedValue.selectedItem;
+      this.gearDisplayName = selectedValue.displayName;
+    }
+    else {
+      this.selectedWeapon = selectedValue.selectedItem;
+      this.weaponDisplayName = selectedValue.displayName;
+      this.subName = selectedValue.subName!;
+      this.specialName = selectedValue.specialName!;
+    }
   }
 }

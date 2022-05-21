@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 
 import { json } from "../types/json";
 import { Observable, tap } from 'rxjs';
-import { BaseGearResponse, SkillResponse } from '../types';
+import { BaseGearResponse, SkillResponse, WeaponResponse } from '../types';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +16,7 @@ export class LeanDataService {
   skillsUrl: string = this.storageUrl + 'parsed-skills.json';
   getSkillsNameUrl: string = 'api/get-skill-names';
   getBaseGearsUrl: string = 'api/get-base-gears';
+  getWeaponsUrl: string = 'api/get-weapons';
 
   weapons: any;
   subs: any;
@@ -33,15 +34,8 @@ export class LeanDataService {
     // this.getSkills();
   }
 
-  getWeapons(): Observable<any> {
-    return this.http.get(this.weaponsUrl).pipe(
-      tap((data) => {
-        this.weapons = data;
-      
-        // set default weapon
-        this.setCurrentWeapon('Shooter_BlasterLight_00');  
-      })
-    );;
+  getWeapons(): Observable<WeaponResponse[]> {
+    return this.http.get<WeaponResponse[]>(this.getWeaponsUrl);
   }
 
   getSubsAndSpecial(): Observable<any> {

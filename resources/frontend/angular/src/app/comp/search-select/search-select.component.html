@@ -8,14 +8,14 @@
     >
     <select
         class="w-1/2 sm:w-full rounded-tr rounded-br focus:ring-primary-400 focus:border-primary-400"
-        name="selected-gear"
-        id="selected-gear"
+        name="selected-{{ type }}"
+        id="selected-{{ type }}"
         (change)="onSelectChange($event)"
     >
         <option 
             *ngFor="let item of filteredList"
-            [value]="item.base_gear_name"
-            [selected]="item.base_gear_name === selectedItem"
+            [value]="item.name"
+            [selected]="item.name === selectedItem"
         >
             {{ item.display_name }}
         </option>

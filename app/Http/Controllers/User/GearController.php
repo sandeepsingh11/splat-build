@@ -51,11 +51,11 @@ class GearController extends GearAbstractController
 
     public function getBaseGears()
     {
-        $baseGears = BaseGear::all(['base_gear_name', 'base_gear_type', 'main_skill_id']);
+        $baseGears = BaseGear::all(['base_gear_name as name', 'base_gear_type', 'main_skill_id']);
         
         // add translated name property
         foreach ($baseGears as $key => $value) {
-            $value['display_name'] = __($value['base_gear_name']);
+            $value['display_name'] = __($value['name']);
         }
 
         return $baseGears;

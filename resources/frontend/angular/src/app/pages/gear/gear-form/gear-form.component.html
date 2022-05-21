@@ -21,9 +21,9 @@
             <div>
                 <!-- search / select -->
                 <app-search-select 
-                    [list]="baseGearFilteredList" 
+                    [list]="baseGears" 
                     [type]="'gear'" 
-                    (newOptionValue)="updateSelectedValue($event)"
+                    (newOption)="updateSelectedValue($event)"
                 >
                 </app-search-select>
 
@@ -31,7 +31,7 @@
                 <div>
                     <img 
                         src="/storage/gear/{{ selectedGear }}.png" 
-                        alt="{{ selectedGear }}"
+                        alt="{{ gearDisplayName }}"
                         class="mx-auto"
                     >
                 </div>
@@ -127,6 +127,46 @@
                         src="/storage/skills/{{ skill.skill_name }}.png" 
                         alt="{{ skill.skill_name }}"
                     >
+                </div>
+            </div>
+        </div>
+
+        <!-- weapon selection -->
+        <div>
+            <!-- search / select -->
+            <app-search-select 
+                [list]="weapons" 
+                [type]="'weapon'" 
+                (newOption)="updateSelectedValue($event)"
+            >
+            </app-search-select>
+
+            <!-- selected gear img -->
+            <div 
+                id="weapon-container" 
+                class="grid grid-cols-1 justify-items-center grid-cols-2 gap-x-4 "
+            >
+                <img 
+                    id="weapon-img" 
+                    class="justify-self-end" 
+                    src="/storage/weapons/Wst_{{ selectedWeapon }}.png" 
+                    alt="{{ weaponDisplayName }}"
+                    loading="lazy" 
+                    width="128px" 
+                    height="128px"
+                >
+                <div class="grid grid-cols-2 items-center gap-x-2  justify-self-start ">
+                    <img 
+                        id="sub-img" 
+                        src="/storage/subspe/Wsb_{{ subName }}.png" 
+                        alt="{{ subName }}" 
+                        loading="lazy"
+                    >
+                    <img 
+                        id="special-img" 
+                        src="/storage/subspe/Wsp_{{ specialName }}.png" 
+                        alt="{{ specialName }}" 
+                        loading="lazy">
                 </div>
             </div>
         </div>

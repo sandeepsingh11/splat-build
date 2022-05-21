@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\SkillController;
+use App\Http\Controllers\WeaponController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\GearController;
 use App\Http\Controllers\User\GearsetController;
@@ -30,6 +31,8 @@ Route::get('api/test', [IndexController::class, 'test']);
 Route::get('api/get-skill-names', [SkillController::class, 'getSkillNames']);
 
 Route::get('api/get-base-gears', [GearController::class, 'getBaseGears']);
+
+Route::get('api/get-weapons', [WeaponController::class, 'getWeapons']);
 
 // // home
 // Route::get('/', [IndexController::class, 'index'])->name('home');
