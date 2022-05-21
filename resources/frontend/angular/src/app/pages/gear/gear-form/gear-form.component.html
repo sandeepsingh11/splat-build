@@ -47,8 +47,8 @@
                     data-source="slot"
                 >
                     <img 
-                        src="/storage/skills/{{ skillMain }}.png" 
-                        alt="{{ skillMain }}" 
+                        src="/storage/skills/{{ activeSkillNames[0] }}.png" 
+                        alt="{{ activeSkillNames[0] }}" 
                         class="slot-img draggable slot" 
                         data-skill-id="27" 
                         data-skill-type="Main" 
@@ -64,8 +64,8 @@
                     data-source="slot"
                 >
                     <img 
-                        src="/storage/skills/{{ skill1 }}.png" 
-                        alt="{{ skill1 }}" 
+                        src="/storage/skills/{{ activeSkillNames[1] }}.png" 
+                        alt="{{ activeSkillNames[1] }}" 
                         class="slot-img draggable slot" 
                         data-skill-id="27" 
                         data-skill-type="All" 
@@ -80,8 +80,8 @@
                     data-source="slot"
                 >
                     <img 
-                        src="/storage/skills/{{ skill2 }}.png" 
-                        alt="{{ skill2 }}" 
+                        src="/storage/skills/{{ activeSkillNames[2] }}.png" 
+                        alt="{{ activeSkillNames[2] }}" 
                         class="slot-img draggable slot" 
                         data-skill-id="27" 
                         data-skill-type="All" 
@@ -96,8 +96,8 @@
                     data-source="slot"
                 >
                     <img 
-                        src="/storage/skills/{{ skill3 }}.png" 
-                        alt="{{ skill3 }}" 
+                        src="/storage/skills/{{ activeSkillNames[3] }}.png" 
+                        alt="{{ activeSkillNames[3] }}" 
                         class="slot-img draggable slot" 
                         data-skill-id="27" 
                         data-skill-type="All" 
@@ -110,10 +110,11 @@
             <div class="grid grid-cols-7 mb-6">
                 <div *ngFor="let skill of otherSkills">
                     <div *ngIf="skill.skill_name !== 'Unknown'">
-                        <img
-                            src="/storage/skills/{{ skill.skill_name }}.png" 
-                            alt="{{ skill.skill_name }}"
+                        <app-skill-icon
+                        [skill]="skill"
+                        (iconClicked)="iconClicked($event)"
                         >
+                        </app-skill-icon>
                     </div>
                 </div>
             </div>
@@ -123,10 +124,11 @@
             <!-- main skills -->
             <div class="grid grid-cols-6 mt-6">
                 <div *ngFor="let skill of mainSkills">
-                    <img
-                        src="/storage/skills/{{ skill.skill_name }}.png" 
-                        alt="{{ skill.skill_name }}"
+                    <app-skill-icon
+                        [skill]="skill"
+                        (iconClicked)="iconClicked($event)"
                     >
+                    </app-skill-icon>
                 </div>
             </div>
         </div>

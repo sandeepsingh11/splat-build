@@ -8,13 +8,15 @@ import { AppComponent } from './app.component';
 import { DemoComponent } from './pages/demo/demo.component';
 import { GearFormComponent } from './pages/gear/gear-form/gear-form.component';
 import { SearchSelectComponent } from './comp/search-select/search-select.component';
+import { SkillIconComponent } from './comp/skill-icon/skill-icon.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DemoComponent,
     GearFormComponent,
-    SearchSelectComponent
+    SearchSelectComponent,
+    SkillIconComponent
   ],
   imports: [
     BrowserModule,

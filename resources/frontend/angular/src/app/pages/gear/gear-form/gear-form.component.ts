@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { LeanCalcService } from "../../../services/lean-calc.service";
 import { LeanDataService } from "../../../services/lean-data.service";
-import { BaseGearResponse, SearchSelectOutput, SkillResponse, WeaponResponse } from "../../../types";
+import { BaseGearResponse, SearchSelectOutput, SkillIconOutput, SkillResponse, WeaponResponse } from "../../../types";
 
 @Component({
   selector: 'app-gear-form',
@@ -46,10 +46,7 @@ export class GearFormComponent implements OnInit {
   weaponDisplayName: string = 'Sploosh-o-matic'
   subName: string = 'Bomb_Curling';
   specialName: string = 'SuperLanding';
-  skillMain: string = 'Unknown';
-  skill1: string = 'Unknown';
-  skill2: string = 'Unknown';
-  skill3: string = 'Unknown';
+  activeSkillNames: string[] = ['Unknown', 'Unknown', 'Unknown', 'Unknown'];
 
   updateSelectedValue(selectedValue: SearchSelectOutput) {
     if (selectedValue.type === 'gear') {
@@ -62,5 +59,29 @@ export class GearFormComponent implements OnInit {
       this.subName = selectedValue.subName!;
       this.specialName = selectedValue.specialName!;
     }
+  }
+
+  iconClicked(skillIconOutput: SkillIconOutput) {
+    const availableSkillBubble: number = this.getNextAvailableSkillBubble();
+
+    if (availableSkillBubble > 0) {
+      // if non-main bubble available, dont allow main-skill
+      if (availableSkillBubble !== 1) {
+        if (!skillIconOutput.isMain) {
+          this.activeSkillNames[availableSkillBubble - 1] = skillIconOutput.skillName;    
+        }
+      }
+      else {
+        this.activeSkillNames[0] = skillIconOutput.skillName;
+      }
+    }
+  }
+
+  getNextAvailableSkillBubble(): number {
+    if (this.activeSkillNames[0] === 'Unknown') return 1;
+    else if (this.activeSkillNames[1] === 'Unknown') return 2;
+    else if (this.activeSkillNames[2] === 'Unknown') return 3;
+    else if (this.activeSkillNames[3] === 'Unknown') return 4;
+    else return -1;
   }
 }
