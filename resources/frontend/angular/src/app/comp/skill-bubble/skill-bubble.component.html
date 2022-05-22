@@ -1,0 +1,14 @@
+<div 
+    id="skill-sub-{{ skillNumber }}" 
+    class="skill-bubble drag-into border-2 border-r-0 border-b-0 border-solid border-gray-400 rounded-full bg-gray-900" 
+    [ngClass]="{'skill-bubble-main': isMain}"
+    data-source="slot"
+>
+    <img 
+        src="/storage/skills/{{ skillName }}.png" 
+        alt="{{ skillName }}" 
+        class="slot-img draggable slot" 
+        draggable="true"
+        (click)="skillBubbleClicked()"
+    >
+</div>

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { LeanCalcService } from "../../../services/lean-calc.service";
 import { LeanDataService } from "../../../services/lean-data.service";
-import { BaseGearResponse, SearchSelectOutput, SkillIconOutput, SkillResponse, WeaponResponse } from "../../../types";
+import { BaseGearResponse, SearchSelectOutput, SkillBubbleOutput, SkillIconOutput, SkillResponse, WeaponResponse } from "../../../types";
 
 @Component({
   selector: 'app-gear-form',
@@ -83,5 +83,9 @@ export class GearFormComponent implements OnInit {
     else if (this.activeSkillNames[2] === 'Unknown') return 3;
     else if (this.activeSkillNames[3] === 'Unknown') return 4;
     else return -1;
+  }
+
+  skillBubbleClicked(bubbleOutput: SkillBubbleOutput) {
+    this.activeSkillNames[bubbleOutput.skillNumber - 1] = 'Unknown';
   }
 }

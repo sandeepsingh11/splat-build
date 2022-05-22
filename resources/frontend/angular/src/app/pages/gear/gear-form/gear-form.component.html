@@ -38,72 +38,15 @@
             </div>
 
             <!-- active skills -->
-            <div class="grid grid-cols-4">
-                <!-- main skill -->
-                <div 
-                    id="skill-main" 
-                    class="drag-into border-2 border-r-0 border-b-0 border-solid border-gray-400 rounded-full bg-gray-900" 
-                    style="width: 64px; height: 64px; box-shadow: 0 0 0 1px #000" 
-                    data-source="slot"
+            <div class="grid grid-cols-4 justify-items-center items-end">
+                <app-skill-bubble
+                    *ngFor="let skillName of activeSkillNames; let i = index;"
+                    [skillName]="skillName"
+                    [isMain]="(i === 0)"
+                    [skillNumber]="i + 1"
+                    (bubbleClicked)="skillBubbleClicked($event)"
                 >
-                    <img 
-                        src="/storage/skills/{{ activeSkillNames[0] }}.png" 
-                        alt="{{ activeSkillNames[0] }}" 
-                        class="slot-img draggable slot" 
-                        data-skill-id="27" 
-                        data-skill-type="Main" 
-                        draggable="true"
-                    >
-                </div>
-
-                <!-- skill 1 -->
-                <div 
-                    id="skill-sub-1" 
-                    class="drag-into border-2 border-r-0 border-b-0 border-solid border-gray-400 rounded-full bg-gray-900" 
-                    style="width: 50px; height: 50px; box-shadow: 0 0 0 1px #000" 
-                    data-source="slot"
-                >
-                    <img 
-                        src="/storage/skills/{{ activeSkillNames[1] }}.png" 
-                        alt="{{ activeSkillNames[1] }}" 
-                        class="slot-img draggable slot" 
-                        data-skill-id="27" 
-                        data-skill-type="All" 
-                        draggable="true">
-                </div>
-
-                <!-- skill 2 -->
-                <div 
-                    id="skill-sub-2" 
-                    class="drag-into border-2 border-r-0 border-b-0 border-solid border-gray-400 rounded-full bg-gray-900" 
-                    style="width: 50px; height: 50px; box-shadow: 0 0 0 1px #000" 
-                    data-source="slot"
-                >
-                    <img 
-                        src="/storage/skills/{{ activeSkillNames[2] }}.png" 
-                        alt="{{ activeSkillNames[2] }}" 
-                        class="slot-img draggable slot" 
-                        data-skill-id="27" 
-                        data-skill-type="All" 
-                        draggable="true">
-                </div>
-
-                <!-- skill 3 -->
-                <div 
-                    id="skill-sub-3" 
-                    class="drag-into border-2 border-r-0 border-b-0 border-solid border-gray-400 rounded-full bg-gray-900" 
-                    style="width: 50px; height: 50px; box-shadow: 0 0 0 1px #000" 
-                    data-source="slot"
-                >
-                    <img 
-                        src="/storage/skills/{{ activeSkillNames[3] }}.png" 
-                        alt="{{ activeSkillNames[3] }}" 
-                        class="slot-img draggable slot" 
-                        data-skill-id="27" 
-                        data-skill-type="All" 
-                        draggable="true">
-                </div>
-            
+                </app-skill-bubble>
             </div>
 
             <!-- non main skills -->

@@ -9,6 +9,7 @@ import { DemoComponent } from './pages/demo/demo.component';
 import { GearFormComponent } from './pages/gear/gear-form/gear-form.component';
 import { SearchSelectComponent } from './comp/search-select/search-select.component';
 import { SkillIconComponent } from './comp/skill-icon/skill-icon.component';
+import { SkillBubbleComponent } from './comp/skill-bubble/skill-bubble.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { SkillIconComponent } from './comp/skill-icon/skill-icon.component';
     DemoComponent,
     GearFormComponent,
     SearchSelectComponent,
-    SkillIconComponent
+    SkillIconComponent,
+    SkillBubbleComponent
   ],
   imports: [
     BrowserModule,
