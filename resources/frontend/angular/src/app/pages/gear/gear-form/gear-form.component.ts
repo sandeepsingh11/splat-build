@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { LeanCalcService } from "../../../services/lean-calc.service";
 import { LeanDataService } from "../../../services/lean-data.service";
-import { BaseGearResponse, SearchSelectOutput, SkillBubbleOutput, SkillIconOutput, SkillResponse, WeaponResponse } from "../../../types";
+import { ActiveSkill, BaseGearResponse, SearchSelectOutput, SkillBubbleOutput, SkillIconOutput, SkillResponse, WeaponResponse } from "../../../types";
 
 @Component({
   selector: 'app-gear-form',
@@ -47,6 +47,7 @@ export class GearFormComponent implements OnInit {
   subName: string = 'Bomb_Curling';
   specialName: string = 'SuperLanding';
   activeSkillNames: string[] = ['Unknown', 'Unknown', 'Unknown', 'Unknown'];
+  activeSkills: ActiveSkill[] = [];
 
   updateSelectedValue(selectedValue: SearchSelectOutput) {
     if (selectedValue.type === 'gear') {
@@ -74,6 +75,8 @@ export class GearFormComponent implements OnInit {
       else {
         this.activeSkillNames[0] = skillIconOutput.skillName;
       }
+
+      this.updateActiveSkills();
     }
   }
 
@@ -85,7 +88,39 @@ export class GearFormComponent implements OnInit {
     else return -1;
   }
 
+  updateActiveSkills() {
+    let skillsChecked: string[] = [];
+    this.activeSkills = [];
+
+    this.activeSkillNames.forEach((skillName, i) => {
+      if (skillName !== 'Unknown') {
+        if (!skillsChecked.includes(skillName)) {
+          // if skill obj does not exist, create
+          this.activeSkills.push({
+            skillName: skillName,
+            main: (i === 0) ? 1 : 0,
+            subs: (i !== 0) ? 1 : 0,
+          });
+        }
+        else {
+          // else update existing skill obj
+          this.activeSkills.every((activeSkill, j) => {
+            if (activeSkill.skillName === skillName) {
+              this.activeSkills[j].subs++;
+              return false;
+            }
+            return true;
+          });
+        }
+  
+        skillsChecked.push(skillName);
+      }
+    });
+  }
+
   skillBubbleClicked(bubbleOutput: SkillBubbleOutput) {
     this.activeSkillNames[bubbleOutput.skillNumber - 1] = 'Unknown';
+
+    this.updateActiveSkills();
   }
 }
