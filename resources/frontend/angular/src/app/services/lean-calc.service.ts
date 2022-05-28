@@ -31,59 +31,61 @@ export class LeanCalcService {
     subName: string, 
     specialName: string
   ) {
-    console.log('in calc');
-    console.log(skills, weaponName, subName, specialName);
     // set current stat objects to use to calculate
     this.leanDataService.setCurrentWeapon(weaponName);
     this.leanDataService.setCurrentSub(subName);
     this.leanDataService.setCurrentSpecial(specialName);
 
+    let skillStats: Stats[] = [];
+
     skills.forEach((skill) => {
       switch (skill.skillName) {
         case 'MainInk_Save':
-          this.calcIsm(skill);
+          skillStats.push(this.calcIsm(skill));
           break;
         case 'SubInk_Save':
-          this.calcIss(skill);
+          skillStats.push(this.calcIss(skill));
           break;
         case 'InkRecovery_Up':
-          this.calcIru(skill);
+          skillStats.push(this.calcIru(skill));
           break;
         case 'HumanMove_Up':
-          this.calcRsu(skill);
+          skillStats.push(this.calcRsu(skill));
           break;
         case 'SquidMove_Up':
-          this.calcSsu(skill);
+          skillStats.push(this.calcSsu(skill));
           break;
         case 'SpecialIncrease_Up':
-          this.calcScu(skill);
+          skillStats.push(this.calcScu(skill));
           break;
         case 'RespawnSpecialGauge_Save':
-          this.calcSs(skill);
+          skillStats.push(this.calcSs(skill));
           break;
         case 'MarkingTime_Reduction':
-          this.calcMpu(skill);
+          skillStats.push(this.calcMpu(skill));
           break;
         case 'BombDistance_Up':
-          this.calcSubPu(skill);
+          skillStats.push(this.calcSubPu(skill));
           break;
         case 'SpecialTime_Up':
-          this.calcSpu(skill);
+          skillStats.push(this.calcSpu(skill));
           break;
         case 'RespawnTime_Save':
-          this.calcQrs(skill);
+          skillStats.push(this.calcQrs(skill));
           break;
         case 'JumpTime_Save':
-          this.calcQsj(skill);
+          skillStats.push(this.calcQsj(skill));
           break;
         case 'OpInkEffect_Reduction':
-          this.calcInkRu(skill);
+          skillStats.push(this.calcInkRu(skill));
           break;
         case 'BombDamage_Reduction':
-          this.calcBdu(skill);
+          skillStats.push(this.calcBdu(skill));
           break;
       }
     });
+
+    return skillStats;
   }
 
   calcIsm(skillObj: Skill) {
@@ -138,8 +140,7 @@ export class LeanCalcService {
       ],
     };
 
-    this.displayStat(mainInkSaveObj);
-    console.log(mainInkSaveObj);
+    return mainInkSaveObj;
   }
 
   calcIss(skillObj: Skill) {
@@ -181,7 +182,7 @@ export class LeanCalcService {
       ],
     };
 
-    this.displayStat(subInkSaveObj);
+    return subInkSaveObj;
   }
 
   calcIru(skillObj: Skill) {
@@ -232,7 +233,7 @@ export class LeanCalcService {
       ],
     };
 
-    this.displayStat(inkRecoveryObj);
+    return inkRecoveryObj;
   }
 
   calcRsu(skillObj: Skill) {
@@ -291,7 +292,7 @@ export class LeanCalcService {
       effects: effects,
     };
 
-    this.displayStat(runSpeedObj);
+    return runSpeedObj;
   }
 
   calcSsu(skillObj: Skill) {
@@ -345,7 +346,7 @@ export class LeanCalcService {
       effects: effects,
     };
 
-    this.displayStat(swimSpeedObj);
+    return swimSpeedObj;
   }
 
   calcScu(skillObj: Skill) {
@@ -373,7 +374,7 @@ export class LeanCalcService {
       ],
     };
 
-    this.displayStat(chargeUpObj);
+    return chargeUpObj;
   }
 
   calcSs(skillObj: Skill) {
@@ -406,7 +407,7 @@ export class LeanCalcService {
       ],
     };
 
-    this.displayStat(specialSaveObj);
+    return specialSaveObj;
   }
 
   calcMpu(skillObj: Skill) {
@@ -608,7 +609,7 @@ export class LeanCalcService {
       effects: effects,
     };
 
-    this.displayStat(mainPUObj);
+    return mainPUObj;
   }
 
   calcSubPu(skillObj: Skill) {
@@ -694,10 +695,9 @@ export class LeanCalcService {
         effects: effects,
       };
 
-      this.displayStat(subPUObj);
+      return subPUObj;
     }
-
-    if ('Bomb_Curling' == subName) {
+    else if ('Bomb_Curling' == subName) {
       // case 2: Bomb_Curling
       const calculatedData = this.getHML(
         subStats['param'],
@@ -724,10 +724,9 @@ export class LeanCalcService {
         effects: effects,
       };
 
-      this.displayStat(subPUObj);
+      return subPUObj;
     }
-
-    if ('TimerTrap' == subName) {
+    else if ('TimerTrap' == subName) {
       // case 3: TimerTrap
       const calculatedData = [
         this.getHML(subStats['param'], 'mBombCoreRadiusRate'),
@@ -769,10 +768,9 @@ export class LeanCalcService {
         effects: effects,
       };
 
-      this.displayStat(subPUObj);
+      return subPUObj;
     }
-
-    if ('Sprinkler' == subName) {
+    else if ('Sprinkler' == subName) {
       // case 4: Sprinkler
       const calculatedData = [
         this.getHML(subStats['param'], 'mPeriod_First'),
@@ -805,10 +803,9 @@ export class LeanCalcService {
         effects: effects,
       };
 
-      this.displayStat(subPUObj);
+      return subPUObj;
     }
-
-    if ('Shield' == subName) {
+    else if ('Shield' == subName) {
       // case 5: Shield
       const calculatedData = this.getHML(subStats['param'], 'mMaxHp');
       const result = this.calculateAbilityEffect(
@@ -832,10 +829,9 @@ export class LeanCalcService {
         effects: effects,
       };
 
-      this.displayStat(subPUObj);
+      return subPUObj;
     }
-
-    if ('Flag' == subName) {
+    else if ('Flag' == subName) {
       // case 6: Flag
       const flagStats = this.leanDataService.skills!['JumpTime_Save'];
 
@@ -888,7 +884,14 @@ export class LeanCalcService {
         effects: effects,
       };
 
-      this.displayStat(subPUObj);
+      return subPUObj;
+    }
+    else {
+      return {
+        name: 'BombDistance_Up',
+        displayName: 'Sub Power Up',
+        effects: effects,
+      };
     }
   }
 
@@ -984,7 +987,7 @@ export class LeanCalcService {
       effects: effects,
     };
 
-    this.displayStat(specialPUObj);
+    return specialPUObj;
   }
 
   calcQrs(skillObj: Skill) {
@@ -1035,7 +1038,7 @@ export class LeanCalcService {
       ],
     };
 
-    this.displayStat(respawnObj);
+    return respawnObj;
   }
 
   calcQsj(skillObj: Skill) {
@@ -1086,7 +1089,7 @@ export class LeanCalcService {
       ],
     };
 
-    this.displayStat(superJumpObj);
+    return superJumpObj;
   }
 
   calcInkRu(skillObj: Skill) {
@@ -1179,7 +1182,7 @@ export class LeanCalcService {
       ],
     };
 
-    this.displayStat(inkResObj);
+    return inkResObj;
   }
 
   calcBdu(skillObj: Skill) {
@@ -1291,7 +1294,7 @@ export class LeanCalcService {
       ],
     };
 
-    this.displayStat(bombDefenseObj);
+    return bombDefenseObj;
   }
 
   // get high, mid, and low values
@@ -1442,9 +1445,5 @@ export class LeanCalcService {
     sub = ap / 3;
 
     return [main, sub];
-  }
-
-  displayStat(stats: object) {
-    console.log(stats);
   }
 }

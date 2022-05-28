@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LaravelApiService } from 'src/app/services/laravel-api.service';
 
 import { LeanCalcService } from "../../../services/lean-calc.service";
-import { ActiveSkill, BaseGearResponse, SearchSelectOutput, SkillBubbleOutput, SkillIconOutput, SkillResponse, WeaponResponse } from "../../../types";
+import { ActiveSkill, BaseGearResponse, SearchSelectOutput, SkillBubbleOutput, SkillIconOutput, SkillResponse, Stats, WeaponResponse } from "../../../types";
 
 @Component({
   selector: 'app-gear-form',
@@ -51,6 +51,7 @@ export class GearFormComponent implements OnInit {
   specialName: string = 'SuperLanding';
   activeSkillNames: string[] = ['Unknown', 'Unknown', 'Unknown', 'Unknown'];
   activeSkills: ActiveSkill[] = [];
+  skillStats: Stats[] = [];
 
   updateSelectedValue(selectedValue: SearchSelectOutput) {
     if (selectedValue.type === 'gear') {
@@ -132,7 +133,7 @@ export class GearFormComponent implements OnInit {
   }
 
   calc() {
-    this.leanCalcService.calc(
+    this.skillStats = this.leanCalcService.calc(
       this.activeSkills,
       this.selectedWeapon,
       this.subName,

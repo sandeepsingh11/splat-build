@@ -38,7 +38,7 @@
             </div>
 
             <!-- active skills -->
-            <div class="grid grid-cols-4 justify-items-center items-end">
+            <div class="grid grid-cols-4 justify-items-center items-end mb-4">
                 <app-skill-bubble
                     *ngFor="let skillName of activeSkillNames; let i = index;"
                     [skillName]="skillName"
@@ -76,53 +76,88 @@
             </div>
         </div>
 
-        <!-- weapon selection -->
+        <!-- weapon selection and stats -->
         <div>
-            <!-- search / select -->
-            <app-search-select 
-                [list]="weapons" 
-                [type]="'weapon'" 
-                (newOption)="updateSelectedValue($event)"
-            >
-            </app-search-select>
-
-            <!-- selected gear img -->
-            <div 
-                id="weapon-container" 
-                class="grid grid-cols-1 justify-items-center grid-cols-2 gap-x-4 "
-            >
-                <img 
-                    id="weapon-img" 
-                    class="justify-self-end" 
-                    src="/storage/weapons/Wst_{{ selectedWeapon }}.png" 
-                    alt="{{ weaponDisplayName }}"
-                    loading="lazy" 
-                    width="128px" 
-                    height="128px"
+            <!-- weapon selection -->
+            <div>
+                <!-- search / select -->
+                <app-search-select 
+                    [list]="weapons" 
+                    [type]="'weapon'" 
+                    (newOption)="updateSelectedValue($event)"
                 >
-                <div class="grid grid-cols-2 items-center gap-x-2  justify-self-start ">
+                </app-search-select>
+    
+                <!-- selected gear img -->
+                <div 
+                    id="weapon-container" 
+                    class="grid grid-cols-1 justify-items-center grid-cols-2 gap-x-4 "
+                >
                     <img 
-                        id="sub-img" 
-                        src="/storage/subspe/Wsb_{{ subName }}.png" 
-                        alt="{{ subName }}" 
-                        loading="lazy"
+                        id="weapon-img" 
+                        class="justify-self-end" 
+                        src="/storage/weapons/Wst_{{ selectedWeapon }}.png" 
+                        alt="{{ weaponDisplayName }}"
+                        loading="lazy" 
+                        width="128px" 
+                        height="128px"
                     >
-                    <img 
-                        id="special-img" 
-                        src="/storage/subspe/Wsp_{{ specialName }}.png" 
-                        alt="{{ specialName }}" 
-                        loading="lazy">
+                    <div class="grid grid-cols-2 items-center gap-x-2  justify-self-start ">
+                        <img 
+                            id="sub-img" 
+                            src="/storage/subspe/Wsb_{{ subName }}.png" 
+                            alt="{{ subName }}" 
+                            loading="lazy"
+                        >
+                        <img 
+                            id="special-img" 
+                            src="/storage/subspe/Wsp_{{ specialName }}.png" 
+                            alt="{{ specialName }}" 
+                            loading="lazy">
+                    </div>
                 </div>
             </div>
+
+            <!-- stats -->
+            <ng-container *ngIf="skillStats.length > 0">
+                <div *ngFor="let skillStat of skillStats">
+                    <!-- skill title element -->
+                    <div class="flex justify-start items-center gap-1 mt-4">
+                        <img
+                            src="/storage/skills/{{ skillStat.name }}.png"
+                            alt="{{ skillStat.displayName }}"
+                            width="32px"
+                        >
+
+                        <h5>{{ skillStat.displayName }}</h5>
+                    </div>
+
+                    <!-- stat effect entry -->
+                    <div class="grid grid-cols-2 gap-2 items-end">
+                        <div *ngFor="let effect of skillStat.effects">
+                            {{ effect.name }}
+                            <!-- percentage bar -->
+                            <div 
+                                class="bg-gray-300 relative rounded-full h-full"
+                                style="height: 28px;"
+                            >
+                                <div 
+                                    class="absolute top-0 left-0 h-full bg-pink-300 rounded-full"
+                                    [ngStyle]="{'width': effect.percent + '%'}"
+                                ></div>
+                                <div class="flex justify-between relative z-10">
+                                    <div class="ml-6 text-xl font-bold percentage-bar">
+                                        {{ effect.value }}
+                                    </div>
+                                    <div class="mr-6 text-xl font-bold percentage-bar">
+                                        {{ effect.percent }}%
+                                    </div>
+                                </div>
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
         </div>
     </div>
-    
-
-
-    <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <div>
-            <div class="mb-6"></div>
-        </div>
-        <div></div>
-    </div> -->
 </form>
