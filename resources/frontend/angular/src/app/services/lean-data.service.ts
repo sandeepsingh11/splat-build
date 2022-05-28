@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
+import { Observable, tap } from 'rxjs';
 
 import { json } from "../types/json";
-import { Observable, tap } from 'rxjs';
-import { BaseGearResponse, SkillResponse, WeaponResponse } from '../types';
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +10,9 @@ import { BaseGearResponse, SkillResponse, WeaponResponse } from '../types';
 export class LeanDataService {
   version: string = '550';
   storageUrl: string = '/storage/' + this.version + '/';
-  weaponsUrl: string = this.storageUrl + 'parsed-weapons.json';
-  subsSpecialsUrl: string = this.storageUrl + 'parsed-subs-specials.json';
-  skillsUrl: string = this.storageUrl + 'parsed-skills.json';
-  getSkillsNameUrl: string = 'api/get-skill-names';
-  getBaseGearsUrl: string = 'api/get-base-gears';
-  getWeaponsUrl: string = 'api/get-weapons';
+  weaponStatsUrl: string = this.storageUrl + 'parsed-weapons.json';
+  subsSpecialStatsUrl: string = this.storageUrl + 'parsed-subs-specials.json';
+  skillStatsUrl: string = this.storageUrl + 'parsed-skills.json';
 
   weapons: any;
   subs: any;
@@ -26,44 +22,17 @@ export class LeanDataService {
   currentSub: any;
   currentSpecial: any;
 
-  constructor(private http: HttpClient) { this.loadData() }
+  constructor(private http: HttpClient) { }
 
-  loadData() {
-    // this.getWeapons();
-    // this.getSubsAndSpecial();
-    // this.getSkills();
-  }
-
-  getWeapons(): Observable<WeaponResponse[]> {
-    return this.http.get<WeaponResponse[]>(this.getWeaponsUrl);
-  }
-
-  getSubsAndSpecial(): Observable<any> {
-    return this.http.get(this.subsSpecialsUrl).pipe(
+  loadWeaponStats(): Observable<any> {
+    return this.http.get(this.weaponStatsUrl).pipe(
       tap((data: any) => {
-        this.subs = data.subs;
-        this.specials = data.specials;
+        this.weapons = data;
         
-        // set default sub
-        this.setCurrentSub('Bomb_Curling');
-
-        // set default special
-        this.setCurrentSpecial('SuperLanding');
+        // set default weapon
+        this.setCurrentWeapon('Shooter_Short_00');
       })
     );
-  }
-
-  getSkills(): Observable<any> {
-    console.log('skills getting');
-    return this.http.get(this.skillsUrl).pipe(
-      tap((data) => {
-        this.skills = data;
-      })
-    );
-  }
-
-  getSkillNames(): Observable<SkillResponse[]> {
-    return this.http.get<SkillResponse[]>(this.getSkillsNameUrl);
   }
 
   setCurrentWeapon(weaponName: string) {
@@ -99,15 +68,34 @@ export class LeanDataService {
     return weaponGroupName;
   }
 
+  loadSubSpecialStats(): Observable<any> {
+    return this.http.get(this.subsSpecialStatsUrl).pipe(
+      tap((data: any) => {
+        this.subs = data.subs;
+        this.specials = data.specials;
+        
+        // set default sub
+        this.setCurrentSub('Bomb_Curling');
+
+        // set default special
+        this.setCurrentSpecial('SuperLanding');
+      })
+    );
+  }
+
+  loadSkillStats(): Observable<any> {
+    return this.http.get(this.skillStatsUrl).pipe(
+      tap((data) => {
+        this.skills = data;
+      })
+    );
+  }
+
   setCurrentSub(subName: string) {
     this.currentSub = this.subs![subName];
   }
 
   setCurrentSpecial(specialName: string) {
     this.currentSpecial = this.specials![specialName];
-  }
-
-  getBaseGears(): Observable<BaseGearResponse[]> {
-    return this.http.get<BaseGearResponse[]>(this.getBaseGearsUrl);
   }
 }

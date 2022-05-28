@@ -1,13 +1,90 @@
 import { Injectable } from '@angular/core';
+import { forkJoin } from 'rxjs';
 
 import { LeanDataService } from './lean-data.service';
-import { Effect, Skill, Stats } from '../types/index';
+import { ActiveSkill, Effect, Skill, Stats } from '../types/index';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LeanCalcService {
-  constructor(private leanDataService: LeanDataService) {}
+  constructor(private leanDataService: LeanDataService) {
+    forkJoin([
+      leanDataService.loadWeaponStats(),
+      leanDataService.loadSubSpecialStats(),
+      leanDataService.loadSkillStats(),
+    ])
+    .subscribe(() => {
+      const skills: ActiveSkill[] = [];
+      this.calc(
+        skills, 
+        'Shooter_Short_00', 
+        'Bomb_Curling', 
+        'SuperLanding'
+      );
+    });
+  }
+
+  calc(
+    skills: ActiveSkill[], 
+    weaponName: string, 
+    subName: string, 
+    specialName: string
+  ) {
+    console.log('in calc');
+    console.log(skills, weaponName, subName, specialName);
+    // set current stat objects to use to calculate
+    this.leanDataService.setCurrentWeapon(weaponName);
+    this.leanDataService.setCurrentSub(subName);
+    this.leanDataService.setCurrentSpecial(specialName);
+
+    skills.forEach((skill) => {
+      switch (skill.skillName) {
+        case 'MainInk_Save':
+          this.calcIsm(skill);
+          break;
+        case 'SubInk_Save':
+          this.calcIss(skill);
+          break;
+        case 'InkRecovery_Up':
+          this.calcIru(skill);
+          break;
+        case 'HumanMove_Up':
+          this.calcRsu(skill);
+          break;
+        case 'SquidMove_Up':
+          this.calcSsu(skill);
+          break;
+        case 'SpecialIncrease_Up':
+          this.calcScu(skill);
+          break;
+        case 'RespawnSpecialGauge_Save':
+          this.calcSs(skill);
+          break;
+        case 'MarkingTime_Reduction':
+          this.calcMpu(skill);
+          break;
+        case 'BombDistance_Up':
+          this.calcSubPu(skill);
+          break;
+        case 'SpecialTime_Up':
+          this.calcSpu(skill);
+          break;
+        case 'RespawnTime_Save':
+          this.calcQrs(skill);
+          break;
+        case 'JumpTime_Save':
+          this.calcQsj(skill);
+          break;
+        case 'OpInkEffect_Reduction':
+          this.calcInkRu(skill);
+          break;
+        case 'BombDamage_Reduction':
+          this.calcBdu(skill);
+          break;
+      }
+    });
+  }
 
   calcIsm(skillObj: Skill) {
     const ismStats = this.leanDataService.skills![skillObj.skillName];

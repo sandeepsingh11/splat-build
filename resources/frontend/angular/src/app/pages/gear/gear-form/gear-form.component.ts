@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { LaravelApiService } from 'src/app/services/laravel-api.service';
 
 import { LeanCalcService } from "../../../services/lean-calc.service";
-import { LeanDataService } from "../../../services/lean-data.service";
 import { ActiveSkill, BaseGearResponse, SearchSelectOutput, SkillBubbleOutput, SkillIconOutput, SkillResponse, WeaponResponse } from "../../../types";
 
 @Component({
@@ -11,9 +11,12 @@ import { ActiveSkill, BaseGearResponse, SearchSelectOutput, SkillBubbleOutput, S
 })
 export class GearFormComponent implements OnInit {
 
-  constructor(private leanDataService: LeanDataService) { 
+  constructor(
+    private leanCalcService: LeanCalcService,
+    private laravelApiService: LaravelApiService
+  ) { 
     // get skill names
-    this.leanDataService.getSkillNames().subscribe((data) => {
+    this.laravelApiService.getSkillNames().subscribe((data) => {
       this.skills = data;
       this.skills.forEach((skill: SkillResponse) => {
         if (skill.is_main) this.mainSkills.push(skill);
@@ -22,12 +25,12 @@ export class GearFormComponent implements OnInit {
     });
 
     // get gears
-    this.leanDataService.getBaseGears().subscribe((data) => {
+    this.laravelApiService.getBaseGears().subscribe((data) => {
       this.baseGears = data;
     });
 
     // get weapons
-    this.leanDataService.getWeapons().subscribe((data) => {
+    this.laravelApiService.getWeapons().subscribe((data) => {
       this.weapons = data;
     });
   }
@@ -59,6 +62,8 @@ export class GearFormComponent implements OnInit {
       this.weaponDisplayName = selectedValue.displayName;
       this.subName = selectedValue.subName!;
       this.specialName = selectedValue.specialName!;
+
+      this.calc();
     }
   }
 
@@ -116,11 +121,22 @@ export class GearFormComponent implements OnInit {
         skillsChecked.push(skillName);
       }
     });
+
+    this.calc();
   }
 
   skillBubbleClicked(bubbleOutput: SkillBubbleOutput) {
     this.activeSkillNames[bubbleOutput.skillNumber - 1] = 'Unknown';
 
     this.updateActiveSkills();
+  }
+
+  calc() {
+    this.leanCalcService.calc(
+      this.activeSkills,
+      this.selectedWeapon,
+      this.subName,
+      this.specialName
+    );
   }
 }
