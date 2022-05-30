@@ -134,27 +134,10 @@
 
                     <!-- stat effect entry -->
                     <div class="grid grid-cols-2 gap-2 items-end">
-                        <div *ngFor="let effect of skillStat.effects">
-                            {{ effect.name }}
-                            <!-- percentage bar -->
-                            <div 
-                                class="bg-gray-300 relative rounded-full h-full"
-                                style="height: 28px;"
-                            >
-                                <div 
-                                    class="absolute top-0 left-0 h-full bg-pink-300 rounded-full"
-                                    [ngStyle]="{'width': effect.percent + '%'}"
-                                ></div>
-                                <div class="flex justify-between relative z-10">
-                                    <div class="ml-6 text-xl font-bold percentage-bar">
-                                        {{ effect.value }}
-                                    </div>
-                                    <div class="mr-6 text-xl font-bold percentage-bar">
-                                        {{ effect.percent }}%
-                                    </div>
-                                </div>
-                            </div>                            
-                        </div>
+                        <app-stat-effect 
+                            *ngFor="let effect of skillStat.effects"
+                            [effect]="effect"
+                        ></app-stat-effect>
                     </div>
                 </div>
             </ng-container>

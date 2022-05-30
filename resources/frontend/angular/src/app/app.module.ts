@@ -10,6 +10,7 @@ import { GearFormComponent } from './pages/gear/gear-form/gear-form.component';
 import { SearchSelectComponent } from './comp/search-select/search-select.component';
 import { SkillIconComponent } from './comp/skill-icon/skill-icon.component';
 import { SkillBubbleComponent } from './comp/skill-bubble/skill-bubble.component';
+import { StatEffectComponent } from './comp/stat-effect/stat-effect.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { SkillBubbleComponent } from './comp/skill-bubble/skill-bubble.component
     GearFormComponent,
     SearchSelectComponent,
     SkillIconComponent,
-    SkillBubbleComponent
+    SkillBubbleComponent,
+    StatEffectComponent
   ],
   imports: [
     BrowserModule,
