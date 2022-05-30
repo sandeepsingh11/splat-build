@@ -20,7 +20,7 @@ class GearController extends GearAbstractController
     {
         // user must be a guest to view, otherwise redirect
         $this->middleware(['auth'])
-            ->except(['index', 'show', 'getBaseGears']);
+            ->except(['index', 'show', 'getBaseGears', 'store']);
     }
 
     public function index(Request $request)
@@ -51,7 +51,7 @@ class GearController extends GearAbstractController
 
     public function getBaseGears()
     {
-        $baseGears = BaseGear::all(['base_gear_name as name', 'base_gear_type', 'main_skill_id']);
+        $baseGears = BaseGear::all(['id', 'base_gear_name as name', 'base_gear_type', 'main_skill_id']);
         
         // add translated name property
         foreach ($baseGears as $key => $value) {
@@ -82,6 +82,9 @@ class GearController extends GearAbstractController
 
     public function store(Request $request)
     {
+        // @todo: remove return when angular login is implemented
+        return true;
+
         // validate input
         $this->validate($request, [
             'gear-title' => 'max:255',

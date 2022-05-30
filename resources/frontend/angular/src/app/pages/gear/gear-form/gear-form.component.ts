@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LaravelApiService } from 'src/app/services/laravel-api.service';
 
 import { LeanCalcService } from "../../../services/lean-calc.service";
-import { ActiveSkill, BaseGearResponse, SearchSelectOutput, SkillBubbleOutput, SkillIconOutput, SkillResponse, Stats, WeaponResponse } from "../../../types";
+import { ActiveSkill, BaseGearResponse, SaveGearRequest, SearchSelectOutput, SkillBubbleOutput, SkillIconOutput, SkillResponse, Stats, WeaponResponse } from "../../../types";
 
 @Component({
   selector: 'app-gear-form',
@@ -42,7 +42,11 @@ export class GearFormComponent implements OnInit {
   otherSkills: SkillResponse[] = [];
   baseGears!: BaseGearResponse[];
   weapons!: WeaponResponse[];
+
   title: string = 'Create Gear';
+  gearTitle: string = '';
+  gearDesc: string = '';
+
   selectedGear: string = 'Hed_FST000';
   gearDisplayName: string = 'White Headband'
   selectedWeapon: string = 'Shooter_Short_00';
@@ -139,5 +143,32 @@ export class GearFormComponent implements OnInit {
       this.subName,
       this.specialName
     );
+  }
+
+  onSubmit() {
+    const gearId: number | undefined = this.baseGears.find((gear) => gear.name === this.selectedGear)?.id;
+    let skillIds: number[] = [];
+    this.activeSkillNames.forEach((skillName) => {
+      let skillId = this.skills.find((skill) => skill.skill_name === skillName)?.id;
+      if (skillId === undefined) skillId = 27;
+      skillIds.push(skillId);
+    });
+
+    if (gearId !== undefined) {
+      const newGear: SaveGearRequest = {
+        'gearTitle': this.gearTitle,
+        'gearDesc': this.gearDesc,
+        'gearId': gearId,
+        'skillMain': skillIds[0],
+        'skillSub1': skillIds[1],
+        'skillSub2': skillIds[2],
+        'skillSub3': skillIds[3],
+      };
+
+      this.laravelApiService.saveGear(newGear).subscribe(() => { 
+        console.log('submitted!'); 
+        window.location.href='/demo';
+      });
+    }
   }
 }

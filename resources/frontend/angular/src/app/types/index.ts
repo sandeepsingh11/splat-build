@@ -1,5 +1,6 @@
 import { ActiveSkill } from "./active-skill";
 import { BaseGearResponse } from "./base-gear-response";
+import { SaveGearRequest } from "./save-gear-request";
 import { SearchSelectOutput } from "./search-select-output";
 import { Skill } from './skill'
 import { SkillBubbleOutput } from "./skill-bubble-output";
@@ -12,6 +13,7 @@ export {
     ActiveSkill,
     BaseGearResponse,
     Effect,
+    SaveGearRequest,
     SearchSelectOutput,
     Skill,
     SkillBubbleOutput,

@@ -9,6 +9,6 @@ class SkillController extends Controller
 {
     public function getSkillNames()
     {
-        return Skill::all(['skill_name', 'is_main']);
+        return Skill::all(['id', 'skill_name', 'is_main']);
     }
 }

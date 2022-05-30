@@ -28,10 +28,14 @@ use Illuminate\Support\Facades\Route;
 Route::any('/{any}', [AngularController::class, 'index'])->where('any', '^(?!api).*$');
 Route::get('api/test', [IndexController::class, 'test']);
 
+// skills
 Route::get('api/get-skill-names', [SkillController::class, 'getSkillNames']);
 
+// gears
 Route::get('api/get-base-gears', [GearController::class, 'getBaseGears']);
+Route::post('api/save-gear', [GearController::class, 'store']);
 
+// weapons
 Route::get('api/get-weapons', [WeaponController::class, 'getWeapons']);
 
 // // home
