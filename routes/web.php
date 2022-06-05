@@ -26,7 +26,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::any('/{any}', [AngularController::class, 'index'])->where('any', '^(?!api).*$');
-Route::get('api/test', [IndexController::class, 'test']);
+
+Route::post('api/login', [LoginController::class, 'login']);
 
 // skills
 Route::get('api/get-skill-names', [SkillController::class, 'getSkillNames']);

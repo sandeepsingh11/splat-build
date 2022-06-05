@@ -5,22 +5,22 @@ import { HttpClientModule } from "@angular/common/http";
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { DemoComponent } from './pages/demo/demo.component';
 import { GearFormComponent } from './pages/gear/gear-form/gear-form.component';
 import { SearchSelectComponent } from './comp/search-select/search-select.component';
 import { SkillIconComponent } from './comp/skill-icon/skill-icon.component';
 import { SkillBubbleComponent } from './comp/skill-bubble/skill-bubble.component';
 import { StatEffectComponent } from './comp/stat-effect/stat-effect.component';
+import { LoginComponent } from './pages/login/login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    DemoComponent,
     GearFormComponent,
     SearchSelectComponent,
     SkillIconComponent,
     SkillBubbleComponent,
-    StatEffectComponent
+    StatEffectComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

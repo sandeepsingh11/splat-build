@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { DemoComponent } from "./pages/demo/demo.component";
 import { GearFormComponent } from "./pages/gear/gear-form/gear-form.component";
+import { LoginComponent } from './pages/login/login/login.component';
 
 const routes: Routes = [
-  { path: 'demo', component: DemoComponent },
+  { path: 'login', component: LoginComponent },
   { path: 'gear', component: GearFormComponent },
 ];
 
