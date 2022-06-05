@@ -27,7 +27,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::any('/{any}', [AngularController::class, 'index'])->where('any', '^(?!api).*$');
 
+// login, registration, reset password
 Route::post('api/login', [LoginController::class, 'login']);
+Route::post('api/register', [RegisterController::class, 'store']);
 
 // skills
 Route::get('api/get-skill-names', [SkillController::class, 'getSkillNames']);

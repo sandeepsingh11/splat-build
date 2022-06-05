@@ -28,18 +28,26 @@ export class LoginComponent implements OnInit {
   error: string = '';
 
   onSubmit() {
-    const loginRequest: LoginRequest = {
-      username: this.username,
-      password: this.password,
-      remember: this.remember,
+    if (
+      this.username === '' ||
+      this.password === ''
+    ) {
+      this.error = 'All fields are required';
     }
-    this.laravelApiService.login(loginRequest).subscribe((data) => {
-      if (data['error']) {
-        this.error = data['error'];
+    else {
+      const loginRequest: LoginRequest = {
+        username: this.username,
+        password: this.password,
+        remember: this.remember,
       }
-      else {
-        window.location.href='/gear';
-      }
-    });
+      this.laravelApiService.login(loginRequest).subscribe((data) => {
+        if (data['error']) {
+          this.error = data['error'];
+        }
+        else {
+          window.location.href='/gear';
+        }
+      });
+    }
   }
 }

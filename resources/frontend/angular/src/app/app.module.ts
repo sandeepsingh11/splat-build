@@ -11,6 +11,7 @@ import { SkillIconComponent } from './comp/skill-icon/skill-icon.component';
 import { SkillBubbleComponent } from './comp/skill-bubble/skill-bubble.component';
 import { StatEffectComponent } from './comp/stat-effect/stat-effect.component';
 import { LoginComponent } from './pages/login/login/login.component';
+import { RegistrationComponent } from './pages/login/registration/registration.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { LoginComponent } from './pages/login/login/login.component';
     SkillIconComponent,
     SkillBubbleComponent,
     StatEffectComponent,
-    LoginComponent
+    LoginComponent,
+    RegistrationComponent
   ],
   imports: [
     BrowserModule,

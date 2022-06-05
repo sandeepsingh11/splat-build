@@ -1,6 +1,7 @@
 import { ActiveSkill } from "./active-skill";
 import { BaseGearResponse } from "./base-gear-response";
 import { LoginRequest } from "./login-request";
+import { RegisterRequest } from "./register-request";
 import { SaveGearRequest } from "./save-gear-request";
 import { SearchSelectOutput } from "./search-select-output";
 import { Skill } from './skill'
@@ -15,6 +16,7 @@ export {
     BaseGearResponse,
     Effect,
     LoginRequest,
+    RegisterRequest,
     SaveGearRequest,
     SearchSelectOutput,
     Skill,
