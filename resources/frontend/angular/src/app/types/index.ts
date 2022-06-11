@@ -1,16 +1,25 @@
+import { 
+    SearchSelectOutput,
+    SkillBubbleOutput,
+    SkillIconOutput
+ } from "./comp-outputs";
+
+import {
+    BaseGearResponse,
+    SkillResponse,
+    WeaponResponse
+} from './responses'
+
+import { 
+    LoginRequest, 
+    RegisterRequest, 
+    ResetPasswordRequest, 
+    SaveGearRequest 
+} from "./requests";
+
 import { ActiveSkill } from "./active-skill";
-import { BaseGearResponse } from "./base-gear-response";
-import { LoginRequest } from "./login-request";
-import { RegisterRequest } from "./register-request";
-import { ResetPasswordRequest } from "./reset-password-request";
-import { SaveGearRequest } from "./save-gear-request";
-import { SearchSelectOutput } from "./search-select-output";
 import { Skill } from './skill'
-import { SkillBubbleOutput } from "./skill-bubble-output";
-import { SkillIconOutput } from "./skill-icon-output";
-import { SkillResponse } from "./skill-response";
 import { Effect, Stats } from './stats'
-import { WeaponResponse } from "./weapon-response";
 
 export {
     ActiveSkill,
