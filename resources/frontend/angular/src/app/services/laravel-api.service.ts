@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { WeaponResponse, SkillResponse, BaseGearResponse, SaveGearRequest, LoginRequest, RegisterRequest } from '../types';
+import { WeaponResponse, SkillResponse, BaseGearResponse, SaveGearRequest, LoginRequest, RegisterRequest, ResetPasswordRequest } from '../types';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +17,7 @@ export class LaravelApiService {
   getWeaponsUrl: string = 'api/get-weapons';
   loginUrl: string = 'api/login';
   registerUrl: string = 'api/register';
+  resetPasswordUrl: string = 'api/reset-password';
   saveGearUrl: string = 'api/save-gear'
 
   forgotPassword(email: any): Observable<any> {
@@ -41,6 +42,10 @@ export class LaravelApiService {
 
   register(credentials: RegisterRequest): Observable<any> {
     return this.http.post<any>(this.registerUrl, credentials);
+  }
+
+  resetPassword(credentials: ResetPasswordRequest): Observable<any> {
+    return this.http.post<any>(this.resetPasswordUrl, credentials);
   }
 
   saveGear(newGear: SaveGearRequest): Observable<SaveGearRequest> {

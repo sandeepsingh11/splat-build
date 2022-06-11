@@ -33,6 +33,7 @@ Route::post('api/register', [RegisterController::class, 'store']);
 Route::post('api/forgot-password', [PasswordResetLinkController::class, 'store']);
 Route::get('reset-password/{token}')->name('password.reset'); 
 // 'password.reset' called by: vendor\laravel\framework\src\Illuminate\Auth\Notifications\ResetPassword.php
+Route::post('api/reset-password', [NewPasswordController::class, 'store']);
 
 // skills
 Route::get('api/get-skill-names', [SkillController::class, 'getSkillNames']);

@@ -27,7 +27,6 @@ export class ForgotPasswordComponent implements OnInit {
         email: this.email
       };
       this.laravelApiService.forgotPassword(forgotPwRequest).subscribe((data) => {
-        console.log(data.success !== undefined);
         if (data.success !== undefined) {
           this.success = data.success;
           this.error = '';
