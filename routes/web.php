@@ -30,6 +30,9 @@ Route::any('/{any}', [AngularController::class, 'index'])->where('any', '^(?!api
 // login, registration, reset password
 Route::post('api/login', [LoginController::class, 'login']);
 Route::post('api/register', [RegisterController::class, 'store']);
+Route::post('api/forgot-password', [PasswordResetLinkController::class, 'store']);
+Route::get('reset-password/{token}')->name('password.reset'); 
+// 'password.reset' called by: vendor\laravel\framework\src\Illuminate\Auth\Notifications\ResetPassword.php
 
 // skills
 Route::get('api/get-skill-names', [SkillController::class, 'getSkillNames']);

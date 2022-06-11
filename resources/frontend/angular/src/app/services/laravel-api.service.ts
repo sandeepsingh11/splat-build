@@ -11,12 +11,17 @@ export class LaravelApiService {
 
   constructor(private http: HttpClient) { }
 
+  forgotPasswordUrl: string = 'api/forgot-password';
   getBaseGearsUrl: string = 'api/get-base-gears';
   getSkillsNameUrl: string = 'api/get-skill-names';
   getWeaponsUrl: string = 'api/get-weapons';
   loginUrl: string = 'api/login';
   registerUrl: string = 'api/register';
   saveGearUrl: string = 'api/save-gear'
+
+  forgotPassword(email: any): Observable<any> {
+    return this.http.post<any>(this.forgotPasswordUrl, email);
+  }
 
   getBaseGears(): Observable<BaseGearResponse[]> {
     return this.http.get<BaseGearResponse[]>(this.getBaseGearsUrl);

@@ -6,6 +6,7 @@ use App\Models\Gear;
 use App\Models\Gearset;
 use App\Policies\GearPolicy;
 use App\Policies\GearsetPolicy;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -30,6 +31,9 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        // https://laravel.com/docs/8.x/passwords#reset-link-customization
+        // ResetPassword::createUrlUsing(function ($user, string $token) {
+        //     return 'https://example.com/reset-password?token='.$token;
+        // });
     }
 }

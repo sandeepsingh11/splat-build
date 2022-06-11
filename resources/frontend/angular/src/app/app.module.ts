@@ -12,6 +12,7 @@ import { SkillBubbleComponent } from './comp/skill-bubble/skill-bubble.component
 import { StatEffectComponent } from './comp/stat-effect/stat-effect.component';
 import { LoginComponent } from './pages/login/login/login.component';
 import { RegistrationComponent } from './pages/login/registration/registration.component';
+import { ForgotPasswordComponent } from './pages/login/forgot-password/forgot-password.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { RegistrationComponent } from './pages/login/registration/registration.c
     SkillBubbleComponent,
     StatEffectComponent,
     LoginComponent,
-    RegistrationComponent
+    RegistrationComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     BrowserModule,
