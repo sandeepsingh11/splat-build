@@ -1,7 +1,7 @@
-import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
+// import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 
-import { LaravelApiService } from 'src/app/services/laravel-api.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { LoginRequest } from 'src/app/types';
 
 // imports:[
@@ -16,7 +16,7 @@ import { LoginRequest } from 'src/app/types';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private laravelApiService: LaravelApiService) { }
+  constructor(private _authService: AuthService) { }
 
   ngOnInit(): void {
   }
@@ -40,12 +40,12 @@ export class LoginComponent implements OnInit {
         password: this.password,
         remember: this.remember,
       }
-      this.laravelApiService.login(loginRequest).subscribe((data) => {
+      this._authService.login(loginRequest).subscribe((data) => {
         if (data['error']) {
           this.error = data['error'];
         }
-        else {
-          window.location.href='/gear';
+        else if (data['success']) {
+          window.location.href='/';
         }
       });
     }

@@ -6,6 +6,7 @@ import {
 
 import {
     BaseGearResponse,
+    LoginResponse,
     SkillResponse,
     WeaponResponse
 } from './responses'
@@ -20,12 +21,14 @@ import {
 import { ActiveSkill } from "./active-skill";
 import { Skill } from './skill'
 import { Effect, Stats } from './stats'
+import { User } from './user'
 
 export {
     ActiveSkill,
     BaseGearResponse,
     Effect,
     LoginRequest,
+    LoginResponse,
     RegisterRequest,
     ResetPasswordRequest,
     SaveGearRequest,
@@ -35,5 +38,6 @@ export {
     SkillIconOutput,
     SkillResponse,
     Stats,
+    User,
     WeaponResponse
 }

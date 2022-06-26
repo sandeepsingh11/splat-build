@@ -32,6 +32,16 @@ class LoginController extends Controller
             return ['error' => 'Incorrect credentials'];
         }
 
-        return ['success' => 'Logging in'];
+        // prep user data to send over
+        $user = Auth::user();
+        $userData = [
+            'username' => $user->username,
+            'email' => $user->email,
+            'createdAt' => $user->created_at
+        ];
+        return [
+            'success' => 'Logging in',
+            'userData' => $userData
+        ];
     }
 }
