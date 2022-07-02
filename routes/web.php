@@ -11,6 +11,7 @@ use App\Http\Controllers\WeaponController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\GearController;
 use App\Http\Controllers\User\GearsetController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 
@@ -29,11 +30,16 @@ Route::any('/{any}', [AngularController::class, 'index'])->where('any', '^(?!api
 
 // login, registration, reset password
 Route::post('api/login', [LoginController::class, 'login']);
+// setting Logout to GET is vul to csrf. use POST instead
+Route::post('api/logout', [LogoutController::class, 'logout']);
 Route::post('api/register', [RegisterController::class, 'store']);
 Route::post('api/forgot-password', [PasswordResetLinkController::class, 'store']);
 Route::get('reset-password/{token}')->name('password.reset'); 
 // 'password.reset' called by: vendor\laravel\framework\src\Illuminate\Auth\Notifications\ResetPassword.php
 Route::post('api/reset-password', [NewPasswordController::class, 'store']);
+
+// user
+Route::get('api/get-user', [UserController::class, 'getUser']);
 
 // skills
 Route::get('api/get-skill-names', [SkillController::class, 'getSkillNames']);

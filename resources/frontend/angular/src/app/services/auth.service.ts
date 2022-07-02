@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, of, tap } from 'rxjs';
 
 import { LoginRequest, LoginResponse, User } from '../types';
 import { UserService } from './user.service';
@@ -13,24 +13,51 @@ export class AuthService {
   constructor(
     private _http: HttpClient,
     private _userService: UserService
-  ) { }
+  ) {
+    this.isLoggedIn();
+  }
+
+  loggedIn = new BehaviorSubject(false);
 
   loginUrl: string = 'api/login';
+  logoutUrl: string = 'api/logout';
+  getUserUrl: string = 'api/get-user';
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this._http.post<any>(this.loginUrl, credentials)
-      .pipe(tap(data => this._userService.setUser(data['userData'])));
+      .pipe(tap(data => {
+        if (data.success) this._userService.setUser(data['userData'])
+      }));
   }
 
-  logout() {
-    // logout endpoint
+  logout(): Observable<any> {
+    return this._http.post<any>(this.logoutUrl, {})
+      .pipe(tap(() => this._userService.logout()));
   }
 
-  isLoggedIn(): boolean {
-    return (this._userService.username) ? true : false;
+  getUser() {
+    return this._http.get<any>(this.getUserUrl);
   }
 
-  getCurrentUser(): User {
+  isLoggedIn(): void {
+    if (this._userService.user === null) {
+      this.getUser()
+        .subscribe((data) => {
+          this._userService.setUser(data);
+
+          this.updateLoginStatus((data !== null));
+        });
+    }
+    else {
+      this.updateLoginStatus((this._userService.user.username !== ''));
+    }
+  }
+
+  updateLoginStatus(data: any) {
+    this.loggedIn.next(data);
+  }
+
+  getCurrentUser(): User | null {
     return this._userService.getCurrentUser();
   }
 }

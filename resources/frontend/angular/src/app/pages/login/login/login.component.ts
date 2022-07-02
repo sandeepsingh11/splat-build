@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
           this.error = data['error'];
         }
         else if (data['success']) {
-          window.location.href='/';
+          // window.location.href='/';
         }
       });
     }

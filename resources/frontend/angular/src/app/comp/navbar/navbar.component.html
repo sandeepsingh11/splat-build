@@ -1,0 +1,29 @@
+<div *ngIf="loggedIn">logged in! 1</div>
+<nav class="relative bg-primary-500 text-white flex justify-between">
+    <!-- logo -->
+    <ul class="flex items-center">
+        <li>
+            <a 
+                href="/" 
+                class="block p-3 hover:bg-primary-600 focus:hover:bg-primary-600 transition-colors"
+            >
+                SB
+            </a>
+        </li>
+    </ul>
+
+    <!-- nav items -->
+    <ul class="md:flex items-center hidden">
+        
+        <li>
+            <a href="/login" class="block p-3 hover:bg-primary-600 focus:hover:bg-primary-600 transition-colors">
+            Login
+            </a>
+            </li>
+            <li>
+            <a href="/register" class="block p-3 hover:bg-primary-600 focus:hover:bg-primary-600 transition-colors">
+            Register
+            </a>
+        </li>
+    </ul>
+</nav>
