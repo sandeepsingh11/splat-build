@@ -1,4 +1,3 @@
-<div *ngIf="loggedIn">logged in! 1</div>
 <nav class="relative bg-primary-500 text-white flex justify-between">
     <!-- logo -->
     <ul class="flex items-center">
@@ -14,16 +13,48 @@
 
     <!-- nav items -->
     <ul class="md:flex items-center hidden">
-        
-        <li>
-            <a href="/login" class="block p-3 hover:bg-primary-600 focus:hover:bg-primary-600 transition-colors">
-            Login
-            </a>
+        <!-- guest routes -->
+        <ng-container *ngIf="!isLoggedIn">
+            <li *ngFor="let route of guestRoutes">
+                <a href="{{ route.url }}" class="block p-3 hover:bg-primary-600 focus:hover:bg-primary-600 transition-colors">
+                {{ route.name }}
+                </a>
             </li>
-            <li>
-            <a href="/register" class="block p-3 hover:bg-primary-600 focus:hover:bg-primary-600 transition-colors">
-            Register
-            </a>
-        </li>
+        </ng-container>
+        
+        <!-- auth routes -->
+        <ng-container *ngIf="isLoggedIn">
+            <li *ngFor="let route of authRoutes">
+                <a href="{{ route.url }}" class="block p-3 hover:bg-primary-600 focus:hover:bg-primary-600 transition-colors">
+                {{ route.name }}
+                </a>
+            </li>
+
+            <!-- dropdown -->
+            <div class="relative">
+                <button class="block p-3 hover:bg-primary-600 focus:hover:bg-primary-600 transition-colors">
+                    {{ dropdownAuthRoutes[0].name }}
+                </button>
+
+                <ul class="absolute top-full right-0 bg-primary-500 mt-1 rounded text-left z-20">
+                    <li *ngFor="let ddRoute of dropdownAuthRoutes; let i = index">
+                        <ng-container *ngIf="i !== 0">
+                            <a 
+                                href="{{ ddRoute.url }}"
+                                class="block p-3 hover:bg-primary-600 focus:hover:bg-primary-600 transition-colors py-2 px-4 rounded-t-md"
+                            >
+                                {{ ddRoute.name }}
+                            </a>
+                        </ng-container>
+                    </li>
+                    <button 
+                        class="block p-3 hover:bg-primary-600 focus:hover:bg-primary-600 transition-colors py-2 px-4 rounded-t-md w-full text-left"
+                        (click)="logout()"
+                    >
+                        Logout
+                    </button>
+                </ul>
+            </div>
+        </ng-container>
     </ul>
 </nav>

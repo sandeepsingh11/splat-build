@@ -17,21 +17,15 @@ export class UserService {
       this.user!.username = userData['username'];
       this.user!.email = userData['email'];
       this.user!.createdAt = userData['createdAt'];
-      console.log('set! ' + this.user!.username);
     }
     else {
       this.user!.username = '';
       this.user!.email = '';
       this.user!.createdAt = '';
-      console.log('set! ' + '?');
     }
   }
 
-  getCurrentUser(): User | null {
-    if (this.user === null) {
-      // /getUser
-    }
-    
+  getCurrentUser(): User | null {    
     return this.user!;
   }
 
