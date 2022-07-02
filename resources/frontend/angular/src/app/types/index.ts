@@ -19,6 +19,7 @@ import {
 } from "./requests";
 
 import { ActiveSkill } from "./active-skill";
+import { NavItem } from './nav-item'
 import { Skill } from './skill'
 import { Effect, Stats } from './stats'
 import { User } from './user'
@@ -29,6 +30,7 @@ export {
     Effect,
     LoginRequest,
     LoginResponse,
+    NavItem,
     RegisterRequest,
     ResetPasswordRequest,
     SaveGearRequest,

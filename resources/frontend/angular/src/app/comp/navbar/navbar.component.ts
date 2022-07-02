@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { AuthService } from 'src/app/services/auth.service';
+import { NavItem } from 'src/app/types';
 
 @Component({
   selector: 'app-navbar',
@@ -19,18 +20,17 @@ export class NavbarComponent implements OnInit {
   }
 
   isLoggedIn = false;
-  authRoutes: {name: string, url: string}[] = [
+  authRoutes: NavItem[] = [
     {name: '+Gear', url: '/gears/create'},
     {name: '+Gearset', url: '/gearsets/create'},
   ];
-  dropdownAuthRoutes: {name: string, url: string}[] = [
+  dropdownAuthRoutes: NavItem[] = [
     {name: 'Profile', url: ''},
     {name: 'Dashboard', url: '/dashboard'},
     {name: 'Gears', url: '/gears'},
     {name: 'Gearsets', url: '/gearsets'},
-    // {name: 'Logout', url: '/logout'},
   ];
-  guestRoutes: {name: string, url: string}[] = [
+  guestRoutes: NavItem[] = [
     {name: 'Login', url: '/login'},
     {name: 'Register', url: '/register'},
   ];
