@@ -31,12 +31,18 @@
             </li>
 
             <!-- dropdown -->
-            <div class="relative">
+            <div
+                (click)="toggleDropdown()"
+                class="relative"
+            >
                 <button class="block p-3 hover:bg-primary-600 focus:hover:bg-primary-600 transition-colors">
                     {{ dropdownAuthRoutes[0].name }}
                 </button>
 
-                <ul class="absolute top-full right-0 bg-primary-500 mt-1 rounded text-left z-20">
+                <ul
+                    [hidden]="!showDropdown" 
+                    class="absolute top-full right-0 bg-primary-500 mt-1 rounded text-left z-20"
+                >
                     <li *ngFor="let ddRoute of dropdownAuthRoutes; let i = index">
                         <ng-container *ngIf="i !== 0">
                             <a 

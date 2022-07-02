@@ -25,7 +25,7 @@ export class NavbarComponent implements OnInit {
     {name: '+Gearset', url: '/gearsets/create'},
   ];
   dropdownAuthRoutes: NavItem[] = [
-    {name: 'Profile', url: ''},
+    {name: 'Profile', url: ''}, // label for the dropdown
     {name: 'Dashboard', url: '/dashboard'},
     {name: 'Gears', url: '/gears'},
     {name: 'Gearsets', url: '/gearsets'},
@@ -34,6 +34,11 @@ export class NavbarComponent implements OnInit {
     {name: 'Login', url: '/login'},
     {name: 'Register', url: '/register'},
   ];
+  showDropdown: boolean = false;
+
+  toggleDropdown(): void {
+    this.showDropdown = !this.showDropdown;
+  }
 
   logout() {
     this._authService.logout().subscribe(() => {
