@@ -34,14 +34,21 @@ class LoginController extends Controller
 
         // prep user data to send over
         $user = Auth::user();
+        
+        // pass new session id token to FE
+        $request->session()->regenerate();
+        $token = session('_token');
+        
         $userData = [
             'username' => $user->username,
             'email' => $user->email,
             'createdAt' => $user->created_at
         ];
+        
         return [
             'success' => 'Logging in',
-            'userData' => $userData
+            'userData' => $userData,
+            'token' => $token
         ];
     }
 }

@@ -10,13 +10,10 @@ import { NavItem } from 'src/app/types';
 })
 export class NavbarComponent implements OnInit {
 
-  constructor(private _authService: AuthService) { 
-    this._authService.loggedIn.subscribe((res) => {
-      this.isLoggedIn = res;
-    });
-  }
+  constructor(private _authService: AuthService) {}
 
   ngOnInit(): void {
+    this.isLoggedIn = this._authService.isLoggedIn();
   }
 
   isLoggedIn = false;
