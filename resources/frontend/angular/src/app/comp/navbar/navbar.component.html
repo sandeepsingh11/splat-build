@@ -3,7 +3,8 @@
     <ul class="flex items-center">
         <li>
             <a 
-                href="/" 
+                routerLink="/" 
+                routerLinkActive="active"
                 class="block p-3 hover:bg-primary-600 focus:hover:bg-primary-600 transition-colors"
             >
                 SB
@@ -16,7 +17,11 @@
         <!-- guest routes -->
         <ng-container *ngIf="!isLoggedIn">
             <li *ngFor="let route of guestRoutes">
-                <a href="{{ route.url }}" class="block p-3 hover:bg-primary-600 focus:hover:bg-primary-600 transition-colors">
+                <a 
+                    routerLink="{{ route.url }}"
+                    routerLinkActive="active" 
+                    class="block p-3 hover:bg-primary-600 focus:hover:bg-primary-600 transition-colors"
+                >
                 {{ route.name }}
                 </a>
             </li>
@@ -25,7 +30,11 @@
         <!-- auth routes -->
         <ng-container *ngIf="isLoggedIn">
             <li *ngFor="let route of authRoutes">
-                <a href="{{ route.url }}" class="block p-3 hover:bg-primary-600 focus:hover:bg-primary-600 transition-colors">
+                <a 
+                    routerLink="{{ route.url }}" 
+                    routerLinkActive="active"
+                    class="block p-3 hover:bg-primary-600 focus:hover:bg-primary-600 transition-colors"
+                >
                 {{ route.name }}
                 </a>
             </li>
@@ -46,7 +55,8 @@
                     <li *ngFor="let ddRoute of dropdownAuthRoutes; let i = index">
                         <ng-container *ngIf="i !== 0">
                             <a 
-                                href="{{ ddRoute.url }}"
+                                routerLink="{{ ddRoute.url }}"
+                                routerLinkActive="active"
                                 class="block p-3 hover:bg-primary-600 focus:hover:bg-primary-600 transition-colors py-2 px-4 rounded-t-md"
                             >
                                 {{ ddRoute.name }}
