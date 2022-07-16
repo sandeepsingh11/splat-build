@@ -47,6 +47,7 @@ Route::get('api/get-skill-names', [SkillController::class, 'getSkillNames']);
 // gears
 Route::get('api/get-base-gears', [GearController::class, 'getBaseGears']);
 Route::post('api/save-gear', [GearController::class, 'store']);
+Route::get('api/get-gear-count', [UserController::class, 'getGearCount']);
 
 // weapons
 Route::get('api/get-weapons', [WeaponController::class, 'getWeapons']);
