@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { LaravelApiService } from 'src/app/services/laravel-api.service';
 import { UserService } from 'src/app/services/user.service';
-import { Gear, GearCountResponse, User } from 'src/app/types';
+import { Gear, GearStatsResponse, User } from 'src/app/types';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,11 +19,11 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.user = this._userService.user!;
 
-    // get gear count
-    this._laravelApiService.getGearCount().subscribe((data) => {
-      data.forEach((gearCount, i: number) => {
-        this.gearCounts[i].count = gearCount.count;
-      });
+    // get gear stats
+    this._laravelApiService.getGearStats().subscribe((data) => {
+      this.gearStats = data;
+
+      this.gearStatsDisplay = Object.entries(this.gearStats);
     });
 
     // get recent gears
@@ -33,11 +33,15 @@ export class DashboardComponent implements OnInit {
   }
 
   user!: User;
-  gearCounts: GearCountResponse[] = [
-    {name: 'head', count: 0},
-    {name: 'clothes', count: 0},
-    {name: 'shoes', count: 0},
-    {name: 'total', count: 0}
-  ];
+  gearStats: GearStatsResponse = {
+    'head': 0,
+    'clothes': 0,
+    'shoes': 0,
+    'gears': 0,
+    'gearsets': 0,
+  };
+  // JS alphabetizes the above object automatically. So instead
+  // I'm creating the array below to keep the key order
+  gearStatsDisplay: [string, any][] = Object.entries(this.gearStats);
   recentGears: Gear[] = [];
 }

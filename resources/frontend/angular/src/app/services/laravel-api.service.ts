@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { WeaponResponse, SkillResponse, BaseGearResponse, SaveGearRequest, LoginRequest, RegisterRequest, ResetPasswordRequest, GearCountResponse, Gear } from '../types';
+import { WeaponResponse, SkillResponse, BaseGearResponse, SaveGearRequest, RegisterRequest, ResetPasswordRequest, Gear, GearStatsResponse } from '../types';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,7 @@ export class LaravelApiService {
 
   forgotPasswordUrl: string = 'api/forgot-password';
   getBaseGearsUrl: string = 'api/get-base-gears';
-  getGearCountUrl: string = 'api/get-gear-count';
+  getGearStatsUrl: string = 'api/get-gear-stats';
   getRecentGearsUrl: string = 'api/get-recent-gears';
   getSkillsNameUrl: string = 'api/get-skill-names';
   getWeaponsUrl: string = 'api/get-weapons';
@@ -28,9 +28,9 @@ export class LaravelApiService {
   getBaseGears(): Observable<BaseGearResponse[]> {
     return this.http.get<BaseGearResponse[]>(this.getBaseGearsUrl);
   }
-
-  getGearCount(): Observable<GearCountResponse[]> {
-    return this.http.get<GearCountResponse[]>(this.getGearCountUrl);
+  
+  getGearStats(): Observable<GearStatsResponse> {
+    return this.http.get<GearStatsResponse>(this.getGearStatsUrl);
   }
 
   getRecentGears(): Observable<Gear[]> {

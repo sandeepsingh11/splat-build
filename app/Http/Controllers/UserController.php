@@ -27,21 +27,11 @@ class UserController extends Controller
         return $userData;
     }
 
-    public function getGearCount(Request $request)
+    public function getGearStats(Request $request)
     {
         $user = $request->user();
-        
-        $headCount = $user->getUserGearCount('H');
-        $clothesCount = $user->getUserGearCount('C');
-        $shoesCount = $user->getUserGearCount('S');
-        $totalCount = $user->getUserGearCount();
      
-        return [
-            ['name' => 'head', 'count' => $headCount],
-            ['name' => 'clothes', 'count' => $clothesCount],
-            ['name' => 'shoes', 'count' => $shoesCount],
-            ['name' => 'total', 'count' => $totalCount]
-        ];
+        return $user->getGearStats();
     }
 
     public function getRecentGears(Request $request)

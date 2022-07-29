@@ -133,6 +133,27 @@ class User extends Authenticatable
         return $recentGearsets;
     }
 
+    function getGearStats()
+    {
+        if (!isset($this->id)) {
+            $this->setUser(Auth::user());
+        }
+
+        $headCount = $this->getGearCount('H');
+        $clothesCount = $this->getGearCount('C');
+        $shoesCount = $this->getGearCount('S');
+        $gearTotal = $this->getGearCount();
+        $gearsetTotal = $this->getGearsetCount();
+
+        return [
+            'head' => $headCount,
+            'clothes' => $clothesCount,
+            'shoes' => $shoesCount,
+            'gears' => $gearTotal,
+            'gearsets' => $gearsetTotal
+        ];
+    }
+
     /**
      * Get the user's gear count.
      * 
@@ -140,24 +161,29 @@ class User extends Authenticatable
      * 
      * @return int
      */
-    public function getUserGearCount($gearType = '')
+    public function getGearCount($gearType = '')
     {
         $gearTypes = ['H', 'C', 'S'];
 
         if ( (!empty($gearType)) && (in_array(strtoupper($gearType), $gearTypes)) ) {
             // get all of user's gears of a specific type        
-            $count = $this->gears()
+            $count = Gear::where('user_id', $this->id)
                 ->join('base_gears', 'gears.base_gear_id', '=', 'base_gears.id')
                 ->where('base_gears.base_gear_type', $gearType)
                 ->count();
         }
         else {
             // get all of user's gears
-            $count = $this->gears()
+            $count = Gear::where('user_id', $this->id)
                 ->join('base_gears', 'gears.base_gear_id', '=', 'base_gears.id')
                 ->count();
         }
 
         return $count;
+    }
+
+    public function getGearsetCount()
+    {
+        return Gearset::where('user_id', $this->id)->count();
     }
 }

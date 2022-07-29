@@ -1,21 +1,21 @@
 <div class="md:w-10/12 w-full mx-auto p-4">
     <h2 class="mt-10 mb-12 text-4xl md:text-5xl font-semibold text-center">Welcome {{ user.username }}</h2>
 
-    <!-- gear count -->
-    <div id="gear-count" class="mb-10">
-        <h2 class="mb-6 text-4xl">Gear Count</h2>
+    <!-- gear stats -->
+    <div id="gear-stats" class="mb-10">
+        <h2 class="mb-6 text-4xl">Gear Stats</h2>
 
         <div class="flex justify-evenly flex-wrap p-4">
             <div 
-                *ngFor="let gearCount of gearCounts"
+                *ngFor="let stat of gearStatsDisplay"
                 class="w-1/2 md:w-auto mb-6"
             >
                 <div class="text-4xl font-semibold text-center">
-                    {{ gearCount.count }}
+                    {{ stat[1] }}
                 </div>
             
                 <div class="uppercase text-sm text-center">
-                    {{ gearCount.name }}
+                    {{ stat[0] | uppercase }}
                 </div>
             </div>
         </div>
@@ -33,7 +33,7 @@
                 id="recent-gear-container" 
                 class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start mb-6"
             >
-                <ng-container *ngIf="gearCounts[3]['count'] > 0; else no_gear">
+                <ng-container *ngIf="gearStats.gears > 0; else no_gear">
                     <div *ngFor="let gear of recentGears">
                         <app-gear-card [gear]="gear"></app-gear-card>
                     </div>
@@ -54,21 +54,30 @@
             </app-button-link>
         </div>
 
-        <!-- {{-- gearsets --}}
+        <!-- gearsets -->
         <div>
-            <x-sub-header text="Gearsets" />
-            <div id="recent-gearset-container" class="mb-6">
-                @if ($recentGearsets->count())
-                    @foreach ($recentGearsets as $gearset)
-                        <div>
-                            <x-gearset.base :gearset="$gearset" :user="$user" />
-                        </div>
-                    @endforeach
-                @else
-                    <p class="text-xl text-center italic py-8">You don't have any gearsets yet...Go create some fresh gearsets!</p>
-                @endif
+            <h3 class="mb-4 text-3xl">Gearsets</h3>
+            <div 
+                id="recent-gearset-container" 
+                class="mb-6"
+            >
+                <ng-container *ngIf="gearStats.gearsets > 0; else no_gearset">
+                    <!-- <app-gearset-card [gearset]="gearset"></app-gearset-card> -->
+                    gearsets! {{ gearStats.gearsets }}
+                </ng-container>
+                <ng-template #no_gearset>
+                    <p class="text-xl text-center italic py-8">
+                        You don't have any gearsets yet...Go assemble some fresh gearsets!
+                    </p>
+                </ng-template>
             </div>
-            <x-button-link link="{{ route('gearsets.create') }}" text="Create Gearset" />
+
+            <!-- create gearset button -->
+            <app-button-link
+                [link]="'/gearsets/create'"
+                [text]="'Create Gearset'"
+            >
+            </app-button-link>
         </div>
-    </div> -->
+    </div>
 </div>

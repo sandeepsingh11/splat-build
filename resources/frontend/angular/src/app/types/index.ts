@@ -8,7 +8,7 @@ import {
 // responses
 import {
     BaseGearResponse,
-    GearCountResponse,
+    GearStatsResponse,
     LoginResponse,
     SkillResponse,
     WeaponResponse
@@ -35,7 +35,7 @@ export {
     BaseGearResponse,
     Effect,
     Gear,
-    GearCountResponse,
+    GearStatsResponse,
     LoginRequest,
     LoginResponse,
     NavItem,
