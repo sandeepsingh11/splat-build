@@ -16,6 +16,9 @@ import { ForgotPasswordComponent } from './pages/login/forgot-password/forgot-pa
 import { ResetPasswordComponent } from './pages/login/reset-password/reset-password.component';
 import { NavbarComponent } from './comp/navbar/navbar.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { GearCardComponent } from './comp/gear-card/gear-card.component';
+import { GearCardSkillComponent } from './comp/gear-card/gear-card-skill/gear-card-skill.component';
+import { ButtonLinkComponent } from './comp/button-link/button-link.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +33,10 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     ForgotPasswordComponent,
     ResetPasswordComponent,
     NavbarComponent,
-    DashboardComponent
+    DashboardComponent,
+    GearCardComponent,
+    GearCardSkillComponent,
+    ButtonLinkComponent
   ],
   imports: [
     BrowserModule,

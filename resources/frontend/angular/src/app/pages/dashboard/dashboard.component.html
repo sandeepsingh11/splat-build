@@ -21,28 +21,40 @@
         </div>
     </div>
 
-    <!-- {{-- recent builds --}}
+    <!-- recent builds -->
     <div id="recent-builds" class="mb-10">
-        <x-header text="Recent Builds" />
+        <h2 class="mb-6 text-4xl">Recent Builds</h2>
 
-        {{-- gears --}}
+        <!-- gears -->
         <div class="mb-10">
-            <x-sub-header text="Gears" />
-            <div id="recent-gear-container" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start mb-6">
-                @if ($recentGears->count())
-                    @foreach ($recentGears as $gear)
-                        <div>
-                            <x-gear.base :gear="$gear" :user="$user" />
-                        </div>
-                    @endforeach
-                @else
-                    <p class="text-xl text-center italic py-8">You don't have any gears yet...Go create some fresh gears!</p>
-                @endif
+            <h3 class="mb-4 text-3xl">Gears</h3>
+
+            <div 
+                id="recent-gear-container" 
+                class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start mb-6"
+            >
+                <ng-container *ngIf="gearCounts[3]['count'] > 0; else no_gear">
+                    <div *ngFor="let gear of recentGears">
+                        <app-gear-card [gear]="gear"></app-gear-card>
+                    </div>
+                </ng-container>
+
+                <ng-template #no_gear>
+                    <p class="text-xl text-center italic py-8">
+                        You don't have any gears yet...Go create some fresh gears!
+                    </p>
+                </ng-template>
             </div>
-            <x-button-link link="{{ route('gears.create') }}" text="Create Gear" />
+
+            <!-- create gear button -->
+            <app-button-link
+                [link]="'/gears/create'"
+                [text]="'Create Gear'"
+            >
+            </app-button-link>
         </div>
 
-        {{-- gearsets --}}
+        <!-- {{-- gearsets --}}
         <div>
             <x-sub-header text="Gearsets" />
             <div id="recent-gearset-container" class="mb-6">

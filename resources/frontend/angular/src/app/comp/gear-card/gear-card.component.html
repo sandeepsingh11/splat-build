@@ -1,0 +1,54 @@
+<div class="bg-gray-700 rounded-md shadow-lg">
+    <!-- @if ($link) <a href="{{ route('gears.show', $gear) }}"> @endif -->
+    
+    <!-- gear title -->
+    <div class="p-4 bg-primary-400 rounded-tl-md rounded-tr-md text-center text-lg font-semibold">
+        <h3>{{ gear.gear_title }}</h3>
+    </div>
+
+    <!-- gear image -->
+    <div class="p-4">
+        <img 
+            src="/storage/gear/{{ gear.base_gear_name }}.png" 
+            alt="{{ gear.base_gear_name }}" 
+            class="gear-img mx-auto" 
+            loading="lazy"
+        >
+    </div>
+
+    <!-- gear skills -->
+    <div class="grid grid-cols-4 items-end">
+        <div
+            class="mx-auto p-2"
+            *ngFor="let skill of gear.skills!"
+        >
+            <app-gear-card-skill [skill]="skill">
+            </app-gear-card-skill>
+        </div>
+    </div>
+
+    <!-- gear desc -->
+    <div>
+        <p class="bg-gray-100 p-3">{{ gear.gear_desc }}</p>
+    </div>
+    <!-- @if ($link) </a> @endif -->
+
+
+    <!-- @auth
+        @can('delete', $gear)
+            <div class="flex justify-evenly">
+                <div class="w-full">
+                    <a href="{{ route('gears.edit', $gear) }}" class="block">
+                        <div class="bg-secondary-400 w-full py-2 rounded-bl-md text-center">Edit</div>
+                    </a>
+                </div>
+
+                <form action="{{ route('gears.delete', $gear) }}" method="post" class="w-full">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="bg-red-400 w-full py-2 rounded-br-md">Delete</button>
+                </form>
+            </div>
+        @endcan
+    @endauth -->
+</div>

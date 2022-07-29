@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Gear;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -43,5 +42,12 @@ class UserController extends Controller
             ['name' => 'shoes', 'count' => $shoesCount],
             ['name' => 'total', 'count' => $totalCount]
         ];
+    }
+
+    public function getRecentGears(Request $request)
+    {
+        $user = $request->user();
+
+        return $user->getRecentGears();
     }
 }

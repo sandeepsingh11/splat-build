@@ -6,10 +6,17 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
+
+    private int $id;
+    private string $email;
+    private string $password;
+    private string $createdAt;
+    private string $updatedAt;
 
     /**
      * The attributes that are mass assignable.
@@ -51,6 +58,14 @@ class User extends Authenticatable
         return $this->hasMany(Gearset::class);
     }
 
+    protected function setUser(User $user) {
+        $this->id = $user['id'];
+        $this->email = $user['email'];
+        $this->password = $user['password'];
+        $this->createdAt = $user['created_at'];
+        $this->updatedAt = $user['updated_at'];
+    }
+
     /**
      * Get the most recent gears created for this user.
      * 
@@ -60,12 +75,45 @@ class User extends Authenticatable
      */
     public function getRecentGears($numOfGears = 3)
     {
-        $recentGears = $this->gears()
-            ->latest()
+        if (!isset($this->id)) {
+            $this->setUser(Auth::user());
+        }
+
+        $gears = Gear::where('user_id', $this->id)
+            ->join('base_gears', 'base_gears.id', 'gears.base_gear_id')
+            ->latest('gears.created_at')
             ->limit($numOfGears)
+            ->select(
+                'gears.id as gear_id',
+                'gear_title',
+                'gear_desc',
+                'base_gear_id',
+                'gears.created_at',
+                'gears.updated_at',
+                'base_gear_name',
+                'base_gear_type',
+            )
             ->get();
 
-        return $recentGears;
+        // get skills for each gear
+        $gears->transform(function ($gear) {
+            $skills = Gear::where('gears.id', $gear->gear_id)
+                ->join('gear_skill', 'gear_skill.gear_id', 'gears.id')
+                ->join('skills', 'skills.id', 'gear_skill.skill_id')
+                ->select(
+                    'skill_type',
+                    'skill_name',
+                    'is_main',
+                    'skill_id as id'
+                )
+                ->orderBy('skill_type', 'asc')
+                ->get();
+            $gear['skills'] = $skills;
+            
+            return $gear;
+        });
+
+        return $gears;
     }
 
     /**

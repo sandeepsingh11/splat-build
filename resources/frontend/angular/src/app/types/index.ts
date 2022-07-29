@@ -24,15 +24,17 @@ import {
 
 // other
 import { ActiveSkill } from "./active-skill";
-import { NavItem } from './nav-item'
-import { Skill } from './skill'
-import { Effect, Stats } from './stats'
-import { User } from './user'
+import { Gear } from './gear';
+import { NavItem } from './nav-item';
+import { Skill } from './skill';
+import { Effect, Stats } from './stats';
+import { User } from './user';
 
 export {
     ActiveSkill,
     BaseGearResponse,
     Effect,
+    Gear,
     GearCountResponse,
     LoginRequest,
     LoginResponse,
