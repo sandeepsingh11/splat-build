@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
   constructor(private _authService: AuthService) { }
 
   ngOnInit(): void {
+    this._authService.getCsrfToken().subscribe((data) => {});
   }
 
   username: string = '';

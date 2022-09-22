@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticateController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\NewPasswordController;
@@ -37,6 +38,7 @@ Route::post('api/forgot-password', [PasswordResetLinkController::class, 'store']
 Route::get('reset-password/{token}')->name('password.reset'); 
 // 'password.reset' called by: vendor\laravel\framework\src\Illuminate\Auth\Notifications\ResetPassword.php
 Route::post('api/reset-password', [NewPasswordController::class, 'store']);
+Route::get('api/get-token', [AuthenticateController::class, 'getToken']);
 
 // user
 Route::get('api/get-user', [UserController::class, 'getUser']);

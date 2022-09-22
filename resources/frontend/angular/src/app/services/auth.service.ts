@@ -31,6 +31,7 @@ export class AuthService {
 
   loginUrl: string = 'api/login';
   logoutUrl: string = 'api/logout';
+  getTokenUrl: string = 'api/get-token';
   getUserUrl: string = 'api/get-user';
 
   private _token: string | null = null;
@@ -83,5 +84,9 @@ export class AuthService {
 
   setUser(userData: any) {
     this._userService.setUser(userData);
+  }
+
+  getCsrfToken(): Observable<string>{
+    return this._http.get<string>(this.getTokenUrl);
   }
 }
