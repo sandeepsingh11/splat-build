@@ -25,6 +25,7 @@ import {
 // other
 import { ActiveSkill } from "./active-skill";
 import { Gear } from './gear';
+import { Gearset } from './gearset';
 import { NavItem } from './nav-item';
 import { Skill } from './skill';
 import { Effect, Stats } from './stats';
@@ -35,6 +36,7 @@ export {
     BaseGearResponse,
     Effect,
     Gear,
+    Gearset,
     GearStatsResponse,
     LoginRequest,
     LoginResponse,

@@ -40,4 +40,11 @@ class UserController extends Controller
 
         return $user->getRecentGears();
     }
+
+    public function getRecentGearsets(Request $request)
+    {
+        $user = $request->user();
+
+        return $user->getRecentGearsets();
+    }
 }

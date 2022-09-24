@@ -1,0 +1,84 @@
+<div class="bg-gray-700 rounded-md shadow-lg">
+    <!-- gearset's title -->
+    <div class="p-4 bg-primary-400 rounded-tl-md rounded-tr-md text-center text-lg font-semibold">
+        <h1>{{ gearset.gearset_title }}</h1>
+    </div>
+
+    <!-- gearset's modes -->
+    <app-gearset-modes [gearset]="gearset"></app-gearset-modes>
+
+    <!-- body -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4">
+
+        <!-- gearset's weapon -->
+        <app-gearset-weapon 
+            [weaponName]="gearset.weapon_name"
+            [specialName]="gearset.special_name"
+            [subName]="gearset.sub_name"
+        >
+        </app-gearset-weapon>
+
+        <!-- gearset's gear -->
+        <div *ngFor="let gear of gearset.gears">
+            <div class="p-4">
+                <!-- gear -->
+                <img 
+                    src="/storage/gear/{{ gear.base_gear_name }}.png" 
+                    alt="{{ gear.base_gear_name }}" 
+                    class="gear-img mx-auto"
+                    loading="lazy"
+                >
+                <!-- main skill -->
+                <div class="p-2 mx-auto">
+                    <img 
+                        src="/storage/skills/{{ gear.skills![0].skill_name }}.png" 
+                        alt="{{ gear.skills![0].skill_name }}" 
+                        class="mx-auto"
+                        width="50"
+                        height="50"
+                        loading="lazy"
+                    >
+                </div>
+                <!-- other skills -->
+                <div class="flex justify-evenly">
+                    <ng-container class="p-2 mx-auto" *ngFor="let skill of gear.skills!; let i = index">
+                        <div class="" *ngIf="i != 0">
+                            <img 
+                                src="/storage/skills/{{ gear.skills![i].skill_name }}.png" 
+                                alt="{{ gear.skills![i].skill_name }}" 
+                                class="mx-auto"
+                                width="50"
+                                height="50"
+                                loading="lazy"
+                            >
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- gearset's desc -->
+    <div>
+        <p class="bg-gray-100 p-3">{{ gearset.gearset_desc }}</p>
+    </div>
+
+
+
+    <!-- {{-- edit and delete gearset --}}
+    @auth
+        @can('delete', $gearset)
+            <div class="flex justify-evenly">
+                <a href="{{ route('gearsets.edit', $gearset) }}" class="block w-full">
+                    <div class="bg-indigo-400 w-full py-2 rounded-bl-md text-center">Edit</div>
+                </a>
+
+                <form action="{{ route('gearsets.delete', $gearset) }}" method="post" class="w-full">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="bg-red-400 w-full py-2 rounded-br-md">Delete</button>
+                </form>
+            </div>
+        @endcan
+    @endauth -->
+</div>

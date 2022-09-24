@@ -19,6 +19,9 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { GearCardComponent } from './comp/gear-card/gear-card.component';
 import { GearCardSkillComponent } from './comp/gear-card/gear-card-skill/gear-card-skill.component';
 import { ButtonLinkComponent } from './comp/button-link/button-link.component';
+import { GearsetCardComponent } from './comp/gearset-card/gearset-card.component';
+import { GearsetModesComponent } from './comp/gearset-modes/gearset-modes.component';
+import { GearsetWeaponComponent } from './comp/gearset-weapon/gearset-weapon.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +39,10 @@ import { ButtonLinkComponent } from './comp/button-link/button-link.component';
     DashboardComponent,
     GearCardComponent,
     GearCardSkillComponent,
-    ButtonLinkComponent
+    ButtonLinkComponent,
+    GearsetCardComponent,
+    GearsetModesComponent,
+    GearsetWeaponComponent
   ],
   imports: [
     BrowserModule,

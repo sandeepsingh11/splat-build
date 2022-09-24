@@ -1,5 +1,5 @@
 <div class="md:w-10/12 w-full mx-auto p-4">
-    <h2 class="mt-10 mb-12 text-4xl md:text-5xl font-semibold text-center">Welcome {{ user.username }}</h2>
+    <h2 class="mt-10 mb-12 text-4xl md:text-5xl font-semibold text-center">Lookin fresh {{ user.username }}</h2>
 
     <!-- gear stats -->
     <div id="gear-stats" class="mb-10">
@@ -56,14 +56,13 @@
 
         <!-- gearsets -->
         <div>
-            <h3 class="mb-4 text-3xl">Gearsets</h3>
+            <h3 class="mb-4 text-3xl">Gearset</h3>
             <div 
                 id="recent-gearset-container" 
                 class="mb-6"
             >
                 <ng-container *ngIf="gearStats.gearsets > 0; else no_gearset">
-                    <!-- <app-gearset-card [gearset]="gearset"></app-gearset-card> -->
-                    gearsets! {{ gearStats.gearsets }}
+                    <app-gearset-card [gearset]="recentGearset"></app-gearset-card>
                 </ng-container>
                 <ng-template #no_gearset>
                     <p class="text-xl text-center italic py-8">
